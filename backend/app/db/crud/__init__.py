@@ -20,7 +20,7 @@ from db.schemas.user import User
 
 
 def auth(username: str, password: str, db: Session):
-    """Returns the user with the given username and password if it exists, otherwise raises an HTTPException.
+    """Verifies that the given username and password match a user in the database.
     Designed to be called only by the API since it raises an HTTPException."""
 
     user = db.execute(select(User).where(User.username == username)).scalars().one_or_none()
