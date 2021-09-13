@@ -4,6 +4,25 @@ from typing import Callable
 
 
 #
+# AUTH
+#
+
+
+def api_route_auth(router: APIRouter, endpoint: Callable, path: str = "/"):
+    router.add_api_route(
+        path=path,
+        endpoint=endpoint,
+        methods=["POST"],
+        response_class=Response,
+        responses={
+            status.HTTP_200_OK: {"description": "Authentication was successful"},
+            status.HTTP_401_UNAUTHORIZED: {"description": "Invalid username or password"},
+        },
+        status_code=status.HTTP_200_OK,
+    )
+
+
+#
 # CREATE
 #
 
