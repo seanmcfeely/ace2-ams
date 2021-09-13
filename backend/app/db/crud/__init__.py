@@ -8,9 +8,28 @@ from sqlalchemy.orm.exc import NoResultFound
 from typing import List, Union
 from uuid import UUID
 
+from core.auth import verify_password
 from db.schemas.observable import Observable
 from db.schemas.observable_type import ObservableType
 from db.schemas.user import User
+
+
+#
+# AUTH
+#
+
+
+def auth(username: str, password: str, db: Session):
+    """Returns the user with the given username and password if it exists, otherwise raises an HTTPException.
+    Designed to be called only by the API since it raises an HTTPException."""
+
+    user = db.execute(select(User).where(User.username == username)).scalars().one_or_none()
+
+    if user is None:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid username or password")
+
+    if not verify_password(password, user.password):
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid username or password")
 
 
 #
