@@ -4,12 +4,17 @@
 # and then loaded when starting/restarting the dev containers.
 ACE2_ENV_PATH="$HOME/.ace2.env"
 if [ ! -f "$ACE2_ENV_PATH" ]; then
+JWT_SECRET=$(cat /dev/urandom | LC_ALL=C tr -dc 'a-zA-Z0-9' | fold -w 32 | head -n 1)
 POSTGRES_DB=ace
 POSTGRES_USER=ace
 POSTGRES_PASSWORD=$(cat /dev/urandom | LC_ALL=C tr -dc 'a-zA-Z0-9' | fold -w 32 | head -n 1)
 
 cat > "$ACE2_ENV_PATH" <<- EOF
 ACE_DEV=true
+AUTH_REQUIRED=true
+JWT_ALGORITHM=HS256
+JWT_EXPIRE_MINUTES=30
+JWT_SECRET=$JWT_SECRET
 POSTGRES_DB=$POSTGRES_DB
 POSTGRES_USER=$POSTGRES_USER
 POSTGRES_PASSWORD=$POSTGRES_PASSWORD
