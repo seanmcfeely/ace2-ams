@@ -2,6 +2,7 @@ import alembic
 import pytest
 
 from alembic.config import Config
+from fastapi import HTTPException, status
 from fastapi.testclient import TestClient
 from sqlalchemy.orm import Session
 
@@ -64,3 +65,18 @@ def client(db):
 
     with TestClient(app) as c:
         yield c
+
+
+@pytest.fixture()
+def client_valid_token(client, monkeypatch):
+    """
+    This fixture is the "client" fixture with a patched validate_token function so that it always validates.
+    """
+
+    def mock_validate_token():
+        pass
+
+    # Due to how imports work, patching __code__ accounts for all cases for how the validate_token function is used.
+    monkeypatch.setattr("api.routes.helpers.validate_token.__code__", mock_validate_token.__code__)
+
+    yield client
