@@ -1,7 +1,9 @@
 import pytest
+import time
 
 from fastapi import status
 
+from core.config import Settings
 from tests.helpers import create_test_user
 from main import app
 
@@ -29,18 +31,35 @@ def test_auth_invalid(client, db, username, password):
     assert get.status_code == status.HTTP_401_UNAUTHORIZED
 
 
-@pytest.mark.parametrize(
-    "key",
-    [
-        ("username"),
-        ("password"),
-    ],
-)
-def test_missing_required_fields(client, key):
-    create_json = {"username": "johndoe", "password": "abcd1234"}
-    del create_json[key]
-    create = client.post("/api/auth/", json=create_json)
-    assert create.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY
+def test_expired_token(client, db, monkeypatch):
+    def mock_get_settings():
+        settings = Settings()
+        settings.jwt_expire_seconds = 1
+        return settings
+
+    # Patching __code__ works no matter how the function is imported
+    monkeypatch.setattr("core.config.get_settings.__code__", mock_get_settings.__code__)
+
+    create_test_user(db, "johndoe", "abcd1234")
+
+    # Attempt to authenticate
+    auth = client.post("/api/auth/", data={"username": "johndoe", "password": "abcd1234"})
+    token = auth.json()["access_token"]
+    assert auth.status_code == status.HTTP_200_OK
+    assert auth.json()["token_type"] == "bearer"
+    assert token
+
+    # Attempt to use the token to access a protected API endpoint
+    get = client.get("/api/user/", headers={"Authorization": f"Bearer {token}"})
+    assert get.status_code == status.HTTP_200_OK
+    assert len(get.json()) == 1
+
+    # Wait for the token to expire
+    time.sleep(2)
+
+    # Attempt to use the token to access a protected API endpoint now that the token is expired
+    get = client.get("/api/user/", headers={"Authorization": f"Bearer {token}"})
+    assert get.status_code == status.HTTP_401_UNAUTHORIZED
 
 
 @pytest.mark.parametrize(
@@ -72,6 +91,20 @@ def test_invalid_token(client, route):
 
         result = client_method(route.path)
         assert result.status_code == status.HTTP_401_UNAUTHORIZED, f"{method} on {route.path} does not require auth!"
+
+
+@pytest.mark.parametrize(
+    "key",
+    [
+        ("username"),
+        ("password"),
+    ],
+)
+def test_missing_required_fields(client, key):
+    create_json = {"username": "johndoe", "password": "abcd1234"}
+    del create_json[key]
+    create = client.post("/api/auth/", json=create_json)
+    assert create.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY
 
 
 #
