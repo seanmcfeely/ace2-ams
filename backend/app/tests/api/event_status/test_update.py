@@ -19,13 +19,13 @@ from fastapi import status
         ("value", ""),
     ],
 )
-def test_update_invalid_fields(client, key, value):
-    update = client.patch(f"/api/event/status/{uuid.uuid4()}", json={key: value})
+def test_update_invalid_fields(client_valid_token, key, value):
+    update = client_valid_token.patch(f"/api/event/status/{uuid.uuid4()}", json={key: value})
     assert update.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY
 
 
-def test_update_invalid_uuid(client):
-    update = client.patch("/api/event/status/1", json={"value": "test"})
+def test_update_invalid_uuid(client_valid_token):
+    update = client_valid_token.patch("/api/event/status/1", json={"value": "test"})
     assert update.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY
 
 
@@ -35,21 +35,21 @@ def test_update_invalid_uuid(client):
         ("value"),
     ],
 )
-def test_update_duplicate_unique_fields(client, key):
+def test_update_duplicate_unique_fields(client_valid_token, key):
     # Create some objects
     create1_json = {"value": "test"}
-    client.post("/api/event/status/", json=create1_json)
+    client_valid_token.post("/api/event/status/", json=create1_json)
 
     create2_json = {"value": "test2"}
-    create2 = client.post("/api/event/status/", json=create2_json)
+    create2 = client_valid_token.post("/api/event/status/", json=create2_json)
 
     # Ensure you cannot update a unique field to a value that already exists
-    update = client.patch(create2.headers["Content-Location"], json={key: create1_json[key]})
+    update = client_valid_token.patch(create2.headers["Content-Location"], json={key: create1_json[key]})
     assert update.status_code == status.HTTP_409_CONFLICT
 
 
-def test_update_nonexistent_uuid(client):
-    update = client.patch(f"/api/event/status/{uuid.uuid4()}", json={"value": "test"})
+def test_update_nonexistent_uuid(client_valid_token):
+    update = client_valid_token.patch(f"/api/event/status/{uuid.uuid4()}", json={"value": "test"})
     assert update.status_code == status.HTTP_404_NOT_FOUND
 
 
@@ -67,21 +67,21 @@ def test_update_nonexistent_uuid(client):
         ("value", "test", "test"),
     ],
 )
-def test_update(client, key, initial_value, updated_value):
+def test_update(client_valid_token, key, initial_value, updated_value):
     # Create the object
     create_json = {"value": "test"}
     create_json[key] = initial_value
-    create = client.post("/api/event/status/", json=create_json)
+    create = client_valid_token.post("/api/event/status/", json=create_json)
     assert create.status_code == status.HTTP_201_CREATED
 
     # Read it back
-    get = client.get(create.headers["Content-Location"])
+    get = client_valid_token.get(create.headers["Content-Location"])
     assert get.json()[key] == initial_value
 
     # Update it
-    update = client.patch(create.headers["Content-Location"], json={key: updated_value})
+    update = client_valid_token.patch(create.headers["Content-Location"], json={key: updated_value})
     assert update.status_code == status.HTTP_204_NO_CONTENT
 
     # Read it back
-    get = client.get(create.headers["Content-Location"])
+    get = client_valid_token.get(create.headers["Content-Location"])
     assert get.json()[key] == updated_value

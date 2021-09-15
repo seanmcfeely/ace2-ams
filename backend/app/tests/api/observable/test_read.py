@@ -8,13 +8,13 @@ from fastapi import status
 #
 
 
-def test_get_invalid_uuid(client):
-    get = client.get("/api/observable/1")
+def test_get_invalid_uuid(client_valid_token):
+    get = client_valid_token.get("/api/observable/1")
     assert get.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY
 
 
-def test_get_nonexistent_uuid(client):
-    get = client.get(f"/api/observable/{uuid.uuid4()}")
+def test_get_nonexistent_uuid(client_valid_token):
+    get = client_valid_token.get(f"/api/observable/{uuid.uuid4()}")
     assert get.status_code == status.HTTP_404_NOT_FOUND
 
 
@@ -23,21 +23,21 @@ def test_get_nonexistent_uuid(client):
 #
 
 
-def test_get_all(client):
+def test_get_all(client_valid_token):
     # Create an observable type
-    client.post("/api/observable/type/", json={"value": "test_type"})
+    client_valid_token.post("/api/observable/type/", json={"value": "test_type"})
 
     # Create some objects
-    client.post("/api/observable/", json={"type": "test_type", "value": "test"})
-    client.post("/api/observable/", json={"type": "test_type", "value": "test2"})
+    client_valid_token.post("/api/observable/", json={"type": "test_type", "value": "test"})
+    client_valid_token.post("/api/observable/", json={"type": "test_type", "value": "test2"})
 
     # Read them back
-    get = client.get("/api/observable/")
+    get = client_valid_token.get("/api/observable/")
     assert get.status_code == status.HTTP_200_OK
     assert len(get.json()) == 2
 
 
-def test_get_all_empty(client):
-    get = client.get("/api/observable/")
+def test_get_all_empty(client_valid_token):
+    get = client_valid_token.get("/api/observable/")
     assert get.status_code == status.HTTP_200_OK
     assert get.json() == []

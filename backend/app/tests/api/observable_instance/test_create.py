@@ -15,22 +15,22 @@ from tests.api.node import (
 )
 
 
-def create_alert(client: TestClient) -> Tuple[str, str]:
+def create_alert(client_valid_token: TestClient) -> Tuple[str, str]:
     """
     Helper function to create an alert. Returns a tuple of (alert_uuid, analysis_uuid)
     """
 
     # Create an alert queue and type
-    client.post("/api/alert/queue/", json={"value": "test_queue"})
-    client.post("/api/alert/type/", json={"value": "test_type"})
+    client_valid_token.post("/api/alert/queue/", json={"value": "test_queue"})
+    client_valid_token.post("/api/alert/type/", json={"value": "test_type"})
 
     # Create the alert
     create_json = {"queue": "test_queue", "type": "test_type"}
-    create = client.post("/api/alert/", json=create_json)
+    create = client_valid_token.post("/api/alert/", json=create_json)
     assert create.status_code == status.HTTP_201_CREATED
 
     # Read it back
-    get = client.get(create.headers["Content-Location"])
+    get = client_valid_token.get(create.headers["Content-Location"])
 
     return get.json()["uuid"], get.json()["analysis"]["uuid"]
 
@@ -78,7 +78,7 @@ def create_alert(client: TestClient) -> Tuple[str, str]:
         ("value", ""),
     ],
 )
-def test_create_invalid_fields(client, key, value):
+def test_create_invalid_fields(client_valid_token, key, value):
     create_json = {
         key: value,
         "alert_uuid": str(uuid.uuid4()),
@@ -87,7 +87,7 @@ def test_create_invalid_fields(client, key, value):
         "value": "test",
     }
     create_json[key] = value
-    create = client.post("/api/observable/instance/", json=create_json)
+    create = client_valid_token.post("/api/observable/instance/", json=create_json)
     assert create.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY
     assert key in create.text
 
@@ -96,7 +96,7 @@ def test_create_invalid_fields(client, key, value):
     "key,value",
     INVALID_CREATE_FIELDS,
 )
-def test_create_invalid_node_fields(client, key, value):
+def test_create_invalid_node_fields(client_valid_token, key, value):
     create_json = {
         key: value,
         "alert_uuid": str(uuid.uuid4()),
@@ -105,16 +105,16 @@ def test_create_invalid_node_fields(client, key, value):
         "value": "test",
     }
     create_json[key] = value
-    create = client.post("/api/observable/instance/", json=create_json)
+    create = client_valid_token.post("/api/observable/instance/", json=create_json)
     assert create.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY
 
 
-def test_create_duplicate_uuid(client):
+def test_create_duplicate_uuid(client_valid_token):
     # Create an alert
-    alert_uuid, analysis_uuid = create_alert(client=client)
+    alert_uuid, analysis_uuid = create_alert(client_valid_token=client_valid_token)
 
     # Create an observable type
-    client.post("/api/observable/type/", json={"value": "test_type"})
+    client_valid_token.post("/api/observable/type/", json={"value": "test_type"})
 
     # Create an object
     create_json = {
@@ -124,20 +124,20 @@ def test_create_duplicate_uuid(client):
         "type": "test_type",
         "value": "test",
     }
-    client.post("/api/observable/instance/", json=create_json)
+    client_valid_token.post("/api/observable/instance/", json=create_json)
 
     # Ensure you cannot create another object with the same UUID
-    create2 = client.post("/api/observable/instance/", json=create_json)
+    create2 = client_valid_token.post("/api/observable/instance/", json=create_json)
     assert create2.status_code == status.HTTP_409_CONFLICT
 
 
-def test_create_nonexistent_alert(client):
+def test_create_nonexistent_alert(client_valid_token):
     # Create an alert
-    _, analysis_uuid = create_alert(client=client)
+    _, analysis_uuid = create_alert(client_valid_token=client_valid_token)
     alert_uuid = str(uuid.uuid4())
 
     # Create an observable type
-    client.post("/api/observable/type/", json={"value": "test_type"})
+    client_valid_token.post("/api/observable/type/", json={"value": "test_type"})
 
     # Ensure you cannot create an observable instance with a nonexistent alert
     create_json = {
@@ -146,18 +146,18 @@ def test_create_nonexistent_alert(client):
         "type": "test_type",
         "value": "test",
     }
-    create = client.post("/api/observable/instance/", json=create_json)
+    create = client_valid_token.post("/api/observable/instance/", json=create_json)
     assert create.status_code == status.HTTP_404_NOT_FOUND
     assert alert_uuid in create.text
 
 
-def test_create_nonexistent_analysis(client):
+def test_create_nonexistent_analysis(client_valid_token):
     # Create an alert
-    alert_uuid, _ = create_alert(client=client)
+    alert_uuid, _ = create_alert(client_valid_token=client_valid_token)
     analysis_uuid = str(uuid.uuid4())
 
     # Create an observable type
-    client.post("/api/observable/type/", json={"value": "test_type"})
+    client_valid_token.post("/api/observable/type/", json={"value": "test_type"})
 
     # Ensure you cannot create an observable instance with a nonexistent analysis
     create_json = {
@@ -166,17 +166,17 @@ def test_create_nonexistent_analysis(client):
         "type": "test_type",
         "value": "test",
     }
-    create = client.post("/api/observable/instance/", json=create_json)
+    create = client_valid_token.post("/api/observable/instance/", json=create_json)
     assert create.status_code == status.HTTP_404_NOT_FOUND
     assert analysis_uuid in create.text
 
 
-def test_create_nonexistent_performed_analysis(client):
+def test_create_nonexistent_performed_analysis(client_valid_token):
     # Create an alert
-    alert_uuid, analysis_uuid = create_alert(client=client)
+    alert_uuid, analysis_uuid = create_alert(client_valid_token=client_valid_token)
 
     # Create an observable type
-    client.post("/api/observable/type/", json={"value": "test_type"})
+    client_valid_token.post("/api/observable/type/", json={"value": "test_type"})
 
     # Ensure you cannot create an observable instance with a nonexistent performed analysis
     performed_analysis_uuid = str(uuid.uuid4())
@@ -187,17 +187,17 @@ def test_create_nonexistent_performed_analysis(client):
         "type": "test_type",
         "value": "test",
     }
-    create = client.post("/api/observable/instance/", json=create_json)
+    create = client_valid_token.post("/api/observable/instance/", json=create_json)
     assert create.status_code == status.HTTP_404_NOT_FOUND
     assert performed_analysis_uuid in create.text
 
 
-def test_create_nonexistent_redirection(client):
+def test_create_nonexistent_redirection(client_valid_token):
     # Create an alert
-    alert_uuid, analysis_uuid = create_alert(client=client)
+    alert_uuid, analysis_uuid = create_alert(client_valid_token=client_valid_token)
 
     # Create an observable type
-    client.post("/api/observable/type/", json={"value": "test_type"})
+    client_valid_token.post("/api/observable/type/", json={"value": "test_type"})
 
     # Ensure you cannot create an observable instance with a nonexistent redirection target
     redirection_uuid = str(uuid.uuid4())
@@ -208,17 +208,17 @@ def test_create_nonexistent_redirection(client):
         "type": "test_type",
         "value": "test",
     }
-    create = client.post("/api/observable/instance/", json=create_json)
+    create = client_valid_token.post("/api/observable/instance/", json=create_json)
     assert create.status_code == status.HTTP_404_NOT_FOUND
     assert redirection_uuid in create.text
 
 
-def test_create_nonexistent_type(client):
+def test_create_nonexistent_type(client_valid_token):
     # Create an alert
-    alert_uuid, analysis_uuid = create_alert(client=client)
+    alert_uuid, analysis_uuid = create_alert(client_valid_token=client_valid_token)
 
     # Create an observable type
-    client.post("/api/observable/type/", json={"value": "test_type"})
+    client_valid_token.post("/api/observable/type/", json={"value": "test_type"})
 
     # Ensure you cannot create an observable instance with a nonexistent type
     create_json = {
@@ -227,7 +227,7 @@ def test_create_nonexistent_type(client):
         "type": "abc",
         "value": "test",
     }
-    create = client.post("/api/observable/instance/", json=create_json)
+    create = client_valid_token.post("/api/observable/instance/", json=create_json)
     assert create.status_code == status.HTTP_404_NOT_FOUND
     assert "abc" in create.text
 
@@ -236,12 +236,12 @@ def test_create_nonexistent_type(client):
     "key,value",
     NONEXISTENT_FIELDS,
 )
-def test_create_nonexistent_node_fields(client, key, value):
+def test_create_nonexistent_node_fields(client_valid_token, key, value):
     # Create an alert
-    alert_uuid, analysis_uuid = create_alert(client=client)
+    alert_uuid, analysis_uuid = create_alert(client_valid_token=client_valid_token)
 
     # Create an observable type
-    client.post("/api/observable/type/", json={"value": "test_type"})
+    client_valid_token.post("/api/observable/type/", json={"value": "test_type"})
 
     # Ensure you cannot create an observable instance with a nonexistent type
     create_json = {
@@ -251,7 +251,7 @@ def test_create_nonexistent_node_fields(client, key, value):
         "value": "test",
     }
     create_json[key] = value
-    create = client.post("/api/observable/instance/", json=create_json)
+    create = client_valid_token.post("/api/observable/instance/", json=create_json)
     assert create.status_code == status.HTTP_404_NOT_FOUND
 
 
@@ -273,12 +273,12 @@ def test_create_nonexistent_node_fields(client, key, value):
         ("uuid", str(uuid.uuid4())),
     ],
 )
-def test_create_valid_optional_fields(client, key, value):
+def test_create_valid_optional_fields(client_valid_token, key, value):
     # Create an alert
-    alert_uuid, analysis_uuid = create_alert(client=client)
+    alert_uuid, analysis_uuid = create_alert(client_valid_token=client_valid_token)
 
     # Create an observable type
-    client.post("/api/observable/type/", json={"value": "test_type"})
+    client_valid_token.post("/api/observable/type/", json={"value": "test_type"})
 
     # Create the observable instance
     create_json = {
@@ -288,10 +288,10 @@ def test_create_valid_optional_fields(client, key, value):
         "value": "test",
     }
     create_json[key] = value
-    create = client.post("/api/observable/instance/", json=create_json)
+    create = client_valid_token.post("/api/observable/instance/", json=create_json)
 
     # Read it back
-    get = client.get(create.headers["Content-Location"])
+    get = client_valid_token.get(create.headers["Content-Location"])
 
     # If the test is for time, make sure that the retrieved value matches the proper UTC timestamp
     if key == "time" and value:
@@ -300,19 +300,19 @@ def test_create_valid_optional_fields(client, key, value):
         assert get.json()[key] == value
 
 
-def test_create_valid_performed_analysis_uuids(client):
+def test_create_valid_performed_analysis_uuids(client_valid_token):
     # Create an alert
-    alert_uuid, analysis_uuid = create_alert(client=client)
+    alert_uuid, analysis_uuid = create_alert(client_valid_token=client_valid_token)
 
     # Create an observable type
-    client.post("/api/observable/type/", json={"value": "test_type"})
+    client_valid_token.post("/api/observable/type/", json={"value": "test_type"})
 
     # Create a child analysis for the observable instance
     child_analysis_uuid = str(uuid.uuid4())
-    analysis_create = client.post("/api/analysis/", json={"uuid": child_analysis_uuid})
+    analysis_create = client_valid_token.post("/api/analysis/", json={"uuid": child_analysis_uuid})
 
     # Read the analysis back to get its current version
-    get_analysis = client.get(analysis_create.headers["Content-Location"])
+    get_analysis = client_valid_token.get(analysis_create.headers["Content-Location"])
     initial_version = get_analysis.json()["version"]
 
     # Create the observable instance
@@ -323,28 +323,28 @@ def test_create_valid_performed_analysis_uuids(client):
         "type": "test_type",
         "value": "test",
     }
-    create = client.post("/api/observable/instance/", json=create_json)
+    create = client_valid_token.post("/api/observable/instance/", json=create_json)
 
     # Read it back
-    get = client.get(create.headers["Content-Location"])
+    get = client_valid_token.get(create.headers["Content-Location"])
     assert get.json()["performed_analysis_uuids"] == [child_analysis_uuid]
 
     # Read the analysis back. By creating the observable instance and setting its performed_analysis_uuids, you should
     # be able to read the analysis back and see the observable instance listed as its parent_observable_uuid even
     # though it was not explicitly added.
-    get_analysis = client.get(analysis_create.headers["Content-Location"])
+    get_analysis = client_valid_token.get(analysis_create.headers["Content-Location"])
     assert get_analysis.json()["parent_observable_uuid"] == get.json()["uuid"]
 
     # Additionally, adding the observable instance as the parent should trigger the analysis to have a new version.
     assert get_analysis.json()["version"] != initial_version
 
 
-def test_create_valid_redirection(client):
+def test_create_valid_redirection(client_valid_token):
     # Create an alert
-    alert_uuid, analysis_uuid = create_alert(client=client)
+    alert_uuid, analysis_uuid = create_alert(client_valid_token=client_valid_token)
 
     # Create an observable type
-    client.post("/api/observable/type/", json={"value": "test_type"})
+    client_valid_token.post("/api/observable/type/", json={"value": "test_type"})
 
     # Create an observable instance
     observable_instance_uuid = str(uuid.uuid4())
@@ -355,7 +355,7 @@ def test_create_valid_redirection(client):
         "uuid": observable_instance_uuid,
         "value": "test",
     }
-    client.post("/api/observable/instance/", json=create_json)
+    client_valid_token.post("/api/observable/instance/", json=create_json)
 
     # Create another observable instance that redirects to the previously created one
     create_json = {
@@ -365,29 +365,29 @@ def test_create_valid_redirection(client):
         "type": "test_type",
         "value": "test",
     }
-    create = client.post("/api/observable/instance/", json=create_json)
+    create = client_valid_token.post("/api/observable/instance/", json=create_json)
 
     # Read it back
-    get = client.get(create.headers["Content-Location"])
+    get = client_valid_token.get(create.headers["Content-Location"])
     assert get.json()["redirection_uuid"] == observable_instance_uuid
 
 
-def test_create_valid_required_fields(client):
+def test_create_valid_required_fields(client_valid_token):
     # Create an alert
-    alert_uuid, analysis_uuid = create_alert(client=client)
+    alert_uuid, analysis_uuid = create_alert(client_valid_token=client_valid_token)
 
     # Read the alert back to get its current version
     # TODO: Fix this hardcoded URL
-    get_alert = client.get(f"http://testserver/api/alert/{alert_uuid}")
+    get_alert = client_valid_token.get(f"http://testserver/api/alert/{alert_uuid}")
     initial_alert_version = get_alert.json()["version"]
 
     # Read the analysis back to get its current version
     # TODO: Fix this hardcoded URL
-    get_analysis = client.get(f"http://testserver/api/analysis/{analysis_uuid}")
+    get_analysis = client_valid_token.get(f"http://testserver/api/analysis/{analysis_uuid}")
     initial_analysis_version = get_analysis.json()["version"]
 
     # Create an observable type
-    client.post("/api/observable/type/", json={"value": "test_type"})
+    client_valid_token.post("/api/observable/type/", json={"value": "test_type"})
 
     # Create an observable instance
     observable_uuid = str(uuid.uuid4())
@@ -398,11 +398,11 @@ def test_create_valid_required_fields(client):
         "uuid": observable_uuid,
         "value": "test",
     }
-    create = client.post("/api/observable/instance/", json=create_json)
+    create = client_valid_token.post("/api/observable/instance/", json=create_json)
     assert create.status_code == status.HTTP_201_CREATED
 
     # Read it back
-    get = client.get(create.headers["Content-Location"])
+    get = client_valid_token.get(create.headers["Content-Location"])
     assert get.status_code == 200
     assert get.json()["alert_uuid"] == alert_uuid
     assert get.json()["parent_analysis_uuid"] == analysis_uuid
@@ -413,12 +413,12 @@ def test_create_valid_required_fields(client):
     # Read the parent analysis back. You should see this observable instance in its discovered_observable_uuids list
     # even though it was not explicitly added.
     # TODO: Fix this hardcoded URL
-    get_analysis = client.get(f"http://testserver/api/analysis/{analysis_uuid}")
+    get_analysis = client_valid_token.get(f"http://testserver/api/analysis/{analysis_uuid}")
     assert get_analysis.json()["discovered_observable_uuids"] == [observable_uuid]
 
     # Additionally, creating an observable instance should trigger the alert and analysis to get a new version.
     # TODO: Fix this hardcoded URL
-    get_alert = client.get(f"http://testserver/api/alert/{alert_uuid}")
+    get_alert = client_valid_token.get(f"http://testserver/api/alert/{alert_uuid}")
     assert get_alert.json()["version"] != initial_alert_version
     assert get_analysis.json()["version"] != initial_analysis_version
 
@@ -427,17 +427,17 @@ def test_create_valid_required_fields(client):
     "values",
     VALID_DIRECTIVES,
 )
-def test_create_valid_node_directives(client, values):
+def test_create_valid_node_directives(client_valid_token, values):
     # Create the directives. Need to only create unique values, otherwise the database will return a 409
     # conflict exception and will roll back the test's database session (causing the test to fail).
     for value in list(set(values)):
-        client.post("/api/node/directive/", json={"value": value})
+        client_valid_token.post("/api/node/directive/", json={"value": value})
 
     # Create an alert
-    alert_uuid, analysis_uuid = create_alert(client=client)
+    alert_uuid, analysis_uuid = create_alert(client_valid_token=client_valid_token)
 
     # Create an observable type
-    client.post("/api/observable/type/", json={"value": "test_type"})
+    client_valid_token.post("/api/observable/type/", json={"value": "test_type"})
 
     # Create an observable instance
     create_json = {
@@ -447,11 +447,11 @@ def test_create_valid_node_directives(client, values):
         "value": "test",
         "directives": values,
     }
-    create = client.post("/api/observable/instance/", json=create_json)
+    create = client_valid_token.post("/api/observable/instance/", json=create_json)
     assert create.status_code == status.HTTP_201_CREATED
 
     # Read it back
-    get = client.get(create.headers["Content-Location"])
+    get = client_valid_token.get(create.headers["Content-Location"])
     assert len(get.json()["directives"]) == len(list(set(values)))
 
 
@@ -459,17 +459,17 @@ def test_create_valid_node_directives(client, values):
     "values",
     VALID_TAGS,
 )
-def test_create_valid_node_tags(client, values):
+def test_create_valid_node_tags(client_valid_token, values):
     # Create the tags. Need to only create unique values, otherwise the database will return a 409
     # conflict exception and will roll back the test's database session (causing the test to fail).
     for value in list(set(values)):
-        client.post("/api/node/tag/", json={"value": value})
+        client_valid_token.post("/api/node/tag/", json={"value": value})
 
     # Create an alert
-    alert_uuid, analysis_uuid = create_alert(client=client)
+    alert_uuid, analysis_uuid = create_alert(client_valid_token=client_valid_token)
 
     # Create an observable type
-    client.post("/api/observable/type/", json={"value": "test_type"})
+    client_valid_token.post("/api/observable/type/", json={"value": "test_type"})
 
     # Create an observable instance
     create_json = {
@@ -479,11 +479,11 @@ def test_create_valid_node_tags(client, values):
         "value": "test",
         "tags": values,
     }
-    create = client.post("/api/observable/instance/", json=create_json)
+    create = client_valid_token.post("/api/observable/instance/", json=create_json)
     assert create.status_code == status.HTTP_201_CREATED
 
     # Read it back
-    get = client.get(create.headers["Content-Location"])
+    get = client_valid_token.get(create.headers["Content-Location"])
     assert len(get.json()["tags"]) == len(list(set(values)))
 
 
@@ -491,17 +491,17 @@ def test_create_valid_node_tags(client, values):
     "value",
     VALID_THREAT_ACTOR,
 )
-def test_create_valid_node_threat_actor(client, value):
+def test_create_valid_node_threat_actor(client_valid_token, value):
     # Create the threat actor. Need to only create unique values, otherwise the database will return a 409
     # conflict exception and will roll back the test's database session (causing the test to fail).
     if value:
-        client.post("/api/node/threat_actor/", json={"value": value})
+        client_valid_token.post("/api/node/threat_actor/", json={"value": value})
 
     # Create an alert
-    alert_uuid, analysis_uuid = create_alert(client=client)
+    alert_uuid, analysis_uuid = create_alert(client_valid_token=client_valid_token)
 
     # Create an observable type
-    client.post("/api/observable/type/", json={"value": "test_type"})
+    client_valid_token.post("/api/observable/type/", json={"value": "test_type"})
 
     # Create an observable instance
     create_json = {
@@ -511,11 +511,11 @@ def test_create_valid_node_threat_actor(client, value):
         "value": "test",
         "threat_actor": value,
     }
-    create = client.post("/api/observable/instance/", json=create_json)
+    create = client_valid_token.post("/api/observable/instance/", json=create_json)
     assert create.status_code == status.HTTP_201_CREATED
 
     # Read it back
-    get = client.get(create.headers["Content-Location"])
+    get = client_valid_token.get(create.headers["Content-Location"])
     if value:
         assert get.json()["threat_actor"]["value"] == value
     else:
@@ -526,20 +526,20 @@ def test_create_valid_node_threat_actor(client, value):
     "values",
     VALID_THREATS,
 )
-def test_create_valid_node_threats(client, values):
+def test_create_valid_node_threats(client_valid_token, values):
     # Create a threat type
-    client.post("/api/node/threat/type/", json={"value": "test_type"})
+    client_valid_token.post("/api/node/threat/type/", json={"value": "test_type"})
 
     # Create the threats. Need to only create unique values, otherwise the database will return a 409
     # conflict exception and will roll back the test's database session (causing the test to fail).
     for value in list(set(values)):
-        client.post("/api/node/threat/", json={"types": ["test_type"], "value": value})
+        client_valid_token.post("/api/node/threat/", json={"types": ["test_type"], "value": value})
 
     # Create an alert
-    alert_uuid, analysis_uuid = create_alert(client=client)
+    alert_uuid, analysis_uuid = create_alert(client_valid_token=client_valid_token)
 
     # Create an observable type
-    client.post("/api/observable/type/", json={"value": "test_type"})
+    client_valid_token.post("/api/observable/type/", json={"value": "test_type"})
 
     # Create an observable instance
     create_json = {
@@ -549,9 +549,9 @@ def test_create_valid_node_threats(client, values):
         "value": "test",
         "threats": values,
     }
-    create = client.post("/api/observable/instance/", json=create_json)
+    create = client_valid_token.post("/api/observable/instance/", json=create_json)
     assert create.status_code == status.HTTP_201_CREATED
 
     # Read it back
-    get = client.get(create.headers["Content-Location"])
+    get = client_valid_token.get(create.headers["Content-Location"])
     assert len(get.json()["threats"]) == len(list(set(values)))

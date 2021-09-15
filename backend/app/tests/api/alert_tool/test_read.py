@@ -8,13 +8,13 @@ from fastapi import status
 #
 
 
-def test_get_invalid_uuid(client):
-    get = client.get("/api/alert/tool/1")
+def test_get_invalid_uuid(client_valid_token):
+    get = client_valid_token.get("/api/alert/tool/1")
     assert get.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY
 
 
-def test_get_nonexistent_uuid(client):
-    get = client.get(f"/api/alert/tool/{uuid.uuid4()}")
+def test_get_nonexistent_uuid(client_valid_token):
+    get = client_valid_token.get(f"/api/alert/tool/{uuid.uuid4()}")
     assert get.status_code == status.HTTP_404_NOT_FOUND
 
 
@@ -23,18 +23,18 @@ def test_get_nonexistent_uuid(client):
 #
 
 
-def test_get_all(client):
+def test_get_all(client_valid_token):
     # Create some objects
-    client.post("/api/alert/tool/", json={"value": "test"})
-    client.post("/api/alert/tool/", json={"value": "test2"})
+    client_valid_token.post("/api/alert/tool/", json={"value": "test"})
+    client_valid_token.post("/api/alert/tool/", json={"value": "test2"})
 
     # Read them back
-    get = client.get("/api/alert/tool/")
+    get = client_valid_token.get("/api/alert/tool/")
     assert get.status_code == status.HTTP_200_OK
     assert len(get.json()) == 2
 
 
-def test_get_all_empty(client):
-    get = client.get("/api/alert/tool/")
+def test_get_all_empty(client_valid_token):
+    get = client_valid_token.get("/api/alert/tool/")
     assert get.status_code == status.HTTP_200_OK
     assert get.json() == []
