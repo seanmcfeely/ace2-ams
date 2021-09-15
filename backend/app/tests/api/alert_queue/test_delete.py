@@ -14,13 +14,13 @@ are in place in order to account for this.
 #
 
 
-def test_delete_invalid_uuid(client):
-    delete = client.delete("/api/alert/queue/1")
+def test_delete_invalid_uuid(client_valid_token):
+    delete = client_valid_token.delete("/api/alert/queue/1")
     assert delete.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY
 
 
-def test_delete_nonexistent_uuid(client):
-    delete = client.delete(f"/api/alert/queue/{uuid.uuid4()}")
+def test_delete_nonexistent_uuid(client_valid_token):
+    delete = client_valid_token.delete(f"/api/alert/queue/{uuid.uuid4()}")
     assert delete.status_code == status.HTTP_404_NOT_FOUND
 
 
@@ -29,19 +29,19 @@ def test_delete_nonexistent_uuid(client):
 #
 
 
-def test_delete(client):
+def test_delete(client_valid_token):
     # Create the object
-    create = client.post("/api/alert/queue/", json={"value": "test"})
+    create = client_valid_token.post("/api/alert/queue/", json={"value": "test"})
     assert create.status_code == status.HTTP_201_CREATED
 
     # Read it back
-    get = client.get(create.headers["Content-Location"])
+    get = client_valid_token.get(create.headers["Content-Location"])
     assert get.status_code == status.HTTP_200_OK
 
     # Delete it
-    delete = client.delete(create.headers["Content-Location"])
+    delete = client_valid_token.delete(create.headers["Content-Location"])
     assert delete.status_code == status.HTTP_204_NO_CONTENT
 
     # Make sure it is gone
-    get = client.get(create.headers["Content-Location"])
+    get = client_valid_token.get(create.headers["Content-Location"])
     assert get.status_code == status.HTTP_404_NOT_FOUND

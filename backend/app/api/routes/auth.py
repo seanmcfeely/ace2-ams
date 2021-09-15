@@ -1,8 +1,10 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
 
-from api.models.auth import AuthBase
+from api.models.token import Token
 from api.routes import helpers
+from core.auth import create_access_token
 from db import crud
 from db.database import get_db
 
@@ -13,8 +15,16 @@ router = APIRouter(
 )
 
 
-def auth(auth: AuthBase, db: Session = Depends(get_db)):
-    crud.auth(username=auth.username, password=auth.password, db=db)
+def auth(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
+    user = crud.auth(username=form_data.username, password=form_data.password, db=db)
+
+    if user is None:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid username or password")
+
+    return {
+        "access_token": create_access_token(sub=user.username),
+        "token_type": "bearer",
+    }
 
 
-helpers.api_route_auth(router, auth)
+helpers.api_route_auth(router, auth, Token)
