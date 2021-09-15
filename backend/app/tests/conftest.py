@@ -2,7 +2,6 @@ import alembic
 import pytest
 
 from alembic.config import Config
-from fastapi import HTTPException, status
 from fastapi.testclient import TestClient
 from sqlalchemy.orm import Session
 
