@@ -20,7 +20,7 @@ def _create_token(token_type: str, lifetime: timedelta, sub: str) -> str:
 def create_access_token(sub: str) -> str:
     return _create_token(
         token_type="access_token",
-        lifetime=timedelta(minutes=get_settings().jwt_expire_minutes),
+        lifetime=timedelta(seconds=get_settings().jwt_expire_seconds),
         sub=sub,
     )
 
