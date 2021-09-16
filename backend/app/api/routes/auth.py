@@ -18,7 +18,7 @@ router = APIRouter(
 def auth(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
     user = crud.auth(username=form_data.username, password=form_data.password, db=db)
 
-    if user is None:
+    if user is None or not user.enabled:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid username or password")
 
     return {
