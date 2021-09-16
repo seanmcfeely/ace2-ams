@@ -31,6 +31,37 @@ def test_auth_invalid(client, db, username, password):
     assert get.status_code == status.HTTP_401_UNAUTHORIZED
 
 
+def test_disabled_user(client, db):
+    create_test_user(db, "johndoe", "abcd1234")
+
+    # Attempt to authenticate
+    auth = client.post("/api/auth/", data={"username": "johndoe", "password": "abcd1234"})
+    token = auth.json()["access_token"]
+    assert auth.status_code == status.HTTP_200_OK
+    assert auth.json()["token_type"] == "bearer"
+    assert token
+
+    # Attempt to use the token to access a protected API endpoint
+    headers = {"Authorization": f"Bearer {token}"}
+    get = client.get("/api/user/", headers=headers)
+    assert get.status_code == status.HTTP_200_OK
+    assert len(get.json()) == 1
+
+    # Disable the user
+    user_uuid = get.json()[0]["uuid"]
+    update = client.patch(f"/api/user/{user_uuid}", headers=headers, json={"enabled": False})
+    assert update.status_code == status.HTTP_204_NO_CONTENT
+
+    # The user is disabled, but the token is still valid, so they will still have access until it expires.
+    get = client.get("/api/user/", headers=headers)
+    assert get.status_code == status.HTTP_200_OK
+    assert len(get.json()) == 1
+
+    # However, they will not be able to authenticate again to receive a new token.
+    auth = client.post("/api/auth/", data={"username": "johndoe", "password": "abcd1234"})
+    assert auth.status_code == status.HTTP_401_UNAUTHORIZED
+
+
 def test_expired_token(client, db, monkeypatch):
     def mock_get_settings():
         settings = Settings()
