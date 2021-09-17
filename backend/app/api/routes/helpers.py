@@ -1,29 +1,13 @@
-from fastapi import APIRouter, Depends, HTTPException, Response, status
-from fastapi.security import OAuth2PasswordBearer
-from jose import JWTError
+from fastapi import APIRouter, Depends, Response, status
 from pydantic import BaseModel
 from typing import Callable
 
-from core.auth import decode_token
+from core.auth import validate_access_token
 
 
 #
 # AUTH
 #
-
-
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
-
-
-def validate_token(token: str = Depends(oauth2_scheme)):
-    try:
-        _ = decode_token(token)
-    except JWTError:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Could not validate credentials",
-            headers={"WWW-Authenticate": "Bearer"},
-        )
 
 
 def api_route_auth(router: APIRouter, endpoint: Callable, response_model: BaseModel, path: str = "/"):
@@ -47,7 +31,7 @@ def api_route_auth(router: APIRouter, endpoint: Callable, response_model: BaseMo
 
 def api_route_create(router: APIRouter, endpoint: Callable, path: str = "/"):
     router.add_api_route(
-        dependencies=[Depends(validate_token)],
+        dependencies=[Depends(validate_access_token)],
         path=path,
         endpoint=endpoint,
         methods=["POST"],
@@ -75,7 +59,7 @@ def api_route_create(router: APIRouter, endpoint: Callable, path: str = "/"):
 # which is invalid since you must supply a UUID in order to retrieve a user.
 def api_route_read_all(router: APIRouter, endpoint: Callable, response_model: BaseModel, path: str = "/"):
     router.add_api_route(
-        dependencies=[Depends(validate_token)],
+        dependencies=[Depends(validate_access_token)],
         path=path,
         endpoint=endpoint,
         methods=["GET"],
@@ -85,7 +69,7 @@ def api_route_read_all(router: APIRouter, endpoint: Callable, response_model: Ba
 
 def api_route_read(router: APIRouter, endpoint: Callable, response_model: BaseModel, path: str = "/{uuid}"):
     router.add_api_route(
-        dependencies=[Depends(validate_token)],
+        dependencies=[Depends(validate_access_token)],
         path=path,
         endpoint=endpoint,
         methods=["GET"],
@@ -103,7 +87,7 @@ def api_route_read(router: APIRouter, endpoint: Callable, response_model: BaseMo
 
 def api_route_update(router: APIRouter, endpoint: Callable, path: str = "/{uuid}"):
     router.add_api_route(
-        dependencies=[Depends(validate_token)],
+        dependencies=[Depends(validate_access_token)],
         path=path,
         endpoint=endpoint,
         methods=["PATCH"],
@@ -125,7 +109,7 @@ def api_route_update(router: APIRouter, endpoint: Callable, path: str = "/{uuid}
 
 def api_route_delete(router: APIRouter, endpoint: Callable, path: str = "/{uuid}"):
     router.add_api_route(
-        dependencies=[Depends(validate_token)],
+        dependencies=[Depends(validate_access_token)],
         path=path,
         endpoint=endpoint,
         methods=["DELETE"],
