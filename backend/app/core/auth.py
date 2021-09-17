@@ -47,7 +47,7 @@ def validate_access_token(token: str = Depends(oauth2_scheme)):
 
         if _is_access_token(payload):
             return payload["sub"]
-            
+
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Invalid token type",
