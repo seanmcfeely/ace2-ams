@@ -39,12 +39,15 @@ def hash_password(password: str) -> str:
 
 
 def validate_access_token(token: str = Depends(oauth2_scheme)):
+    def _is_access_token(payload: dict) -> bool:
+        return payload["type"] == "access_token"
+
     try:
         payload = decode_token(token)
 
-        # Make sure this is an access_token and not another type such as a refresh_token
-        if payload["type"] == "access_token":
+        if _is_access_token(payload):
             return payload["sub"]
+            
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Invalid token type",
