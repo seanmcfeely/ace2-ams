@@ -4,6 +4,7 @@ import yaml
 
 from sqlalchemy.orm import Session
 
+from core.auth import hash_password
 from db import crud
 from db.database import get_db
 from db.schemas.alert_disposition import AlertDisposition
@@ -131,7 +132,7 @@ if not crud.read_all(db_table=User, db=db):
             default_alert_queue=crud.read_by_value(value="default", db_table=AlertQueue, db=db),
             display_name="Analyst",
             email="analyst@fake.com",
-            password="analyst",
+            password=hash_password("analyst"),
             roles=crud.read_by_values(values=["admin"], db_table=UserRole, db=db),
             username="analyst",
         )
