@@ -68,7 +68,7 @@ def test_disabled_user(client, db):
 def test_expired_token(client, db, monkeypatch):
     def mock_get_settings():
         settings = Settings()
-        settings.jwt_expire_seconds = 1
+        settings.jwt_access_expire_seconds = 1
         return settings
 
     # Patching __code__ works no matter how the function is imported

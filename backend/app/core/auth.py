@@ -29,7 +29,7 @@ def create_access_token(sub: str) -> str:
 
     return _create_token(
         token_type="access_token",
-        lifetime=timedelta(seconds=get_settings().jwt_expire_seconds),
+        lifetime=timedelta(seconds=get_settings().jwt_access_expire_seconds),
         sub=sub,
     )
 
