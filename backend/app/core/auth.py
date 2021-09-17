@@ -12,6 +12,8 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
 
 def _create_token(token_type: str, lifetime: timedelta, sub: str) -> str:
+    """Generic function to generate and return a JWT."""
+
     payload = {
         "type": token_type,
         "exp": datetime.utcnow() + lifetime,
@@ -23,6 +25,8 @@ def _create_token(token_type: str, lifetime: timedelta, sub: str) -> str:
 
 
 def create_access_token(sub: str) -> str:
+    """Generates and returns an access_token JWT that is used to authenticate to the API endpoints."""
+
     return _create_token(
         token_type="access_token",
         lifetime=timedelta(seconds=get_settings().jwt_expire_seconds),
@@ -31,14 +35,24 @@ def create_access_token(sub: str) -> str:
 
 
 def decode_token(token: str) -> Mapping:
+    """Decodes the JWT and returns its claims."""
+
     return jwt.decode(token, get_settings().jwt_secret, algorithms=[get_settings().jwt_algorithm])
 
 
 def hash_password(password: str) -> str:
+    """Salts and hashes the given password."""
+
     return bcrypt_sha256.hash(password)
 
 
 def validate_access_token(token: str = Depends(oauth2_scheme)):
+    """Validates that the given access_token can be decoded using our secret key, that it is not expired, and
+    that it is in fact an access_token and not another type of token.
+
+    This is designed to be used with FastAPI dependency injection so that the token is validated before the API
+    endpoints are invoked."""
+
     def _is_access_token(payload: dict) -> bool:
         return payload["type"] == "access_token"
 
@@ -68,4 +82,6 @@ def validate_access_token(token: str = Depends(oauth2_scheme)):
 
 
 def verify_password(password: str, hashed_password: str) -> bool:
+    """Verifies that the given password matches the given hashed password."""
+
     return bcrypt_sha256.verify(password, hashed_password)
