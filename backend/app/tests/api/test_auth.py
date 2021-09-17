@@ -25,10 +25,12 @@ def test_auth_invalid(client, db, username, password):
     # Attempt to authenticate
     auth = client.post("/api/auth/", data={"username": username, "password": password})
     assert auth.status_code == status.HTTP_401_UNAUTHORIZED
+    assert auth.json()["detail"] == "Invalid username or password"
 
     # Attempt to use a bogus token to access a protected API endpoint
     get = client.get("/api/user/", headers={"Authorization": "Bearer asdf"})
     assert get.status_code == status.HTTP_401_UNAUTHORIZED
+    assert get.json()["detail"] == "Invalid token"
 
 
 def test_disabled_user(client, db):
@@ -60,6 +62,7 @@ def test_disabled_user(client, db):
     # However, they will not be able to authenticate again to receive a new token.
     auth = client.post("/api/auth/", data={"username": "johndoe", "password": "abcd1234"})
     assert auth.status_code == status.HTTP_401_UNAUTHORIZED
+    assert auth.json()["detail"] == "Invalid username or password"
 
 
 def test_expired_token(client, db, monkeypatch):
@@ -91,6 +94,7 @@ def test_expired_token(client, db, monkeypatch):
     # Attempt to use the token to access a protected API endpoint now that the token is expired
     get = client.get("/api/user/", headers={"Authorization": f"Bearer {token}"})
     assert get.status_code == status.HTTP_401_UNAUTHORIZED
+    assert get.json()["detail"] == "Token expired"
 
 
 @pytest.mark.parametrize(
