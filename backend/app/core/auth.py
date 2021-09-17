@@ -8,7 +8,7 @@ from passlib.hash import bcrypt_sha256
 from core.config import get_settings
 
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/auth")
 
 
 def _create_token(token_type: str, lifetime: timedelta, sub: str) -> str:
