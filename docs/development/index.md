@@ -1,5 +1,10 @@
 # ACE2 GUI Development Guide
 ## Backend (FastAPI) commands
+### Format code with Black
+```
+bin/format-backend-code.sh
+```
+
 ### Run unit tests
 ```
 bin/test-backend.sh
