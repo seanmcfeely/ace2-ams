@@ -89,9 +89,7 @@ def update_node_threat(
         db_node_threat.value = update_data["value"]
 
     if "types" in update_data:
-        db_node_threat.types = crud.read_by_values(
-            values=update_data["types"], db_table=NodeThreatType, db=db
-        )
+        db_node_threat.types = crud.read_by_values(values=update_data["types"], db_table=NodeThreatType, db=db)
 
     crud.commit(db)
 

@@ -50,13 +50,13 @@ from db.schemas.user import User
         ("username", ""),
     ],
 )
-def test_update_invalid_fields(client_valid_token, key, value):
-    update = client_valid_token.patch(f"/api/user/{uuid.uuid4()}", json={key: value})
+def test_update_invalid_fields(client_valid_access_token, key, value):
+    update = client_valid_access_token.patch(f"/api/user/{uuid.uuid4()}", json={key: value})
     assert update.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY
 
 
-def test_update_invalid_uuid(client_valid_token):
-    update = client_valid_token.patch("/api/user/1", json={"value": "test"})
+def test_update_invalid_uuid(client_valid_access_token):
+    update = client_valid_access_token.patch("/api/user/1", json={"value": "test"})
     assert update.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY
 
 
@@ -67,12 +67,12 @@ def test_update_invalid_uuid(client_valid_token):
         ("username"),
     ],
 )
-def test_update_duplicate_unique_fields(client_valid_token, key):
+def test_update_duplicate_unique_fields(client_valid_access_token, key):
     # Create an alert queue
-    client_valid_token.post("/api/alert/queue/", json={"value": "test_queue"})
+    client_valid_access_token.post("/api/alert/queue/", json={"value": "test_queue"})
 
     # Create a user role
-    client_valid_token.post("/api/user/role/", json={"value": "test_role"})
+    client_valid_access_token.post("/api/user/role/", json={"value": "test_role"})
 
     # Create some objects
     create1_json = {
@@ -83,7 +83,7 @@ def test_update_duplicate_unique_fields(client_valid_token, key):
         "roles": ["test_role"],
         "username": "johndoe",
     }
-    client_valid_token.post("/api/user/", json=create1_json)
+    client_valid_access_token.post("/api/user/", json=create1_json)
 
     # Ensure you cannot create another object with the same unique field value
     create2_json = {
@@ -94,15 +94,15 @@ def test_update_duplicate_unique_fields(client_valid_token, key):
         "roles": ["test_role"],
         "username": "janedoe",
     }
-    create2 = client_valid_token.post("/api/user/", json=create2_json)
+    create2 = client_valid_access_token.post("/api/user/", json=create2_json)
 
     # Ensure you cannot update a unique field to a value that already exists
-    update = client_valid_token.patch(create2.headers["Content-Location"], json={key: create1_json[key]})
+    update = client_valid_access_token.patch(create2.headers["Content-Location"], json={key: create1_json[key]})
     assert update.status_code == status.HTTP_409_CONFLICT
 
 
-def test_update_nonexistent_uuid(client_valid_token):
-    update = client_valid_token.patch(f"/api/user/{uuid.uuid4()}", json={"value": "test"})
+def test_update_nonexistent_uuid(client_valid_access_token):
+    update = client_valid_access_token.patch(f"/api/user/{uuid.uuid4()}", json={"value": "test"})
     assert update.status_code == status.HTTP_404_NOT_FOUND
 
 
@@ -117,12 +117,12 @@ def test_update_nonexistent_uuid(client_valid_token):
         ("new_queue"),
     ],
 )
-def test_update_valid_alert_queue(client_valid_token, value):
+def test_update_valid_alert_queue(client_valid_access_token, value):
     # Create an initial alert queue
-    client_valid_token.post("/api/alert/queue/", json={"value": "initial_queue"})
+    client_valid_access_token.post("/api/alert/queue/", json={"value": "initial_queue"})
 
     # Create a user role
-    client_valid_token.post("/api/user/role/", json={"value": "test_role"})
+    client_valid_access_token.post("/api/user/role/", json={"value": "test_role"})
 
     # Create the object
     create_json = {
@@ -133,22 +133,22 @@ def test_update_valid_alert_queue(client_valid_token, value):
         "roles": ["test_role"],
         "username": "johndoe",
     }
-    create = client_valid_token.post("/api/user/", json=create_json)
+    create = client_valid_access_token.post("/api/user/", json=create_json)
     assert create.status_code == status.HTTP_201_CREATED
 
     # Read it back
-    get = client_valid_token.get(create.headers["Content-Location"])
+    get = client_valid_access_token.get(create.headers["Content-Location"])
     assert get.json()["default_alert_queue"]["value"] == "initial_queue"
 
     # Create the new alert queue
-    client_valid_token.post("/api/alert/queue/", json={"value": value})
+    client_valid_access_token.post("/api/alert/queue/", json={"value": value})
 
     # Update it
-    update = client_valid_token.patch(create.headers["Content-Location"], json={"default_alert_queue": value})
+    update = client_valid_access_token.patch(create.headers["Content-Location"], json={"default_alert_queue": value})
     assert update.status_code == status.HTTP_204_NO_CONTENT
 
     # Read it back
-    get = client_valid_token.get(create.headers["Content-Location"])
+    get = client_valid_access_token.get(create.headers["Content-Location"])
     assert get.json()["default_alert_queue"]["value"] == value
 
 
@@ -159,14 +159,14 @@ def test_update_valid_alert_queue(client_valid_token, value):
         (["new_role1", "new_role2"]),
     ],
 )
-def test_update_valid_roles(client_valid_token, value):
+def test_update_valid_roles(client_valid_access_token, value):
     # Create an alert queue
-    client_valid_token.post("/api/alert/queue/", json={"value": "test_queue"})
+    client_valid_access_token.post("/api/alert/queue/", json={"value": "test_queue"})
 
     # Create some user roles
     initial_roles = ["test_role1", "test_role2", "test_role3"]
     for role in initial_roles:
-        client_valid_token.post("/api/user/role/", json={"value": role})
+        client_valid_access_token.post("/api/user/role/", json={"value": role})
 
     # Create the object
     create1_json = {
@@ -177,23 +177,23 @@ def test_update_valid_roles(client_valid_token, value):
         "roles": initial_roles,
         "username": "johndoe",
     }
-    create = client_valid_token.post("/api/user/", json=create1_json)
+    create = client_valid_access_token.post("/api/user/", json=create1_json)
     assert create.status_code == status.HTTP_201_CREATED
 
     # Read it back
-    get = client_valid_token.get(create.headers["Content-Location"])
+    get = client_valid_access_token.get(create.headers["Content-Location"])
     assert len(get.json()["roles"]) == len(initial_roles)
 
     # Create the new user roles
     for role in value:
-        client_valid_token.post("/api/user/role/", json={"value": role})
+        client_valid_access_token.post("/api/user/role/", json={"value": role})
 
     # Update it
-    update = client_valid_token.patch(create.headers["Content-Location"], json={"roles": value})
+    update = client_valid_access_token.patch(create.headers["Content-Location"], json={"roles": value})
     assert update.status_code == status.HTTP_204_NO_CONTENT
 
     # Read it back
-    get = client_valid_token.get(create.headers["Content-Location"])
+    get = client_valid_access_token.get(create.headers["Content-Location"])
     assert len(get.json()["roles"]) == len(value)
 
 
@@ -212,12 +212,12 @@ def test_update_valid_roles(client_valid_token, value):
         ("username", "johndoe", "johndoe"),
     ],
 )
-def test_update(client_valid_token, key, initial_value, updated_value):
+def test_update(client_valid_access_token, key, initial_value, updated_value):
     # Create an alert queue
-    client_valid_token.post("/api/alert/queue/", json={"value": "test_queue"})
+    client_valid_access_token.post("/api/alert/queue/", json={"value": "test_queue"})
 
     # Create a user role
-    client_valid_token.post("/api/user/role/", json={"value": "test_role"})
+    client_valid_access_token.post("/api/user/role/", json={"value": "test_role"})
 
     # Create the object
     create_json = {
@@ -230,19 +230,19 @@ def test_update(client_valid_token, key, initial_value, updated_value):
         "username": "johndoe",
     }
     create_json[key] = initial_value
-    create = client_valid_token.post("/api/user/", json=create_json)
+    create = client_valid_access_token.post("/api/user/", json=create_json)
     assert create.status_code == status.HTTP_201_CREATED
 
     # Read it back
-    get = client_valid_token.get(create.headers["Content-Location"])
+    get = client_valid_access_token.get(create.headers["Content-Location"])
     assert get.json()[key] == initial_value
 
     # Update it
-    update = client_valid_token.patch(create.headers["Content-Location"], json={key: updated_value})
+    update = client_valid_access_token.patch(create.headers["Content-Location"], json={key: updated_value})
     assert update.status_code == status.HTTP_204_NO_CONTENT
 
     # Read it back
-    get = client_valid_token.get(create.headers["Content-Location"])
+    get = client_valid_access_token.get(create.headers["Content-Location"])
     assert get.json()[key] == updated_value
 
 
@@ -253,12 +253,12 @@ def test_update(client_valid_token, key, initial_value, updated_value):
         ("abcd1234", "abcd1234"),
     ],
 )
-def test_update_password(client_valid_token, db, initial_value, updated_value):
+def test_update_password(client_valid_access_token, db, initial_value, updated_value):
     # Create an alert queue
-    client_valid_token.post("/api/alert/queue/", json={"value": "test_queue"})
+    client_valid_access_token.post("/api/alert/queue/", json={"value": "test_queue"})
 
     # Create a user role
-    client_valid_token.post("/api/user/role/", json={"value": "test_role"})
+    client_valid_access_token.post("/api/user/role/", json={"value": "test_role"})
 
     # Create the object
     create_json = {
@@ -269,11 +269,11 @@ def test_update_password(client_valid_token, db, initial_value, updated_value):
         "roles": ["test_role"],
         "username": "johndoe",
     }
-    create = client_valid_token.post("/api/user/", json=create_json)
+    create = client_valid_access_token.post("/api/user/", json=create_json)
     assert create.status_code == status.HTTP_201_CREATED
 
     # Read it back to get the UUID
-    get = client_valid_token.get(create.headers["Content-Location"])
+    get = client_valid_access_token.get(create.headers["Content-Location"])
 
     # Manually retrieve the user from the database so we have the initial password hash
     initial_user = crud.read(uuid=get.json()["uuid"], db_table=User, db=db)
@@ -283,7 +283,7 @@ def test_update_password(client_valid_token, db, initial_value, updated_value):
     assert verify_password(initial_value, initial_hash) is True
 
     # Update it
-    update = client_valid_token.patch(create.headers["Content-Location"], json={"password": updated_value})
+    update = client_valid_access_token.patch(create.headers["Content-Location"], json={"password": updated_value})
     assert update.status_code == status.HTTP_204_NO_CONTENT
 
     # Manually retrieve the user from the database so we have the updated password hash

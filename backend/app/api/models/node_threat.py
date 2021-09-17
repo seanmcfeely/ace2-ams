@@ -10,9 +10,7 @@ class NodeThreatBase(BaseModel):
     """Represents a threat that can be applied to a node to denote things like a family of malware or specific type
     of attack."""
 
-    description: Optional[type_str] = Field(
-        description="An optional human-readable description of the threat"
-    )
+    description: Optional[type_str] = Field(description="An optional human-readable description of the threat")
 
     types: type_list_str = Field(description="A list of types the threat represents")
 

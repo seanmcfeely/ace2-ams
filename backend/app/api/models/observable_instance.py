@@ -22,8 +22,7 @@ class ObservableInstanceBase(NodeBase):
     parent_analysis_uuid: UUID4 = Field(description="The UUID of the analysis containing this observable instance")
 
     performed_analysis_uuids: List[UUID4] = Field(
-        default_factory=list,
-        description="A list of analysis UUIDs that were performed on this observable instance"
+        default_factory=list, description="A list of analysis UUIDs that were performed on this observable instance"
     )
 
     redirection_uuid: Optional[UUID4] = Field(
@@ -31,8 +30,7 @@ class ObservableInstanceBase(NodeBase):
     )
 
     time: datetime = Field(
-        default_factory=datetime.utcnow,
-        description="The time this observable instance was observed"
+        default_factory=datetime.utcnow, description="The time this observable instance was observed"
     )
 
     _convert_association_list: classmethod = validators.convert_association_list("performed_analysis_uuids")
@@ -73,8 +71,6 @@ class ObservableInstanceUpdate(NodeUpdate):
         description="The UUID of another observable instance to which this one should point"
     )
 
-    time: Optional[datetime] = Field(
-        description="The time this observable instance was observed"
-    )
+    time: Optional[datetime] = Field(description="The time this observable instance was observed")
 
     _prevent_none: classmethod = validators.prevent_none("performed_analysis_uuids", "time")

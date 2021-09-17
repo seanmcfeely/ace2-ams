@@ -23,10 +23,10 @@ from fastapi import status
         ("value", ""),
     ],
 )
-def test_create_invalid_fields(client_valid_token, key, value):
+def test_create_invalid_fields(client_valid_access_token, key, value):
     create_json = {"value": "test"}
     create_json[key] = value
-    create = client_valid_token.post("/api/node/threat_actor/", json=create_json)
+    create = client_valid_access_token.post("/api/node/threat_actor/", json=create_json)
     assert create.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY
 
 
@@ -37,15 +37,15 @@ def test_create_invalid_fields(client_valid_token, key, value):
         ("value"),
     ],
 )
-def test_create_duplicate_unique_fields(client_valid_token, key):
+def test_create_duplicate_unique_fields(client_valid_access_token, key):
     # Create an object
     create1_json = {"uuid": str(uuid.uuid4()), "value": "test"}
-    client_valid_token.post("/api/node/threat_actor/", json=create1_json)
+    client_valid_access_token.post("/api/node/threat_actor/", json=create1_json)
 
     # Ensure you cannot create another object with the same unique field value
     create2_json = {"value": "test2"}
     create2_json[key] = create1_json[key]
-    create2 = client_valid_token.post("/api/node/threat_actor/", json=create2_json)
+    create2 = client_valid_access_token.post("/api/node/threat_actor/", json=create2_json)
     assert create2.status_code == status.HTTP_409_CONFLICT
 
 
@@ -55,10 +55,10 @@ def test_create_duplicate_unique_fields(client_valid_token, key):
         ("value"),
     ],
 )
-def test_create_missing_required_fields(client_valid_token, key):
+def test_create_missing_required_fields(client_valid_access_token, key):
     create_json = {"value": "test"}
     del create_json[key]
-    create = client_valid_token.post("/api/node/threat_actor/", json=create_json)
+    create = client_valid_access_token.post("/api/node/threat_actor/", json=create_json)
     assert create.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY
 
 
@@ -69,27 +69,23 @@ def test_create_missing_required_fields(client_valid_token, key):
 
 @pytest.mark.parametrize(
     "key,value",
-    [
-        ("description", None),
-        ("description", "test"),
-        ("uuid", str(uuid.uuid4()))
-    ],
+    [("description", None), ("description", "test"), ("uuid", str(uuid.uuid4()))],
 )
-def test_create_valid_optional_fields(client_valid_token, key, value):
+def test_create_valid_optional_fields(client_valid_access_token, key, value):
     # Create the object
-    create = client_valid_token.post("/api/node/threat_actor/", json={key: value, "value": "test"})
+    create = client_valid_access_token.post("/api/node/threat_actor/", json={key: value, "value": "test"})
     assert create.status_code == status.HTTP_201_CREATED
 
     # Read it back
-    get = client_valid_token.get(create.headers["Content-Location"])
+    get = client_valid_access_token.get(create.headers["Content-Location"])
     assert get.json()[key] == value
 
 
-def test_create_valid_required_fields(client_valid_token):
+def test_create_valid_required_fields(client_valid_access_token):
     # Create the object
-    create = client_valid_token.post("/api/node/threat_actor/", json={"value": "test"})
+    create = client_valid_access_token.post("/api/node/threat_actor/", json={"value": "test"})
     assert create.status_code == status.HTTP_201_CREATED
 
     # Read it back
-    get = client_valid_token.get(create.headers["Content-Location"])
+    get = client_valid_access_token.get(create.headers["Content-Location"])
     assert get.json()["value"] == "test"

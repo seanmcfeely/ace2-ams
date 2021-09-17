@@ -33,10 +33,7 @@ def create_analysis(
 ):
     # Create the new analysis Node using the data from the request
     new_analysis: Analysis = create_node(
-        node_create=analysis,
-        db_node_type=Analysis,
-        db=db,
-        exclude={"parent_observable_uuid"}
+        node_create=analysis, db_node_type=Analysis, db=db, exclude={"parent_observable_uuid"}
     )
 
     # If an analysis module type was given, get it from the database to use with the new analysis

@@ -13,10 +13,7 @@ from api.models.node_threat_actor import NodeThreatActorRead
 class NodeBase(BaseModel):
     """Represents an individual node."""
 
-    directives: List[type_str] = Field(
-        default_factory=list,
-        description="A list of directives to add to the node"
-    )
+    directives: List[type_str] = Field(default_factory=list, description="A list of directives to add to the node")
 
     # TODO: Add a node_links_mapping table
     # links: Optional[List[UUID]] = Field(
@@ -31,32 +28,21 @@ class NodeBase(BaseModel):
     #         relationship. The value for each key is a list of one or more node UUIDs related in this way."""
     # )
 
-    tags: List[type_str] = Field(
-        default_factory=list,
-        description="A list of tags to add to the node"
-    )
+    tags: List[type_str] = Field(default_factory=list, description="A list of tags to add to the node")
 
-    threat_actor: Optional[type_str] = Field(
-        description="The threat actor to add to the node"
-    )
+    threat_actor: Optional[type_str] = Field(description="The threat actor to add to the node")
 
-    threats: List[type_str] = Field(
-        default_factory=list,
-        description="A list of threats to add to the node"
-    )
+    threats: List[type_str] = Field(default_factory=list, description="A list of threats to add to the node")
 
     version: UUID4 = Field(
         default_factory=uuid4,
         description="""A version string that automatically changes every time the node is modified. The version
-            must match when updating."""
+            must match when updating.""",
     )
 
 
 class NodeCreate(NodeBase):
-    uuid: UUID4 = Field(
-        default_factory=uuid4,
-        description="The UUID of the node"
-    )
+    uuid: UUID4 = Field(default_factory=uuid4, description="The UUID of the node")
 
 
 class NodeRead(NodeBase):

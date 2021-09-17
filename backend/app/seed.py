@@ -126,14 +126,16 @@ if not crud.read_all(db_table=User, db=db):
     # Commit the database changes so that they can be used to create the analyst user
     crud.commit(db)
 
-    db.add(User(
-        default_alert_queue=crud.read_by_value(value="default", db_table=AlertQueue, db=db),
-        display_name="Analyst",
-        email="analyst@fake.com",
-        password="analyst",
-        roles=crud.read_by_values(values=["admin"], db_table=UserRole, db=db),
-        username="analyst",
-    ))
+    db.add(
+        User(
+            default_alert_queue=crud.read_by_value(value="default", db_table=AlertQueue, db=db),
+            display_name="Analyst",
+            email="analyst@fake.com",
+            password="analyst",
+            roles=crud.read_by_values(values=["admin"], db_table=UserRole, db=db),
+            username="analyst",
+        )
+    )
     print("Adding user: analyst")
 
 # Commit all of the changes
