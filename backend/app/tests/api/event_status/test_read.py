@@ -8,13 +8,13 @@ from fastapi import status
 #
 
 
-def test_get_invalid_uuid(client_valid_token):
-    get = client_valid_token.get("/api/event/status/1")
+def test_get_invalid_uuid(client_valid_access_token):
+    get = client_valid_access_token.get("/api/event/status/1")
     assert get.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY
 
 
-def test_get_nonexistent_uuid(client_valid_token):
-    get = client_valid_token.get(f"/api/event/status/{uuid.uuid4()}")
+def test_get_nonexistent_uuid(client_valid_access_token):
+    get = client_valid_access_token.get(f"/api/event/status/{uuid.uuid4()}")
     assert get.status_code == status.HTTP_404_NOT_FOUND
 
 
@@ -23,18 +23,18 @@ def test_get_nonexistent_uuid(client_valid_token):
 #
 
 
-def test_get_all(client_valid_token):
+def test_get_all(client_valid_access_token):
     # Create some objects
-    client_valid_token.post("/api/event/status/", json={"value": "test"})
-    client_valid_token.post("/api/event/status/", json={"value": "test2"})
+    client_valid_access_token.post("/api/event/status/", json={"value": "test"})
+    client_valid_access_token.post("/api/event/status/", json={"value": "test2"})
 
     # Read them back
-    get = client_valid_token.get("/api/event/status/")
+    get = client_valid_access_token.get("/api/event/status/")
     assert get.status_code == status.HTTP_200_OK
     assert len(get.json()) == 2
 
 
-def test_get_all_empty(client_valid_token):
-    get = client_valid_token.get("/api/event/status/")
+def test_get_all_empty(client_valid_access_token):
+    get = client_valid_access_token.get("/api/event/status/")
     assert get.status_code == status.HTTP_200_OK
     assert get.json() == []

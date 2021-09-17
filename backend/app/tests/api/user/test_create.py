@@ -50,7 +50,7 @@ from fastapi import status
         ("uuid", ""),
     ],
 )
-def test_create_invalid_fields(client_valid_token, key, value):
+def test_create_invalid_fields(client_valid_access_token, key, value):
     create_json = {
         "default_alert_queue": "test_queue",
         "display_name": "John Doe",
@@ -60,7 +60,7 @@ def test_create_invalid_fields(client_valid_token, key, value):
         "username": "johndoe",
     }
     create_json[key] = value
-    create = client_valid_token.post("/api/user/", json=create_json)
+    create = client_valid_access_token.post("/api/user/", json=create_json)
     assert create.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY
 
 
@@ -72,12 +72,12 @@ def test_create_invalid_fields(client_valid_token, key, value):
         ("uuid"),
     ],
 )
-def test_create_duplicate_unique_fields(client_valid_token, key):
+def test_create_duplicate_unique_fields(client_valid_access_token, key):
     # Create an alert queue
-    client_valid_token.post("/api/alert/queue/", json={"value": "test_queue"})
+    client_valid_access_token.post("/api/alert/queue/", json={"value": "test_queue"})
 
     # Create a user role
-    client_valid_token.post("/api/user/role/", json={"value": "test_role"})
+    client_valid_access_token.post("/api/user/role/", json={"value": "test_role"})
 
     # Create an object
     create1_json = {
@@ -89,7 +89,7 @@ def test_create_duplicate_unique_fields(client_valid_token, key):
         "username": "johndoe",
         "uuid": str(uuid.uuid4()),
     }
-    client_valid_token.post("/api/user/", json=create1_json)
+    client_valid_access_token.post("/api/user/", json=create1_json)
 
     # Ensure you cannot create another object with the same unique field value
     create2_json = {
@@ -102,7 +102,7 @@ def test_create_duplicate_unique_fields(client_valid_token, key):
         "uuid": str(uuid.uuid4()),
     }
     create2_json[key] = create1_json[key]
-    create2 = client_valid_token.post("/api/user/", json=create2_json)
+    create2 = client_valid_access_token.post("/api/user/", json=create2_json)
     assert create2.status_code == status.HTTP_409_CONFLICT
 
 
@@ -117,7 +117,7 @@ def test_create_duplicate_unique_fields(client_valid_token, key):
         ("username"),
     ],
 )
-def test_create_missing_required_fields(client_valid_token, key):
+def test_create_missing_required_fields(client_valid_access_token, key):
     create_json = {
         "default_alert_queue": "test_queue",
         "display_name": "John Doe",
@@ -127,7 +127,7 @@ def test_create_missing_required_fields(client_valid_token, key):
         "username": "johndoe",
     }
     del create_json[key]
-    create = client_valid_token.post("/api/user/", json=create_json)
+    create = client_valid_access_token.post("/api/user/", json=create_json)
     assert create.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY
 
 
@@ -144,12 +144,12 @@ def test_create_missing_required_fields(client_valid_token, key):
         ("uuid", str(uuid.uuid4()))
     ],
 )
-def test_create_valid_optional_fields(client_valid_token, key, value):
+def test_create_valid_optional_fields(client_valid_access_token, key, value):
     # Create an alert queue
-    client_valid_token.post("/api/alert/queue/", json={"value": "test_queue"})
+    client_valid_access_token.post("/api/alert/queue/", json={"value": "test_queue"})
 
     # Create a user role
-    client_valid_token.post("/api/user/role/", json={"value": "test_role"})
+    client_valid_access_token.post("/api/user/role/", json={"value": "test_role"})
 
     # Create the object
     create_json = {
@@ -161,20 +161,20 @@ def test_create_valid_optional_fields(client_valid_token, key, value):
         "username": "johndoe",
     }
     create_json[key] = value
-    create = client_valid_token.post("/api/user/", json=create_json)
+    create = client_valid_access_token.post("/api/user/", json=create_json)
     assert create.status_code == status.HTTP_201_CREATED
 
     # Read it back
-    get = client_valid_token.get(create.headers["Content-Location"])
+    get = client_valid_access_token.get(create.headers["Content-Location"])
     assert get.json()[key] == value
 
 
-def test_create_valid_required_fields(client_valid_token):
+def test_create_valid_required_fields(client_valid_access_token):
     # Create an alert queue
-    client_valid_token.post("/api/alert/queue/", json={"value": "test_queue"})
+    client_valid_access_token.post("/api/alert/queue/", json={"value": "test_queue"})
 
     # Create a user role
-    client_valid_token.post("/api/user/role/", json={"value": "test_role"})
+    client_valid_access_token.post("/api/user/role/", json={"value": "test_role"})
 
     # Create the object
     create_json = {
@@ -185,11 +185,11 @@ def test_create_valid_required_fields(client_valid_token):
         "roles": ["test_role"],
         "username": "johndoe",
     }
-    create = client_valid_token.post("/api/user/", json=create_json)
+    create = client_valid_access_token.post("/api/user/", json=create_json)
     assert create.status_code == status.HTTP_201_CREATED
 
     # Read it back
-    get = client_valid_token.get(create.headers["Content-Location"])
+    get = client_valid_access_token.get(create.headers["Content-Location"])
     assert get.json()["default_alert_queue"]["value"] == "test_queue"
     assert get.json()["display_name"] == "John Doe"
     assert get.json()["email"] == "john@test.com"

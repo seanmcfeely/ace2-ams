@@ -73,8 +73,8 @@ from tests.api.node import (
         ("vectors", ["abc", 123]),
     ],
 )
-def test_update_invalid_fields(client_valid_token, key, value):
-    update = client_valid_token.patch(f"/api/event/{uuid.uuid4()}", json={key: value, "version": str(uuid.uuid4())})
+def test_update_invalid_fields(client_valid_access_token, key, value):
+    update = client_valid_access_token.patch(f"/api/event/{uuid.uuid4()}", json={key: value, "version": str(uuid.uuid4())})
     assert update.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY
     assert key in update.text
 
@@ -83,26 +83,26 @@ def test_update_invalid_fields(client_valid_token, key, value):
     "key,value",
     INVALID_UPDATE_FIELDS,
 )
-def test_update_invalid_node_fields(client_valid_token, key, value):
-    update = client_valid_token.patch(f"/api/event/{uuid.uuid4()}", json={"version": str(uuid.uuid4()), key: value})
+def test_update_invalid_node_fields(client_valid_access_token, key, value):
+    update = client_valid_access_token.patch(f"/api/event/{uuid.uuid4()}", json={"version": str(uuid.uuid4()), key: value})
     assert update.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY
     assert key in update.text
 
 
-def test_update_invalid_uuid(client_valid_token):
-    update = client_valid_token.patch("/api/event/1", json={"version": str(uuid.uuid4())})
+def test_update_invalid_uuid(client_valid_access_token):
+    update = client_valid_access_token.patch("/api/event/1", json={"version": str(uuid.uuid4())})
     assert update.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY
 
 
-def test_update_invalid_version(client_valid_token):
+def test_update_invalid_version(client_valid_access_token):
     # Create an event status
-    client_valid_token.post("/api/event/status/", json={"value": "OPEN"})
+    client_valid_access_token.post("/api/event/status/", json={"value": "OPEN"})
 
     # Create an event
-    create = client_valid_token.post("/api/event/", json={"name": "test", "status": "OPEN"})
+    create = client_valid_access_token.post("/api/event/", json={"name": "test", "status": "OPEN"})
 
     # Make sure you cannot update it using an invalid version
-    update = client_valid_token.patch(
+    update = client_valid_access_token.patch(
         create.headers["Content-Location"],
         json={"version": str(uuid.uuid4())}
     )
@@ -122,17 +122,17 @@ def test_update_invalid_version(client_valid_token):
         ("vectors", ["abc"]),
     ],
 )
-def test_update_nonexistent_fields(client_valid_token, key, value):
+def test_update_nonexistent_fields(client_valid_access_token, key, value):
     # Create an event status
-    client_valid_token.post("/api/event/status/", json={"value": "OPEN"})
+    client_valid_access_token.post("/api/event/status/", json={"value": "OPEN"})
 
     # Create an event
     version = str(uuid.uuid4())
-    create = client_valid_token.post("/api/event/", json={"version": version, "name": "test", "status": "OPEN"})
+    create = client_valid_access_token.post("/api/event/", json={"version": version, "name": "test", "status": "OPEN"})
     assert create.status_code == status.HTTP_201_CREATED
 
     # Make sure you cannot update it to use a nonexistent field value
-    update = client_valid_token.patch(
+    update = client_valid_access_token.patch(
         create.headers["Content-Location"],
         json={key: value, "version": version}
     )
@@ -143,25 +143,25 @@ def test_update_nonexistent_fields(client_valid_token, key, value):
     "key,value",
     NONEXISTENT_FIELDS,
 )
-def test_update_nonexistent_node_fields(client_valid_token, key, value):
+def test_update_nonexistent_node_fields(client_valid_access_token, key, value):
     # Create an event status
-    client_valid_token.post("/api/event/status/", json={"value": "OPEN"})
+    client_valid_access_token.post("/api/event/status/", json={"value": "OPEN"})
 
     # Create an event
     version = str(uuid.uuid4())
-    create = client_valid_token.post("/api/event/", json={"version": version, "name": "test", "status": "OPEN"})
+    create = client_valid_access_token.post("/api/event/", json={"version": version, "name": "test", "status": "OPEN"})
     assert create.status_code == status.HTTP_201_CREATED
 
     # Make sure you cannot update it to use a nonexistent node field value
-    update = client_valid_token.patch(
+    update = client_valid_access_token.patch(
         create.headers["Content-Location"],
         json={key: value, "version": version}
     )
     assert update.status_code == status.HTTP_404_NOT_FOUND
 
 
-def test_update_nonexistent_uuid(client_valid_token):
-    update = client_valid_token.patch(f"/api/event/{uuid.uuid4()}", json={"version": str(uuid.uuid4())})
+def test_update_nonexistent_uuid(client_valid_access_token):
+    update = client_valid_access_token.patch(f"/api/event/{uuid.uuid4()}", json={"version": str(uuid.uuid4())})
     assert update.status_code == status.HTTP_404_NOT_FOUND
 
 
@@ -170,23 +170,23 @@ def test_update_nonexistent_uuid(client_valid_token):
 #
 
 
-def test_update_owner(client_valid_token):
+def test_update_owner(client_valid_access_token):
     # Create an event status
-    client_valid_token.post("/api/event/status/", json={"value": "OPEN"})
+    client_valid_access_token.post("/api/event/status/", json={"value": "OPEN"})
 
     # Create an event
     version = str(uuid.uuid4())
-    create = client_valid_token.post("/api/event/", json={"version": version, "name": "test", "status": "OPEN"})
+    create = client_valid_access_token.post("/api/event/", json={"version": version, "name": "test", "status": "OPEN"})
 
     # Read it back
-    get = client_valid_token.get(create.headers["Content-Location"])
+    get = client_valid_access_token.get(create.headers["Content-Location"])
     assert get.json()["owner"] is None
 
     # Create an alert queue
-    client_valid_token.post("/api/alert/queue/", json={"value": "test_queue"})
+    client_valid_access_token.post("/api/alert/queue/", json={"value": "test_queue"})
 
     # Create a user role
-    client_valid_token.post("/api/user/role/", json={"value": "test_role"})
+    client_valid_access_token.post("/api/user/role/", json={"value": "test_role"})
 
     # Create a user
     create_json = {
@@ -197,213 +197,213 @@ def test_update_owner(client_valid_token):
         "roles": ["test_role"],
         "username": "johndoe",
     }
-    client_valid_token.post("/api/user/", json=create_json)
+    client_valid_access_token.post("/api/user/", json=create_json)
 
     # Update the event
-    update = client_valid_token.patch(
+    update = client_valid_access_token.patch(
         create.headers["Content-Location"],
         json={"owner": "johndoe", "version": version}
     )
     assert update.status_code == status.HTTP_204_NO_CONTENT
 
     # Read it back
-    get = client_valid_token.get(create.headers["Content-Location"])
+    get = client_valid_access_token.get(create.headers["Content-Location"])
     assert get.json()["owner"]["username"] == "johndoe"
     assert get.json()["version"] != version
 
 
-def test_update_prevention_tools(client_valid_token):
+def test_update_prevention_tools(client_valid_access_token):
     # Create an event status
-    client_valid_token.post("/api/event/status/", json={"value": "OPEN"})
+    client_valid_access_token.post("/api/event/status/", json={"value": "OPEN"})
 
     # Create an event
     version = str(uuid.uuid4())
-    create = client_valid_token.post("/api/event/", json={"version": version, "name": "test", "status": "OPEN"})
+    create = client_valid_access_token.post("/api/event/", json={"version": version, "name": "test", "status": "OPEN"})
 
     # Read it back
-    get = client_valid_token.get(create.headers["Content-Location"])
+    get = client_valid_access_token.get(create.headers["Content-Location"])
     assert get.json()["prevention_tools"] == []
 
     # Create an event prevention tool
-    client_valid_token.post("/api/event/prevention_tool/", json={"value": "test"})
+    client_valid_access_token.post("/api/event/prevention_tool/", json={"value": "test"})
 
     # Update the event
-    update = client_valid_token.patch(
+    update = client_valid_access_token.patch(
         create.headers["Content-Location"],
         json={"prevention_tools": ["test"], "version": version}
     )
     assert update.status_code == status.HTTP_204_NO_CONTENT
 
     # Read it back
-    get = client_valid_token.get(create.headers["Content-Location"])
+    get = client_valid_access_token.get(create.headers["Content-Location"])
     assert get.json()["prevention_tools"][0]["value"] == "test"
     assert get.json()["version"] != version
 
 
-def test_update_remediations(client_valid_token):
+def test_update_remediations(client_valid_access_token):
     # Create an event status
-    client_valid_token.post("/api/event/status/", json={"value": "OPEN"})
+    client_valid_access_token.post("/api/event/status/", json={"value": "OPEN"})
 
     # Create an event
     version = str(uuid.uuid4())
-    create = client_valid_token.post("/api/event/", json={"version": version, "name": "test", "status": "OPEN"})
+    create = client_valid_access_token.post("/api/event/", json={"version": version, "name": "test", "status": "OPEN"})
 
     # Read it back
-    get = client_valid_token.get(create.headers["Content-Location"])
+    get = client_valid_access_token.get(create.headers["Content-Location"])
     assert get.json()["remediations"] == []
 
     # Create an event remediation
-    client_valid_token.post("/api/event/remediation/", json={"value": "test"})
+    client_valid_access_token.post("/api/event/remediation/", json={"value": "test"})
 
     # Update the event
-    update = client_valid_token.patch(
+    update = client_valid_access_token.patch(
         create.headers["Content-Location"],
         json={"remediations": ["test"], "version": version}
     )
     assert update.status_code == status.HTTP_204_NO_CONTENT
 
     # Read it back
-    get = client_valid_token.get(create.headers["Content-Location"])
+    get = client_valid_access_token.get(create.headers["Content-Location"])
     assert get.json()["remediations"][0]["value"] == "test"
     assert get.json()["version"] != version
 
 
-def test_update_risk_level(client_valid_token):
+def test_update_risk_level(client_valid_access_token):
     # Create an event status
-    client_valid_token.post("/api/event/status/", json={"value": "OPEN"})
+    client_valid_access_token.post("/api/event/status/", json={"value": "OPEN"})
 
     # Create an event
     version = str(uuid.uuid4())
-    create = client_valid_token.post("/api/event/", json={"version": version, "name": "test", "status": "OPEN"})
+    create = client_valid_access_token.post("/api/event/", json={"version": version, "name": "test", "status": "OPEN"})
 
     # Read it back
-    get = client_valid_token.get(create.headers["Content-Location"])
+    get = client_valid_access_token.get(create.headers["Content-Location"])
     assert get.json()["risk_level"] is None
 
     # Create an event risk level
-    client_valid_token.post("/api/event/risk_level/", json={"value": "test"})
+    client_valid_access_token.post("/api/event/risk_level/", json={"value": "test"})
 
     # Update the event
-    update = client_valid_token.patch(
+    update = client_valid_access_token.patch(
         create.headers["Content-Location"],
         json={"risk_level": "test", "version": version}
     )
     assert update.status_code == status.HTTP_204_NO_CONTENT
 
     # Read it back
-    get = client_valid_token.get(create.headers["Content-Location"])
+    get = client_valid_access_token.get(create.headers["Content-Location"])
     assert get.json()["risk_level"]["value"] == "test"
     assert get.json()["version"] != version
 
 
-def test_update_source(client_valid_token):
+def test_update_source(client_valid_access_token):
     # Create an event status
-    client_valid_token.post("/api/event/status/", json={"value": "OPEN"})
+    client_valid_access_token.post("/api/event/status/", json={"value": "OPEN"})
 
     # Create an event
     version = str(uuid.uuid4())
-    create = client_valid_token.post("/api/event/", json={"version": version, "name": "test", "status": "OPEN"})
+    create = client_valid_access_token.post("/api/event/", json={"version": version, "name": "test", "status": "OPEN"})
 
     # Read it back
-    get = client_valid_token.get(create.headers["Content-Location"])
+    get = client_valid_access_token.get(create.headers["Content-Location"])
     assert get.json()["source"] is None
 
     # Create an event source
-    client_valid_token.post("/api/event/source/", json={"value": "test"})
+    client_valid_access_token.post("/api/event/source/", json={"value": "test"})
 
     # Update the event
-    update = client_valid_token.patch(
+    update = client_valid_access_token.patch(
         create.headers["Content-Location"],
         json={"source": "test", "version": version}
     )
     assert update.status_code == status.HTTP_204_NO_CONTENT
 
     # Read it back
-    get = client_valid_token.get(create.headers["Content-Location"])
+    get = client_valid_access_token.get(create.headers["Content-Location"])
     assert get.json()["source"]["value"] == "test"
     assert get.json()["version"] != version
 
 
-def test_update_status(client_valid_token):
+def test_update_status(client_valid_access_token):
     # Create an event status
-    client_valid_token.post("/api/event/status/", json={"value": "OPEN"})
+    client_valid_access_token.post("/api/event/status/", json={"value": "OPEN"})
 
     # Create an event
     version = str(uuid.uuid4())
-    create = client_valid_token.post("/api/event/", json={"version": version, "name": "test", "status": "OPEN"})
+    create = client_valid_access_token.post("/api/event/", json={"version": version, "name": "test", "status": "OPEN"})
 
     # Read it back
-    get = client_valid_token.get(create.headers["Content-Location"])
+    get = client_valid_access_token.get(create.headers["Content-Location"])
     assert get.json()["status"]["value"] == "OPEN"
 
     # Create an event status
-    client_valid_token.post("/api/event/status/", json={"value": "test"})
+    client_valid_access_token.post("/api/event/status/", json={"value": "test"})
 
     # Update the event
-    update = client_valid_token.patch(
+    update = client_valid_access_token.patch(
         create.headers["Content-Location"],
         json={"status": "test", "version": version}
     )
     assert update.status_code == status.HTTP_204_NO_CONTENT
 
     # Read it back
-    get = client_valid_token.get(create.headers["Content-Location"])
+    get = client_valid_access_token.get(create.headers["Content-Location"])
     assert get.json()["status"]["value"] == "test"
     assert get.json()["version"] != version
 
 
-def test_update_type(client_valid_token):
+def test_update_type(client_valid_access_token):
     # Create an event status
-    client_valid_token.post("/api/event/status/", json={"value": "OPEN"})
+    client_valid_access_token.post("/api/event/status/", json={"value": "OPEN"})
 
     # Create an event
     version = str(uuid.uuid4())
-    create = client_valid_token.post("/api/event/", json={"version": version, "name": "test", "status": "OPEN"})
+    create = client_valid_access_token.post("/api/event/", json={"version": version, "name": "test", "status": "OPEN"})
 
     # Read it back
-    get = client_valid_token.get(create.headers["Content-Location"])
+    get = client_valid_access_token.get(create.headers["Content-Location"])
     assert get.json()["type"] is None
 
     # Create an event type
-    client_valid_token.post("/api/event/type/", json={"value": "test"})
+    client_valid_access_token.post("/api/event/type/", json={"value": "test"})
 
     # Update the event
-    update = client_valid_token.patch(
+    update = client_valid_access_token.patch(
         create.headers["Content-Location"],
         json={"type": "test", "version": version}
     )
     assert update.status_code == status.HTTP_204_NO_CONTENT
 
     # Read it back
-    get = client_valid_token.get(create.headers["Content-Location"])
+    get = client_valid_access_token.get(create.headers["Content-Location"])
     assert get.json()["type"]["value"] == "test"
     assert get.json()["version"] != version
 
 
-def test_update_vectors(client_valid_token):
+def test_update_vectors(client_valid_access_token):
     # Create an event status
-    client_valid_token.post("/api/event/status/", json={"value": "OPEN"})
+    client_valid_access_token.post("/api/event/status/", json={"value": "OPEN"})
 
     # Create an event
     version = str(uuid.uuid4())
-    create = client_valid_token.post("/api/event/", json={"version": version, "name": "test", "status": "OPEN"})
+    create = client_valid_access_token.post("/api/event/", json={"version": version, "name": "test", "status": "OPEN"})
 
     # Read it back
-    get = client_valid_token.get(create.headers["Content-Location"])
+    get = client_valid_access_token.get(create.headers["Content-Location"])
     assert get.json()["vectors"] == []
 
     # Create an event vector
-    client_valid_token.post("/api/event/vector/", json={"value": "test"})
+    client_valid_access_token.post("/api/event/vector/", json={"value": "test"})
 
     # Update the event
-    update = client_valid_token.patch(
+    update = client_valid_access_token.patch(
         create.headers["Content-Location"],
         json={"vectors": ["test"], "version": version}
     )
     assert update.status_code == status.HTTP_204_NO_CONTENT
 
     # Read it back
-    get = client_valid_token.get(create.headers["Content-Location"])
+    get = client_valid_access_token.get(create.headers["Content-Location"])
     assert get.json()["vectors"][0]["value"] == "test"
     assert get.json()["version"] != version
 
@@ -412,32 +412,32 @@ def test_update_vectors(client_valid_token):
     "values",
     VALID_DIRECTIVES,
 )
-def test_update_valid_node_directives(client_valid_token, values):
+def test_update_valid_node_directives(client_valid_access_token, values):
     # Create an event status
-    client_valid_token.post("/api/event/status/", json={"value": "OPEN"})
+    client_valid_access_token.post("/api/event/status/", json={"value": "OPEN"})
 
     # Create an event
     version = str(uuid.uuid4())
-    create = client_valid_token.post("/api/event/", json={"version": version, "name": "test", "status": "OPEN"})
+    create = client_valid_access_token.post("/api/event/", json={"version": version, "name": "test", "status": "OPEN"})
 
     # Read it back
-    get = client_valid_token.get(create.headers["Content-Location"])
+    get = client_valid_access_token.get(create.headers["Content-Location"])
     assert get.json()["directives"] == []
 
     # Create the directives. Need to only create unique values, otherwise the database will return a 409
     # conflict exception and will roll back the test's database session (causing the test to fail).
     for value in list(set(values)):
-        client_valid_token.post("/api/node/directive/", json={"value": value})
+        client_valid_access_token.post("/api/node/directive/", json={"value": value})
 
     # Update the node
-    update = client_valid_token.patch(
+    update = client_valid_access_token.patch(
         create.headers["Content-Location"],
         json={"directives": values, "version": version}
     )
     assert update.status_code == status.HTTP_204_NO_CONTENT
 
     # Read it back
-    get = client_valid_token.get(create.headers["Content-Location"])
+    get = client_valid_access_token.get(create.headers["Content-Location"])
     assert len(get.json()["directives"]) == len(list(set(values)))
     assert get.json()["version"] != version
 
@@ -446,32 +446,32 @@ def test_update_valid_node_directives(client_valid_token, values):
     "values",
     VALID_TAGS,
 )
-def test_update_valid_node_tags(client_valid_token, values):
+def test_update_valid_node_tags(client_valid_access_token, values):
     # Create an event status
-    client_valid_token.post("/api/event/status/", json={"value": "OPEN"})
+    client_valid_access_token.post("/api/event/status/", json={"value": "OPEN"})
 
     # Create an event
     version = str(uuid.uuid4())
-    create = client_valid_token.post("/api/event/", json={"version": version, "name": "test", "status": "OPEN"})
+    create = client_valid_access_token.post("/api/event/", json={"version": version, "name": "test", "status": "OPEN"})
 
     # Read it back
-    get = client_valid_token.get(create.headers["Content-Location"])
+    get = client_valid_access_token.get(create.headers["Content-Location"])
     assert get.json()["tags"] == []
 
     # Create the tags. Need to only create unique values, otherwise the database will return a 409
     # conflict exception and will roll back the test's database session (causing the test to fail).
     for value in list(set(values)):
-        client_valid_token.post("/api/node/tag/", json={"value": value})
+        client_valid_access_token.post("/api/node/tag/", json={"value": value})
 
     # Update the node
-    update = client_valid_token.patch(
+    update = client_valid_access_token.patch(
         create.headers["Content-Location"],
         json={"tags": values, "version": version}
     )
     assert update.status_code == status.HTTP_204_NO_CONTENT
 
     # Read it back
-    get = client_valid_token.get(create.headers["Content-Location"])
+    get = client_valid_access_token.get(create.headers["Content-Location"])
     assert len(get.json()["tags"]) == len(list(set(values)))
     assert get.json()["version"] != version
 
@@ -480,31 +480,31 @@ def test_update_valid_node_tags(client_valid_token, values):
     "value",
     VALID_THREAT_ACTOR,
 )
-def test_update_valid_node_threat_actor(client_valid_token, value):
+def test_update_valid_node_threat_actor(client_valid_access_token, value):
     # Create an event status
-    client_valid_token.post("/api/event/status/", json={"value": "OPEN"})
+    client_valid_access_token.post("/api/event/status/", json={"value": "OPEN"})
 
     # Create an event
     version = str(uuid.uuid4())
-    create = client_valid_token.post("/api/event/", json={"version": version, "name": "test", "status": "OPEN"})
+    create = client_valid_access_token.post("/api/event/", json={"version": version, "name": "test", "status": "OPEN"})
 
     # Read it back
-    get = client_valid_token.get(create.headers["Content-Location"])
+    get = client_valid_access_token.get(create.headers["Content-Location"])
     assert get.json()["threat_actor"] is None
 
     # Create the threat actor
     if value:
-        client_valid_token.post("/api/node/threat_actor/", json={"value": value})
+        client_valid_access_token.post("/api/node/threat_actor/", json={"value": value})
 
     # Update the node
-    update = client_valid_token.patch(
+    update = client_valid_access_token.patch(
         create.headers["Content-Location"],
         json={"threat_actor": value, "version": version}
     )
     assert update.status_code == status.HTTP_204_NO_CONTENT
 
     # Read it back
-    get = client_valid_token.get(create.headers["Content-Location"])
+    get = client_valid_access_token.get(create.headers["Content-Location"])
     if value:
         assert get.json()["threat_actor"]["value"] == value
     else:
@@ -517,35 +517,35 @@ def test_update_valid_node_threat_actor(client_valid_token, value):
     "values",
     VALID_THREATS,
 )
-def test_update_valid_node_threats(client_valid_token, values):
+def test_update_valid_node_threats(client_valid_access_token, values):
     # Create an event status
-    client_valid_token.post("/api/event/status/", json={"value": "OPEN"})
+    client_valid_access_token.post("/api/event/status/", json={"value": "OPEN"})
 
     # Create an event
     version = str(uuid.uuid4())
-    create = client_valid_token.post("/api/event/", json={"version": version, "name": "test", "status": "OPEN"})
+    create = client_valid_access_token.post("/api/event/", json={"version": version, "name": "test", "status": "OPEN"})
 
     # Read it back
-    get = client_valid_token.get(create.headers["Content-Location"])
+    get = client_valid_access_token.get(create.headers["Content-Location"])
     assert get.json()["directives"] == []
 
     # Create a threat type
-    client_valid_token.post("/api/node/threat/type/", json={"value": "test_type"})
+    client_valid_access_token.post("/api/node/threat/type/", json={"value": "test_type"})
 
     # Create the threats. Need to only create unique values, otherwise the database will return a 409
     # conflict exception and will roll back the test's database session (causing the test to fail).
     for value in list(set(values)):
-        client_valid_token.post("/api/node/threat/", json={"types": ["test_type"], "value": value})
+        client_valid_access_token.post("/api/node/threat/", json={"types": ["test_type"], "value": value})
 
     # Update the node
-    update = client_valid_token.patch(
+    update = client_valid_access_token.patch(
         create.headers["Content-Location"],
         json={"threats": values, "version": version}
     )
     assert update.status_code == status.HTTP_204_NO_CONTENT
 
     # Read it back
-    get = client_valid_token.get(create.headers["Content-Location"])
+    get = client_valid_access_token.get(create.headers["Content-Location"])
     assert len(get.json()["threats"]) == len(list(set(values)))
     assert get.json()["version"] != version
 
@@ -593,27 +593,27 @@ def test_update_valid_node_threats(client_valid_token, values):
         ("name", "test", "test"),
     ],
 )
-def test_update(client_valid_token, key, initial_value, updated_value):
+def test_update(client_valid_access_token, key, initial_value, updated_value):
     # Create an event status
-    client_valid_token.post("/api/event/status/", json={"value": "OPEN"})
+    client_valid_access_token.post("/api/event/status/", json={"value": "OPEN"})
 
     # Create the object
     version = str(uuid.uuid4())
     create_json = {"version": version, "name": "test", "status": "OPEN"}
     create_json[key] = initial_value
-    create = client_valid_token.post("/api/event/", json=create_json)
+    create = client_valid_access_token.post("/api/event/", json=create_json)
     assert create.status_code == status.HTTP_201_CREATED
 
     # Read it back
-    get = client_valid_token.get(create.headers["Content-Location"])
+    get = client_valid_access_token.get(create.headers["Content-Location"])
     assert get.json()[key] == initial_value
 
     # Update it
-    update = client_valid_token.patch(create.headers["Content-Location"], json={"version": version, key: updated_value})
+    update = client_valid_access_token.patch(create.headers["Content-Location"], json={"version": version, key: updated_value})
     assert update.status_code == status.HTTP_204_NO_CONTENT
 
     # Read it back
-    get = client_valid_token.get(create.headers["Content-Location"])
+    get = client_valid_access_token.get(create.headers["Content-Location"])
 
     # If the test is for one of the times, make sure that the retrieved value matches the proper UTC timestamp
     if key.endswith("_time") and updated_value:
