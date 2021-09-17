@@ -122,7 +122,6 @@
 </template>
 
 <script>
-import axios from "axios";
 import Button from "primevue/button";
 import Column from "primevue/column";
 import DataTable from "primevue/datatable";
@@ -163,20 +162,25 @@ export default {
 
   async created() {
     this.resetAlertTable();
-    await this.fetchAlerts();
+    // this is where we can query for alerts to show
+    // this.alerts = await alert.getAlerts();
   },
 
   methods: {
     alertSelect(alert) {
-      this.$store.dispatch("selectedAlerts/select", alert);
+      this.$store.dispatch("selectedAlerts/select", alert.uuid);
     },
 
     alertUnselect(alert) {
-      this.$store.dispatch("selectedAlerts/unselect", alert);
+      this.$store.dispatch("selectedAlerts/unselect", alert.uuid);
     },
 
     alertSelectAll() {
-      this.$store.dispatch("selectedAlerts/selectAll", this.alerts);
+      let all_alert_uuids = [];
+      for (let i = 0; i < this.alerts.length; i++) {
+        all_alert_uuids.push(this.alerts[i].uuid)
+      }
+      this.$store.dispatch("selectedAlerts/selectAll", all_alert_uuids);
     },
 
     alertUnselectAll() {
@@ -204,19 +208,6 @@ export default {
     exportCSV() {
       // Exports currently filtered alerts to CSV
       this.$refs.dt.exportCSV();
-    },
-
-    async fetchAlerts() {
-      // Fetch alerts from the backend API
-      const response = await axios
-        .get(`${process.env.VUE_APP_BACKEND_URL}/alert`)
-        .catch((error) => {
-          console.error(error);
-        });
-
-      if (response && response.status === 200) {
-        this.alerts = response.data;
-      }
     },
   },
 };
