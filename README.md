@@ -1,6 +1,9 @@
 # ACE2 GUI
 The ACE2 GUI is comprised of three main components: a PostgreSQL database, a FastAPI backend, and a Vue.js frontend.
 
+## Documentation
+The project's documentation is available at https://ace-ecosystem.github.io/ace2-gui/.
+
 ## Project setup for development
 The included `docker-compose-dev.yml` file runs the full application in development mode. This uses volumes to your local source code directories and enables hot-reload for the Vue.js and FastAPI applications. There are various scripts included to simplify some of the docker-compose commands.
 
@@ -13,6 +16,6 @@ This script will generate random passwords for the database user as well as the 
 
 Once the development environment is built and started, you can access the components:
 
-* Database pgAdmin GUI: http://localhost:7777
-* Backend API documentation: http://localhost:8888/docs
+* Backend API Swagger documentation: http://localhost:8888/docs
+* Backend API ReDoc documentation: http://localhost:8888/redoc
 * Frontend application: http://localhost:9999
