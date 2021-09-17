@@ -138,11 +138,7 @@ def test_create_missing_required_fields(client_valid_access_token, key):
 
 @pytest.mark.parametrize(
     "key,value",
-    [
-        ("enabled", False),
-        ("timezone", "America/New_York"),
-        ("uuid", str(uuid.uuid4()))
-    ],
+    [("enabled", False), ("timezone", "America/New_York"), ("uuid", str(uuid.uuid4()))],
 )
 def test_create_valid_optional_fields(client_valid_access_token, key, value):
     # Create an alert queue

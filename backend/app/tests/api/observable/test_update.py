@@ -50,7 +50,9 @@ def test_update_duplicate_type_value(client_valid_access_token):
 
 
 def test_update_nonexistent_uuid(client_valid_access_token):
-    update = client_valid_access_token.patch(f"/api/observable/{uuid.uuid4()}", json={"type": "test_type", "value": "test"})
+    update = client_valid_access_token.patch(
+        f"/api/observable/{uuid.uuid4()}", json={"type": "test_type", "value": "test"}
+    )
     assert update.status_code == status.HTTP_404_NOT_FOUND
 
 

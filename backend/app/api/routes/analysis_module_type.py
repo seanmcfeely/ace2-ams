@@ -56,9 +56,7 @@ def create_analysis_module_type(
     # If required tags were given, get them from the database and use them in the new analysis module type
     db_required_tags = []
     if analysis_module_type.required_tags:
-        db_required_tags = crud.read_by_values(
-            values=analysis_module_type.required_tags, db_table=NodeTag, db=db
-        )
+        db_required_tags = crud.read_by_values(values=analysis_module_type.required_tags, db_table=NodeTag, db=db)
     new_analysis_module_type.required_tags = db_required_tags
 
     # Save the new analysis module type to the database

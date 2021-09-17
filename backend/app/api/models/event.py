@@ -39,8 +39,7 @@ class EventBase(NodeBase):
     )
 
     prevention_tools: List[type_str] = Field(
-        default_factory=list,
-        description="A list of prevention tools involved in the event"
+        default_factory=list, description="A list of prevention tools involved in the event"
     )
 
     remediation_time: Optional[datetime] = Field(
@@ -49,7 +48,7 @@ class EventBase(NodeBase):
 
     remediations: List[type_str] = Field(
         default_factory=list,
-        description="A list of remediations performed to clean up the attack represented by the event"
+        description="A list of remediations performed to clean up the attack represented by the event",
     )
 
     risk_level: Optional[type_str] = Field(description="The risk level assigned to the event")

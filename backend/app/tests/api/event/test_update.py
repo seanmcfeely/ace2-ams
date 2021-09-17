@@ -74,7 +74,9 @@ from tests.api.node import (
     ],
 )
 def test_update_invalid_fields(client_valid_access_token, key, value):
-    update = client_valid_access_token.patch(f"/api/event/{uuid.uuid4()}", json={key: value, "version": str(uuid.uuid4())})
+    update = client_valid_access_token.patch(
+        f"/api/event/{uuid.uuid4()}", json={key: value, "version": str(uuid.uuid4())}
+    )
     assert update.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY
     assert key in update.text
 
@@ -84,7 +86,9 @@ def test_update_invalid_fields(client_valid_access_token, key, value):
     INVALID_UPDATE_FIELDS,
 )
 def test_update_invalid_node_fields(client_valid_access_token, key, value):
-    update = client_valid_access_token.patch(f"/api/event/{uuid.uuid4()}", json={"version": str(uuid.uuid4()), key: value})
+    update = client_valid_access_token.patch(
+        f"/api/event/{uuid.uuid4()}", json={"version": str(uuid.uuid4()), key: value}
+    )
     assert update.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY
     assert key in update.text
 
@@ -102,10 +106,7 @@ def test_update_invalid_version(client_valid_access_token):
     create = client_valid_access_token.post("/api/event/", json={"name": "test", "status": "OPEN"})
 
     # Make sure you cannot update it using an invalid version
-    update = client_valid_access_token.patch(
-        create.headers["Content-Location"],
-        json={"version": str(uuid.uuid4())}
-    )
+    update = client_valid_access_token.patch(create.headers["Content-Location"], json={"version": str(uuid.uuid4())})
     assert update.status_code == status.HTTP_409_CONFLICT
 
 
@@ -132,10 +133,7 @@ def test_update_nonexistent_fields(client_valid_access_token, key, value):
     assert create.status_code == status.HTTP_201_CREATED
 
     # Make sure you cannot update it to use a nonexistent field value
-    update = client_valid_access_token.patch(
-        create.headers["Content-Location"],
-        json={key: value, "version": version}
-    )
+    update = client_valid_access_token.patch(create.headers["Content-Location"], json={key: value, "version": version})
     assert update.status_code == status.HTTP_404_NOT_FOUND
 
 
@@ -153,10 +151,7 @@ def test_update_nonexistent_node_fields(client_valid_access_token, key, value):
     assert create.status_code == status.HTTP_201_CREATED
 
     # Make sure you cannot update it to use a nonexistent node field value
-    update = client_valid_access_token.patch(
-        create.headers["Content-Location"],
-        json={key: value, "version": version}
-    )
+    update = client_valid_access_token.patch(create.headers["Content-Location"], json={key: value, "version": version})
     assert update.status_code == status.HTTP_404_NOT_FOUND
 
 
@@ -201,8 +196,7 @@ def test_update_owner(client_valid_access_token):
 
     # Update the event
     update = client_valid_access_token.patch(
-        create.headers["Content-Location"],
-        json={"owner": "johndoe", "version": version}
+        create.headers["Content-Location"], json={"owner": "johndoe", "version": version}
     )
     assert update.status_code == status.HTTP_204_NO_CONTENT
 
@@ -229,8 +223,7 @@ def test_update_prevention_tools(client_valid_access_token):
 
     # Update the event
     update = client_valid_access_token.patch(
-        create.headers["Content-Location"],
-        json={"prevention_tools": ["test"], "version": version}
+        create.headers["Content-Location"], json={"prevention_tools": ["test"], "version": version}
     )
     assert update.status_code == status.HTTP_204_NO_CONTENT
 
@@ -257,8 +250,7 @@ def test_update_remediations(client_valid_access_token):
 
     # Update the event
     update = client_valid_access_token.patch(
-        create.headers["Content-Location"],
-        json={"remediations": ["test"], "version": version}
+        create.headers["Content-Location"], json={"remediations": ["test"], "version": version}
     )
     assert update.status_code == status.HTTP_204_NO_CONTENT
 
@@ -285,8 +277,7 @@ def test_update_risk_level(client_valid_access_token):
 
     # Update the event
     update = client_valid_access_token.patch(
-        create.headers["Content-Location"],
-        json={"risk_level": "test", "version": version}
+        create.headers["Content-Location"], json={"risk_level": "test", "version": version}
     )
     assert update.status_code == status.HTTP_204_NO_CONTENT
 
@@ -313,8 +304,7 @@ def test_update_source(client_valid_access_token):
 
     # Update the event
     update = client_valid_access_token.patch(
-        create.headers["Content-Location"],
-        json={"source": "test", "version": version}
+        create.headers["Content-Location"], json={"source": "test", "version": version}
     )
     assert update.status_code == status.HTTP_204_NO_CONTENT
 
@@ -341,8 +331,7 @@ def test_update_status(client_valid_access_token):
 
     # Update the event
     update = client_valid_access_token.patch(
-        create.headers["Content-Location"],
-        json={"status": "test", "version": version}
+        create.headers["Content-Location"], json={"status": "test", "version": version}
     )
     assert update.status_code == status.HTTP_204_NO_CONTENT
 
@@ -369,8 +358,7 @@ def test_update_type(client_valid_access_token):
 
     # Update the event
     update = client_valid_access_token.patch(
-        create.headers["Content-Location"],
-        json={"type": "test", "version": version}
+        create.headers["Content-Location"], json={"type": "test", "version": version}
     )
     assert update.status_code == status.HTTP_204_NO_CONTENT
 
@@ -397,8 +385,7 @@ def test_update_vectors(client_valid_access_token):
 
     # Update the event
     update = client_valid_access_token.patch(
-        create.headers["Content-Location"],
-        json={"vectors": ["test"], "version": version}
+        create.headers["Content-Location"], json={"vectors": ["test"], "version": version}
     )
     assert update.status_code == status.HTTP_204_NO_CONTENT
 
@@ -431,8 +418,7 @@ def test_update_valid_node_directives(client_valid_access_token, values):
 
     # Update the node
     update = client_valid_access_token.patch(
-        create.headers["Content-Location"],
-        json={"directives": values, "version": version}
+        create.headers["Content-Location"], json={"directives": values, "version": version}
     )
     assert update.status_code == status.HTTP_204_NO_CONTENT
 
@@ -465,8 +451,7 @@ def test_update_valid_node_tags(client_valid_access_token, values):
 
     # Update the node
     update = client_valid_access_token.patch(
-        create.headers["Content-Location"],
-        json={"tags": values, "version": version}
+        create.headers["Content-Location"], json={"tags": values, "version": version}
     )
     assert update.status_code == status.HTTP_204_NO_CONTENT
 
@@ -498,8 +483,7 @@ def test_update_valid_node_threat_actor(client_valid_access_token, value):
 
     # Update the node
     update = client_valid_access_token.patch(
-        create.headers["Content-Location"],
-        json={"threat_actor": value, "version": version}
+        create.headers["Content-Location"], json={"threat_actor": value, "version": version}
     )
     assert update.status_code == status.HTTP_204_NO_CONTENT
 
@@ -539,8 +523,7 @@ def test_update_valid_node_threats(client_valid_access_token, values):
 
     # Update the node
     update = client_valid_access_token.patch(
-        create.headers["Content-Location"],
-        json={"threats": values, "version": version}
+        create.headers["Content-Location"], json={"threats": values, "version": version}
     )
     assert update.status_code == status.HTTP_204_NO_CONTENT
 
@@ -609,7 +592,9 @@ def test_update(client_valid_access_token, key, initial_value, updated_value):
     assert get.json()[key] == initial_value
 
     # Update it
-    update = client_valid_access_token.patch(create.headers["Content-Location"], json={"version": version, key: updated_value})
+    update = client_valid_access_token.patch(
+        create.headers["Content-Location"], json={"version": version, key: updated_value}
+    )
     assert update.status_code == status.HTTP_204_NO_CONTENT
 
     # Read it back

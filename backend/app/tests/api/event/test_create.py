@@ -130,7 +130,9 @@ def test_create_nonexistent_prevention_tools(client_valid_access_token):
     client_valid_access_token.post("/api/event/status/", json={"value": "OPEN"})
 
     # Create an object
-    create = client_valid_access_token.post("/api/event/", json={"prevention_tools": ["test"], "name": "test", "status": "OPEN"})
+    create = client_valid_access_token.post(
+        "/api/event/", json={"prevention_tools": ["test"], "name": "test", "status": "OPEN"}
+    )
     assert create.status_code == status.HTTP_404_NOT_FOUND
     assert "event_prevention_tool" in create.text
 
@@ -140,7 +142,9 @@ def test_create_nonexistent_remediations(client_valid_access_token):
     client_valid_access_token.post("/api/event/status/", json={"value": "OPEN"})
 
     # Create an object
-    create = client_valid_access_token.post("/api/event/", json={"remediations": ["test"], "name": "test", "status": "OPEN"})
+    create = client_valid_access_token.post(
+        "/api/event/", json={"remediations": ["test"], "name": "test", "status": "OPEN"}
+    )
     assert create.status_code == status.HTTP_404_NOT_FOUND
     assert "event_remediation" in create.text
 
@@ -150,7 +154,9 @@ def test_create_nonexistent_risk_level(client_valid_access_token):
     client_valid_access_token.post("/api/event/status/", json={"value": "OPEN"})
 
     # Create an object
-    create = client_valid_access_token.post("/api/event/", json={"risk_level": "test", "name": "test", "status": "OPEN"})
+    create = client_valid_access_token.post(
+        "/api/event/", json={"risk_level": "test", "name": "test", "status": "OPEN"}
+    )
     assert create.status_code == status.HTTP_404_NOT_FOUND
     assert "event_risk_level" in create.text
 
@@ -248,7 +254,7 @@ def test_create_nonexistent_node_fields(client_valid_access_token, key, value):
         ("remediation_time", "2022-01-01 00:00:00"),
         ("remediation_time", "2022-01-01 00:00:00.000000"),
         ("remediation_time", "2021-12-31 19:00:00-05:00"),
-        ("uuid", str(uuid.uuid4()))
+        ("uuid", str(uuid.uuid4())),
     ],
 )
 def test_create_valid_optional_fields(client_valid_access_token, key, value):
@@ -305,7 +311,9 @@ def test_create_valid_prevention_tools(client_valid_access_token):
     client_valid_access_token.post("/api/event/prevention_tool/", json={"value": "test"})
 
     # Use the prevention tool to create a new event
-    create = client_valid_access_token.post("/api/event/", json={"prevention_tools": ["test"], "name": "test", "status": "OPEN"})
+    create = client_valid_access_token.post(
+        "/api/event/", json={"prevention_tools": ["test"], "name": "test", "status": "OPEN"}
+    )
     assert create.status_code == status.HTTP_201_CREATED
 
     # Read it back
@@ -319,7 +327,9 @@ def test_create_valid_remediations(client_valid_access_token):
     client_valid_access_token.post("/api/event/remediation/", json={"value": "test"})
 
     # Use the remediation to create a new event
-    create = client_valid_access_token.post("/api/event/", json={"remediations": ["test"], "name": "test", "status": "OPEN"})
+    create = client_valid_access_token.post(
+        "/api/event/", json={"remediations": ["test"], "name": "test", "status": "OPEN"}
+    )
     assert create.status_code == status.HTTP_201_CREATED
 
     # Read it back
@@ -333,7 +343,9 @@ def test_create_valid_risk_level(client_valid_access_token):
     client_valid_access_token.post("/api/event/risk_level/", json={"value": "test"})
 
     # Use the risk level to create a new event
-    create = client_valid_access_token.post("/api/event/", json={"risk_level": "test", "name": "test", "status": "OPEN"})
+    create = client_valid_access_token.post(
+        "/api/event/", json={"risk_level": "test", "name": "test", "status": "OPEN"}
+    )
     assert create.status_code == status.HTTP_201_CREATED
 
     # Read it back
@@ -412,7 +424,9 @@ def test_create_valid_node_directives(client_valid_access_token, values):
     client_valid_access_token.post("/api/event/status/", json={"value": "OPEN"})
 
     # Create the node
-    create = client_valid_access_token.post("/api/event/", json={"directives": values, "name": "test", "status": "OPEN"})
+    create = client_valid_access_token.post(
+        "/api/event/", json={"directives": values, "name": "test", "status": "OPEN"}
+    )
     assert create.status_code == status.HTTP_201_CREATED
 
     # Read it back
@@ -456,7 +470,9 @@ def test_create_valid_node_threat_actor(client_valid_access_token, value):
     client_valid_access_token.post("/api/event/status/", json={"value": "OPEN"})
 
     # Create the node
-    create = client_valid_access_token.post("/api/event/", json={"threat_actor": value, "name": "test", "status": "OPEN"})
+    create = client_valid_access_token.post(
+        "/api/event/", json={"threat_actor": value, "name": "test", "status": "OPEN"}
+    )
     assert create.status_code == status.HTTP_201_CREATED
 
     # Read it back

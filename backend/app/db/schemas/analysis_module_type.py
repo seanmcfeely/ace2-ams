@@ -41,6 +41,4 @@ class AnalysisModuleType(Base):
 
     version = Column(String, nullable=False)
 
-    __table_args__ = (
-        UniqueConstraint("value", "version", name="value_version_uc"),
-    )
+    __table_args__ = (UniqueConstraint("value", "version", name="value_version_uc"),)

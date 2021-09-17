@@ -38,7 +38,9 @@ from tests.api.node import (
     ],
 )
 def test_update_invalid_fields(client_valid_access_token, key, value):
-    update = client_valid_access_token.patch(f"/api/analysis/{uuid.uuid4()}", json={key: value, "version": str(uuid.uuid4())})
+    update = client_valid_access_token.patch(
+        f"/api/analysis/{uuid.uuid4()}", json={key: value, "version": str(uuid.uuid4())}
+    )
     assert update.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY
     assert key in update.text
 
@@ -48,7 +50,9 @@ def test_update_invalid_fields(client_valid_access_token, key, value):
     INVALID_UPDATE_FIELDS,
 )
 def test_update_invalid_node_fields(client_valid_access_token, key, value):
-    update = client_valid_access_token.patch(f"/api/analysis/{uuid.uuid4()}", json={"version": str(uuid.uuid4()), key: value})
+    update = client_valid_access_token.patch(
+        f"/api/analysis/{uuid.uuid4()}", json={"version": str(uuid.uuid4()), key: value}
+    )
     assert update.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY
     assert key in update.text
 
@@ -63,10 +67,7 @@ def test_update_invalid_version(client_valid_access_token):
     create = client_valid_access_token.post("/api/analysis/", json={})
 
     # Make sure you cannot update it using an invalid version
-    update = client_valid_access_token.patch(
-        create.headers["Content-Location"],
-        json={"version": str(uuid.uuid4())}
-    )
+    update = client_valid_access_token.patch(create.headers["Content-Location"], json={"version": str(uuid.uuid4())})
     assert update.status_code == status.HTTP_409_CONFLICT
 
 
@@ -77,8 +78,7 @@ def test_update_nonexistent_analysis_module_type(client_valid_access_token):
 
     # Make sure you cannot update it to use a nonexistent analysis module type
     update = client_valid_access_token.patch(
-        create.headers["Content-Location"],
-        json={"analysis_module_type": str(uuid.uuid4()), "version": version}
+        create.headers["Content-Location"], json={"analysis_module_type": str(uuid.uuid4()), "version": version}
     )
     assert update.status_code == status.HTTP_404_NOT_FOUND
 
@@ -93,10 +93,7 @@ def test_update_nonexistent_node_fields(client_valid_access_token, key, value):
     create = client_valid_access_token.post("/api/analysis/", json={"version": version})
 
     # Make sure you cannot update it to use a nonexistent node field value
-    update = client_valid_access_token.patch(
-        create.headers["Content-Location"],
-        json={key: value, "version": version}
-    )
+    update = client_valid_access_token.patch(create.headers["Content-Location"], json={key: value, "version": version})
     assert update.status_code == status.HTTP_404_NOT_FOUND
 
 
@@ -114,21 +111,18 @@ def test_update_analysis_module_type(client_valid_access_token):
     # Create some analysis module types
     analysis_module_type_uuid1 = str(uuid.uuid4())
     client_valid_access_token.post(
-        "/api/analysis/module_type/",
-        json={"uuid": analysis_module_type_uuid1, "value": "test", "version": "1.0.0"}
+        "/api/analysis/module_type/", json={"uuid": analysis_module_type_uuid1, "value": "test", "version": "1.0.0"}
     )
 
     analysis_module_type_uuid2 = str(uuid.uuid4())
     client_valid_access_token.post(
-        "/api/analysis/module_type/",
-        json={"uuid": analysis_module_type_uuid2, "value": "test2", "version": "1.0.0"}
+        "/api/analysis/module_type/", json={"uuid": analysis_module_type_uuid2, "value": "test2", "version": "1.0.0"}
     )
 
     # Use the analysis module type to create a new analysis
     version = str(uuid.uuid4())
     create = client_valid_access_token.post(
-        "/api/analysis/",
-        json={"analysis_module_type": analysis_module_type_uuid1, "version": version}
+        "/api/analysis/", json={"analysis_module_type": analysis_module_type_uuid1, "version": version}
     )
     assert create.status_code == status.HTTP_201_CREATED
 
@@ -139,7 +133,7 @@ def test_update_analysis_module_type(client_valid_access_token):
     # Update the analysis module type
     update = client_valid_access_token.patch(
         create.headers["Content-Location"],
-        json={"analysis_module_type": analysis_module_type_uuid2, "version": version}
+        json={"analysis_module_type": analysis_module_type_uuid2, "version": version},
     )
     assert update.status_code == status.HTTP_204_NO_CONTENT
 
@@ -170,8 +164,7 @@ def test_update_valid_node_directives(client_valid_access_token, values):
 
     # Update the node
     update = client_valid_access_token.patch(
-        create.headers["Content-Location"],
-        json={"directives": values, "version": version}
+        create.headers["Content-Location"], json={"directives": values, "version": version}
     )
     assert update.status_code == status.HTTP_204_NO_CONTENT
 
@@ -202,8 +195,7 @@ def test_update_valid_node_tags(client_valid_access_token, values):
 
     # Update the node
     update = client_valid_access_token.patch(
-        create.headers["Content-Location"],
-        json={"tags": values, "version": version}
+        create.headers["Content-Location"], json={"tags": values, "version": version}
     )
     assert update.status_code == status.HTTP_204_NO_CONTENT
 
@@ -233,8 +225,7 @@ def test_update_valid_node_threat_actor(client_valid_access_token, value):
 
     # Update the node
     update = client_valid_access_token.patch(
-        create.headers["Content-Location"],
-        json={"threat_actor": value, "version": version}
+        create.headers["Content-Location"], json={"threat_actor": value, "version": version}
     )
     assert update.status_code == status.HTTP_204_NO_CONTENT
 
@@ -272,8 +263,7 @@ def test_update_valid_node_threats(client_valid_access_token, values):
 
     # Update the node
     update = client_valid_access_token.patch(
-        create.headers["Content-Location"],
-        json={"threats": values, "version": version}
+        create.headers["Content-Location"], json={"threats": values, "version": version}
     )
     assert update.status_code == status.HTTP_204_NO_CONTENT
 
@@ -314,7 +304,9 @@ def test_update(client_valid_access_token, key, initial_value, updated_value):
         assert get.json()[key] == initial_value
 
     # Update it
-    update = client_valid_access_token.patch(create.headers["Content-Location"], json={"version": version, key: updated_value})
+    update = client_valid_access_token.patch(
+        create.headers["Content-Location"], json={"version": version, key: updated_value}
+    )
     assert update.status_code == status.HTTP_204_NO_CONTENT
 
     # Read it back

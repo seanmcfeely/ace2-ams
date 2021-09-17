@@ -110,9 +110,7 @@ def update_user(
         db_user.password = hash_password(update_data["password"])
 
     if "roles" in update_data:
-        db_user.roles = crud.read_by_values(
-            values=update_data["roles"], db_table=UserRole, db=db
-        )
+        db_user.roles = crud.read_by_values(values=update_data["roles"], db_table=UserRole, db=db)
 
     if "timezone" in update_data:
         db_user.timezone = update_data["timezone"]

@@ -169,10 +169,13 @@ def test_create_valid_parent_observable_uuid(client_valid_access_token):
 
     # Use the observable instance as the parent for a new analysis
     child_analysis_uuid = str(uuid.uuid4())
-    create = client_valid_access_token.post("/api/analysis/", json={
-        "parent_observable_uuid": observable_uuid,
-        "uuid": child_analysis_uuid,
-    })
+    create = client_valid_access_token.post(
+        "/api/analysis/",
+        json={
+            "parent_observable_uuid": observable_uuid,
+            "uuid": child_analysis_uuid,
+        },
+    )
     assert create.status_code == status.HTTP_201_CREATED
 
     # Read it back

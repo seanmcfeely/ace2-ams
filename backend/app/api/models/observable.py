@@ -16,7 +16,7 @@ class ObservableBase(BaseModel):
 
     for_detection: StrictBool = Field(
         default=False,
-        description="Whether or not this observable should be included in the observable detection exports"
+        description="Whether or not this observable should be included in the observable detection exports",
     )
 
     type: type_str = Field(description="The type of the observable")

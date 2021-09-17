@@ -139,9 +139,7 @@ def update_observable_instance(
 
     if "redirection_uuid" in update_data:
         db_observable_instance.redirection = crud.read(
-            uuid=update_data["redirection_uuid"],
-            db_table=ObservableInstance,
-            db=db
+            uuid=update_data["redirection_uuid"], db_table=ObservableInstance, db=db
         )
 
         # TODO: Figure out why setting the redirection field above does not set the redirection_uuid

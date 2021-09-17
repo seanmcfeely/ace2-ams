@@ -112,7 +112,9 @@ def test_create_missing_required_fields(client_valid_access_token, key):
     ],
 )
 def test_create_nonexistent_list_values(client_valid_access_token, key):
-    create = client_valid_access_token.post("/api/analysis/module_type/", json={"value": "test", "version": "1.0.0", key: ["test_value"]})
+    create = client_valid_access_token.post(
+        "/api/analysis/module_type/", json={"value": "test", "version": "1.0.0", key: ["test_value"]}
+    )
     assert create.status_code == status.HTTP_404_NOT_FOUND
 
 
@@ -130,12 +132,14 @@ def test_create_nonexistent_list_values(client_valid_access_token, key):
         ("extended_version", '{"foo": "bar"}'),
         ("manual", True),
         ("manual", False),
-        ("uuid", str(uuid.uuid4()))
+        ("uuid", str(uuid.uuid4())),
     ],
 )
 def test_create_valid_optional_fields(client_valid_access_token, key, value):
     # Create the object
-    create = client_valid_access_token.post("/api/analysis/module_type/", json={key: value, "value": "test", "version": "1.0.0"})
+    create = client_valid_access_token.post(
+        "/api/analysis/module_type/", json={key: value, "value": "test", "version": "1.0.0"}
+    )
     assert create.status_code == status.HTTP_201_CREATED
 
     # Read it back
@@ -172,7 +176,9 @@ def test_create_valid_list_fields(client_valid_access_token, api_endpoint, key, 
         client_valid_access_token.post(api_endpoint, json={"value": value})
 
     # Create the analysis module type
-    create = client_valid_access_token.post("/api/analysis/module_type/", json={key: values, "value": "test", "version": "1.0.0"})
+    create = client_valid_access_token.post(
+        "/api/analysis/module_type/", json={key: values, "value": "test", "version": "1.0.0"}
+    )
     assert create.status_code == status.HTTP_201_CREATED
 
     # Read it back

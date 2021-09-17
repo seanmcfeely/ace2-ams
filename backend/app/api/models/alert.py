@@ -20,8 +20,7 @@ class AlertBase(NodeBase):
     description: Optional[type_str] = Field(description="A short description of the alert")
 
     event_time: datetime = Field(
-        default_factory=datetime.utcnow,
-        description="The time the activity alerted on occurred"
+        default_factory=datetime.utcnow, description="The time the activity alerted on occurred"
     )
 
     instructions: Optional[type_str] = Field(
@@ -53,9 +52,7 @@ class AlertCreate(NodeCreate, AlertBase):
 class AlertRead(NodeRead, AlertBase):
     analysis: AnalysisRead = Field(description="The analysis representing this alert")
 
-    disposition: Optional[AlertDispositionRead] = Field(
-        description="The disposition assigned to this alert"
-    )
+    disposition: Optional[AlertDispositionRead] = Field(description="The disposition assigned to this alert")
 
     disposition_time: Optional[datetime] = Field(description="The time this alert was most recently dispositioned")
 

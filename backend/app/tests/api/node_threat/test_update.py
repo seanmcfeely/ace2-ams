@@ -60,7 +60,9 @@ def test_update_duplicate_unique_fields(client_valid_access_token, key):
 
 
 def test_update_nonexistent_uuid(client_valid_access_token):
-    update = client_valid_access_token.patch(f"/api/node/threat/{uuid.uuid4()}", json={"types": ["test_type"], "value": "test"})
+    update = client_valid_access_token.patch(
+        f"/api/node/threat/{uuid.uuid4()}", json={"types": ["test_type"], "value": "test"}
+    )
     assert update.status_code == status.HTTP_404_NOT_FOUND
 
 

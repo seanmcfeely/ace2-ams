@@ -51,7 +51,9 @@ from tests.api.node import (
     ],
 )
 def test_update_invalid_fields(client_valid_access_token, key, value):
-    update = client_valid_access_token.patch(f"/api/alert/{uuid.uuid4()}", json={key: value, "version": str(uuid.uuid4())})
+    update = client_valid_access_token.patch(
+        f"/api/alert/{uuid.uuid4()}", json={key: value, "version": str(uuid.uuid4())}
+    )
     assert update.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY
     assert key in update.text
 
@@ -61,7 +63,9 @@ def test_update_invalid_fields(client_valid_access_token, key, value):
     INVALID_UPDATE_FIELDS,
 )
 def test_update_invalid_node_fields(client_valid_access_token, key, value):
-    update = client_valid_access_token.patch(f"/api/alert/{uuid.uuid4()}", json={"version": str(uuid.uuid4()), key: value})
+    update = client_valid_access_token.patch(
+        f"/api/alert/{uuid.uuid4()}", json={"version": str(uuid.uuid4()), key: value}
+    )
     assert update.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY
     assert key in update.text
 
@@ -253,7 +257,9 @@ def test_update_owner(client_valid_access_token):
     client_valid_access_token.post("/api/user/", json=create_json)
 
     # Update the owner
-    update = client_valid_access_token.patch(create.headers["Content-Location"], json={"owner": "johndoe", "version": version})
+    update = client_valid_access_token.patch(
+        create.headers["Content-Location"], json={"owner": "johndoe", "version": version}
+    )
     assert update.status_code == status.HTTP_204_NO_CONTENT
 
     # Read it back
@@ -311,7 +317,9 @@ def test_update_tool(client_valid_access_token):
     client_valid_access_token.post("/api/alert/tool/", json={"value": "test"})
 
     # Update the tool
-    update = client_valid_access_token.patch(create.headers["Content-Location"], json={"tool": "test", "version": version})
+    update = client_valid_access_token.patch(
+        create.headers["Content-Location"], json={"tool": "test", "version": version}
+    )
     assert update.status_code == status.HTTP_204_NO_CONTENT
 
     # Read it back
@@ -441,7 +449,9 @@ def test_update_valid_node_tags(client_valid_access_token, values):
         client_valid_access_token.post("/api/node/tag/", json={"value": value})
 
     # Update the node
-    update = client_valid_access_token.patch(create.headers["Content-Location"], json={"tags": values, "version": version})
+    update = client_valid_access_token.patch(
+        create.headers["Content-Location"], json={"tags": values, "version": version}
+    )
     assert update.status_code == status.HTTP_204_NO_CONTENT
 
     # Read it back
@@ -517,7 +527,9 @@ def test_update_valid_node_threats(client_valid_access_token, values):
         client_valid_access_token.post("/api/node/threat/", json={"types": ["test_type"], "value": value})
 
     # Update the node
-    update = client_valid_access_token.patch(create.headers["Content-Location"], json={"threats": values, "version": version})
+    update = client_valid_access_token.patch(
+        create.headers["Content-Location"], json={"threats": values, "version": version}
+    )
     assert update.status_code == status.HTTP_204_NO_CONTENT
 
     # Read it back
@@ -562,7 +574,9 @@ def test_update(client_valid_access_token, key, initial_value, updated_value):
     assert get.json()[key] == initial_value
 
     # Update it
-    update = client_valid_access_token.patch(create.headers["Content-Location"], json={"version": version, key: updated_value})
+    update = client_valid_access_token.patch(
+        create.headers["Content-Location"], json={"version": version, key: updated_value}
+    )
     assert update.status_code == status.HTTP_204_NO_CONTENT
 
     # Read it back

@@ -99,9 +99,7 @@ def test_expired_token(client, db, monkeypatch):
 
 @pytest.mark.parametrize(
     "route",
-    [
-        route for route in app.routes if route.path.startswith("/api/")
-    ],
+    [route for route in app.routes if route.path.startswith("/api/")],
 )
 def test_invalid_token(client, route):
     """

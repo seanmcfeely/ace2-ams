@@ -62,7 +62,9 @@ def test_create_invalid_fields(client_valid_access_token, key, value):
     INVALID_CREATE_FIELDS,
 )
 def test_create_invalid_node_fields(client_valid_access_token, key, value):
-    create = client_valid_access_token.post("/api/alert/", json={key: value, "queue": "test_queue", "type": "test_type"})
+    create = client_valid_access_token.post(
+        "/api/alert/", json={key: value, "queue": "test_queue", "type": "test_type"}
+    )
     assert create.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY
 
 
@@ -117,7 +119,9 @@ def test_create_nonexistent_tool(client_valid_access_token):
     client_valid_access_token.post("/api/alert/type/", json={"value": "test_type"})
 
     # Create an object
-    create = client_valid_access_token.post("/api/alert/", json={"tool": "abc", "queue": "test_queue", "type": "test_type"})
+    create = client_valid_access_token.post(
+        "/api/alert/", json={"tool": "abc", "queue": "test_queue", "type": "test_type"}
+    )
     assert create.status_code == status.HTTP_404_NOT_FOUND
     assert "alert_tool" in create.text
 
@@ -154,7 +158,9 @@ def test_create_nonexistent_node_fields(client_valid_access_token, key, value):
     client_valid_access_token.post("/api/alert/queue/", json={"value": "test_queue"})
     client_valid_access_token.post("/api/alert/type/", json={"value": "test_type"})
 
-    create = client_valid_access_token.post("/api/alert/", json={key: value, "queue": "test_queue", "type": "test_type"})
+    create = client_valid_access_token.post(
+        "/api/alert/", json={key: value, "queue": "test_queue", "type": "test_type"}
+    )
     assert create.status_code == status.HTTP_404_NOT_FOUND
 
 
@@ -186,7 +192,9 @@ def test_create_valid_optional_fields(client_valid_access_token, key, value):
     client_valid_access_token.post("/api/alert/type/", json={"value": "test_type"})
 
     # Create the object
-    create = client_valid_access_token.post("/api/alert/", json={key: value, "queue": "test_queue", "type": "test_type"})
+    create = client_valid_access_token.post(
+        "/api/alert/", json={key: value, "queue": "test_queue", "type": "test_type"}
+    )
     assert create.status_code == status.HTTP_201_CREATED
 
     # Read it back
@@ -323,7 +331,9 @@ def test_create_valid_node_tags(client_valid_access_token, values):
     client_valid_access_token.post("/api/alert/type/", json={"value": "test_type"})
 
     # Create the node
-    create = client_valid_access_token.post("/api/alert/", json={"tags": values, "queue": "test_queue", "type": "test_type"})
+    create = client_valid_access_token.post(
+        "/api/alert/", json={"tags": values, "queue": "test_queue", "type": "test_type"}
+    )
     assert create.status_code == status.HTTP_201_CREATED
 
     # Read it back

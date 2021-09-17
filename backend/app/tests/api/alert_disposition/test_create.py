@@ -76,11 +76,7 @@ def test_create_missing_required_fields(client_valid_access_token, key):
 
 @pytest.mark.parametrize(
     "key,value",
-    [
-        ("description", None),
-        ("description", "test"),
-        ("uuid", str(uuid.uuid4()))
-    ],
+    [("description", None), ("description", "test"), ("uuid", str(uuid.uuid4()))],
 )
 def test_create_valid_optional_fields(client_valid_access_token, key, value):
     # Create the object

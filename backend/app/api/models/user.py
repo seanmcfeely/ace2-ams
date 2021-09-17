@@ -19,15 +19,13 @@ class UserBase(BaseModel):
     email: EmailStr = Field(description="The user's email address")
 
     enabled: StrictBool = Field(
-        default=True,
-        description="Whether or not the user account is enabled and can access the application"
+        default=True, description="Whether or not the user account is enabled and can access the application"
     )
 
     roles: type_list_str = Field(description="A list of roles assigned to the user")
 
     timezone: type_str = Field(
-        default="UTC",
-        description="The timezone that will be used when the user views timestamps in the application"
+        default="UTC", description="The timezone that will be used when the user views timestamps in the application"
     )
 
     username: type_str = Field(description="The username used to sign into the application")

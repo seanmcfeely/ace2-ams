@@ -92,9 +92,13 @@ def read_by_uuids(uuids: List[UUID], db_table: DeclarativeMeta, db: Session):
 def read_observable(type: str, value: str, db: Session) -> Union[Observable, None]:
     """Returns the Observable with the given type and value if it exists."""
 
-    return db.execute(
-        select(Observable).join(ObservableType).where(ObservableType.value == type, Observable.value == value)
-    ).scalars().one_or_none()
+    return (
+        db.execute(
+            select(Observable).join(ObservableType).where(ObservableType.value == type, Observable.value == value)
+        )
+        .scalars()
+        .one_or_none()
+    )
 
 
 def read_user_by_username(username: str, db: Session) -> User:
@@ -105,9 +109,9 @@ def read_user_by_username(username: str, db: Session) -> User:
         return db.execute(select(User).where(User.username == username)).scalars().one()
     except NoResultFound:
         raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND,
-                detail=f"The user {username} does not exist",
-            )
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"The user {username} does not exist",
+        )
 
 
 def read_by_value(value: str, db_table: DeclarativeMeta, db: Session):
@@ -124,9 +128,9 @@ def read_by_value(value: str, db_table: DeclarativeMeta, db: Session):
     # value column should be configured to have that column be unique.
     except NoResultFound:
         raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND,
-                detail=f"The {value} {db_table} does not exist",
-            )
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"The {value} {db_table} does not exist",
+        )
 
 
 def read_by_values(values: List[str], db_table: DeclarativeMeta, db: Session):

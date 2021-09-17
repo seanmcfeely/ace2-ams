@@ -98,7 +98,9 @@ def test_create_valid_optional_fields(client_valid_access_token, key, value):
     client_valid_access_token.post("/api/node/threat/type/", json={"value": "test_type"})
 
     # Create the object
-    create = client_valid_access_token.post("/api/node/threat/", json={key: value, "types": ["test_type"], "value": "test"})
+    create = client_valid_access_token.post(
+        "/api/node/threat/", json={key: value, "types": ["test_type"], "value": "test"}
+    )
     assert create.status_code == status.HTTP_201_CREATED
 
     # Read it back
