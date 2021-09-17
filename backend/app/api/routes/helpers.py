@@ -10,7 +10,7 @@ from core.auth import validate_access_token
 #
 
 
-def api_route_auth(router: APIRouter, endpoint: Callable, response_model: BaseModel, path: str = "/"):
+def api_route_auth(router: APIRouter, endpoint: Callable, response_model: BaseModel, path: str = ""):
     router.add_api_route(
         path=path,
         endpoint=endpoint,
@@ -19,6 +19,20 @@ def api_route_auth(router: APIRouter, endpoint: Callable, response_model: BaseMo
         responses={
             status.HTTP_200_OK: {"description": "Authentication was successful"},
             status.HTTP_401_UNAUTHORIZED: {"description": "Invalid username or password"},
+        },
+        status_code=status.HTTP_200_OK,
+    )
+
+
+def api_route_auth_refresh(router: APIRouter, endpoint: Callable, response_model: BaseModel, path: str = "/refresh"):
+    router.add_api_route(
+        path=path,
+        endpoint=endpoint,
+        methods=["POST"],
+        response_model=response_model,
+        responses={
+            status.HTTP_200_OK: {"description": "Token was successfully refreshed"},
+            status.HTTP_401_UNAUTHORIZED: {"description": "Invalid refresh token"},
         },
         status_code=status.HTTP_200_OK,
     )
