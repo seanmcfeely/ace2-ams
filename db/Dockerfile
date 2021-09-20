@@ -1,3 +1,3 @@
-FROM postgres:13.2-alpine
+FROM postgres:13.4-alpine
 
 COPY db/extensions.sh /docker-entrypoint-initdb.d/
