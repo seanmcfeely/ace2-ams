@@ -1,0 +1,40 @@
+version: "3.9"
+
+services:
+    db:
+        container_name: ace2-ams-db
+        image: postgres:13.4-alpine
+        environment:
+            - POSTGRES_DB=${POSTGRES_DB}
+            - POSTGRES_USER=${POSTGRES_USER}
+            - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+        ports:
+            - 6666:5432
+        volumes:
+            - postgres_data:/var/lib/postgresql/data/
+            - "./postgres_extensions.sh:/docker-entrypoint-initdb.d/postgres_extensions.sh"
+
+    api:
+        depends_on:
+            - db
+        container_name: ace2-ams-api
+        build:
+            context: .
+            dockerfile: ./Dockerfile
+        environment:
+            # The DATABASE_URL environment variable needs to be in the form of:
+            # postgresql://<user>:<password>@db:5432/<database>
+            - ACE_DEV=${ACE_DEV}
+            - DATABASE_URL=${DATABASE_URL}
+            - JWT_ACCESS_EXPIRE_SECONDS=${JWT_ACCESS_EXPIRE_SECONDS}
+            - JWT_ALGORITHM=${JWT_ALGORITHM}
+            - JWT_REFRESH_EXPIRE_SECONDS=${JWT_REFRESH_EXPIRE_SECONDS}
+            - JWT_SECRET=${JWT_SECRET}
+        ports:
+            - 8888:80
+        volumes:
+            - "./app:/app"
+        command: bash -c 'while !</dev/tcp/db/5432; do sleep 1; done; /start.sh'
+
+volumes:
+    postgres_data:

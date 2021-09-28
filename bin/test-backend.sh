@@ -6,7 +6,7 @@ set -a
 source "$ACE2_ENV_PATH"
 set +a
 
-# Remove the leading backend/app/ from the command line argument so the path works inside of the container.
-new_path=${1#backend/app/}
+# Remove the leading app/ from the command line argument so the path works inside of the container.
+new_path=${1#app/}
 
-docker-compose run -e TESTING=1 backend pytest "$new_path" -vv
+docker-compose run -e TESTING=1 api pytest "$new_path" -vv
