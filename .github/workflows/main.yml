@@ -1,0 +1,31 @@
+name: Build and Test
+
+# Runs only when there is a pull request against the main branch
+on:
+  pull_request:
+    branches: [ main ]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+# All of the jobs run in parallel, but each step within a job is sequential
+jobs:
+  frontend:
+    name: Frontend Tests
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+        
+      - name: Build
+        run: docker-compose build frontend
+          
+      - name: Lint
+        run: docker-compose run frontend npm run lint
+        
+      - name: Unit tests
+        run: docker-compose run frontend npm run test:unit
+        
+#       - name: End to end tests
+#         run: docker-compose run frontend npm run test:e2e
