@@ -1,0 +1,106 @@
+name: Build and Test
+
+# Runs only when there is a pull request against the main branch
+on:
+  pull_request:
+    branches: [ main ]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+# All of the jobs run in parallel, but each step within a job is sequential
+jobs:
+  api:
+    name: API Tests  
+    runs-on: ubuntu-latest
+    
+    env:
+      DOCKER_BUILDKIT: 1
+      COMPOSE_DOCKER_CLI_BUILD: 1
+      JWT_ACCESS_EXPIRE_SECONDS: 900
+      JWT_ALGORITHM: HS256
+      JWT_REFRESH_EXPIRE_SECONDS: 43200
+      JWT_SECRET: supersecret
+      POSTGRES_DB: ace
+      POSTGRES_USER: ace
+      POSTGRES_PASSWORD: supersecret
+      DATABASE_URL: postgresql://ace:supersecret@db:5432/ace
+
+    steps:
+      # Check out the git repository
+      - name: Checkout code
+        uses: actions/checkout@v2
+        
+      # Set some initial variables for use in subsequent steps
+      - name: Prepare
+        id: prep
+        run: |
+          TAG="latest"
+          IMAGE="aceecosystem/ace2-ams-api"
+          echo ::set-output name=tagged_image_api::${IMAGE}-api:${TAG}
+          echo ::set-output name=tagged_image_db::${IMAGE}-db:${TAG}
+          echo ::set-output name=tag::${TAG}
+        
+      # Initialize Docker Buildx
+      - name: Set up Docker Buildx
+        id: buildx
+        uses: docker/setup-buildx-action@master
+        
+      # Load the db container from cache
+      - name: Cache Docker layers - db
+        uses: actions/cache@v2
+        with:
+          path: /tmp/.buildx-cache-db
+          key: ${{ runner.os }}-buildx-db-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-buildx-db-
+      
+      # Build the db container and use its cache
+      - name: Build database
+        uses: docker/build-push-action@v2
+        with:
+          push: false
+          load: true
+          tags: ${{ steps.prep.outputs.tagged_image_db }}
+          builder: ${{ steps.buildx.outputs.name }}
+          file: ./db/Dockerfile
+          context: .
+          cache-from: type=local,src=/tmp/.buildx-cache-db
+          cache-to: type=local,dest=/tmp/.buildx-cache-db-new
+            
+      # Load the api container from cache
+      - name: Cache Docker layers - api
+        uses: actions/cache@v2
+        with:
+          path: /tmp/.buildx-cache-api
+          key: ${{ runner.os }}-buildx-api-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-buildx-api-
+            
+      # Build the api container and use its cache
+      - name: Build api
+        uses: docker/build-push-action@v2
+        with:
+          push: false
+          load: true
+          tags: ${{ steps.prep.outputs.tagged_image_api }}
+          builder: ${{ steps.buildx.outputs.name }}
+          file: ./Dockerfile
+          context: .
+          cache-from: type=local,src=/tmp/.buildx-cache-api
+          cache-to: type=local,dest=/tmp/.buildx-cache-api-new
+          
+      # Run the unit tests and code coverage
+      - name: Test
+        run: docker-compose -f docker-compose-ci.yml run -e TESTING=1 api pytest -vv
+        
+      # This is a temprorary fix to prevent the Docker cache from eating up all available space over time
+      - name: Move cache
+        # Temp fix
+        # https://github.com/docker/build-push-action/issues/252
+        # https://github.com/moby/buildkit/issues/1896
+        run: |
+          rm -rf /tmp/.buildx-cache-db
+          mv /tmp/.buildx-cache-db-new /tmp/.buildx-cache-db
+          rm -rf /tmp/.buildx-cache-api
+          mv /tmp/.buildx-cache-api-new /tmp/.buildx-cache-api
