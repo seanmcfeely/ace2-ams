@@ -57,10 +57,6 @@ export default {
     isOpen() {
       return this.$store.getters["modals/allOpen"].includes(this.name);
     },
-    ...mapActions({
-      updateAlert: "alerts/updateAlert",
-      updateAlerts: "alerts/updateAlerts"
-    }),
     ...mapState({users: state => state.users.users,
                 selectedAlerts: state => state.selectedAlerts.selected}),
     ...mapGetters({anyAlertsSelected: 'selectedAlerts/anySelected',
@@ -88,6 +84,10 @@ export default {
   },
 
   methods: {
+    ...mapActions({
+      updateAlert: "alerts/updateAlert",
+      updateAlerts: "alerts/updateAlerts"
+    }),
     async loadUsers() {
       this.isLoading = true;
       try {
@@ -101,14 +101,15 @@ export default {
       this.isLoading = true;
       if (this.multipleAlertsSelected) {
         this.assignUserToMultiple();
+      } else {
+        this.assignUser();
       }
-      this.assignUser();
       this.isLoading = false;
-      this.close();
     },
     async assignUser() {
       try {
         await this.updateAlert({oldAlertUUID: this.selectedAlerts[0], update: {owner: this.selectedUser}});
+        this.close();
       } catch (error) {
         this.error = error.message || 'Something went wrong!';
       }
@@ -116,6 +117,7 @@ export default {
     async assignUserToMultiple() {
       try {
         await this.updateAlerts({oldAlertUUIDs: this.selectedAlerts, update: {owner: this.selectedUser}});
+        this.close();
       } catch (error) {
         this.error = error.message || 'Something went wrong!';
       }
