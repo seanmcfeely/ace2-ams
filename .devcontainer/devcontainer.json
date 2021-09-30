@@ -20,7 +20,6 @@
 	"extensions": [
 		"dbaeumer.vscode-eslint",
 		"octref.vetur",
-		"ms-vscode.vscode-typescript-tslint-plugin",
 		"esbenp.prettier-vscode",
 	],
 
