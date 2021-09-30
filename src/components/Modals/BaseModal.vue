@@ -22,35 +22,35 @@
 </template>
 
 <script>
-import Dialog from "primevue/dialog";
+  import Dialog from "primevue/dialog";
 
-export default {
-  name: "BaseModal",
-  components: { Dialog },
+  export default {
+    name: "BaseModal",
+    components: { Dialog },
 
-  props: {
-    name: { type: String, required: true },
-    header: { type: String, required: false },
-  },
-
-  computed: {
-    isActive() {
-      return this.$store.getters["modals/active"] === this.name;
+    props: {
+      name: { type: String, required: true },
+      header: { type: String, required: false },
     },
 
-    isOpen() {
-      return this.$store.getters["modals/allOpen"].includes(this.name);
-    },
-  },
+    computed: {
+      isActive() {
+        return this.$store.getters["modals/active"] === this.name;
+      },
 
-  beforeUnmount() {
-    if (this.isOpen) this.close();
-  },
-
-  methods: {
-    close() {
-      this.$store.dispatch("modals/close", this.name);
+      isOpen() {
+        return this.$store.getters["modals/allOpen"].includes(this.name);
+      },
     },
-  },
-};
+
+    beforeUnmount() {
+      if (this.isOpen) this.close();
+    },
+
+    methods: {
+      close() {
+        this.$store.dispatch("modals/close", this.name);
+      },
+    },
+  };
 </script>

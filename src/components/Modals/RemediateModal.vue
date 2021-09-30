@@ -33,60 +33,60 @@
 </template>
 
 <script>
-import Button from "primevue/button";
-import Column from "primevue/column";
-import DataTable from "primevue/datatable";
+  import Button from "primevue/button";
+  import Column from "primevue/column";
+  import DataTable from "primevue/datatable";
 
-import BaseModal from "./BaseModal";
+  import BaseModal from "./BaseModal";
 
-export default {
-  name: "RemediationModal",
-  components: { BaseModal, Button, Column, DataTable },
+  export default {
+    name: "RemediationModal",
+    components: { BaseModal, Button, Column, DataTable },
 
-  computed: {
-    name() {
-      return this.$options.name;
+    computed: {
+      name() {
+        return this.$options.name;
+      },
     },
-  },
 
-  data() {
-    return {
-      remediationTargets: [
-        {
-          type: "zerofox",
-          target: "bad_url",
-          status: "remediation failed",
-          id: "123",
-        },
-        {
-          type: "email",
-          target: "msgID|email.com",
-          status: "remediating",
-          id: "124",
-        },
-        {
-          type: "email",
-          target: "msgID|email2.com",
-          status: "removed",
-          id: "125",
-        },
-        {
-          type: "email",
-          target: "msgID|email3.com",
-          status: "restored",
-          id: "126",
-        },
-      ],
+    data() {
+      return {
+        remediationTargets: [
+          {
+            type: "zerofox",
+            target: "bad_url",
+            status: "remediation failed",
+            id: "123",
+          },
+          {
+            type: "email",
+            target: "msgID|email.com",
+            status: "remediating",
+            id: "124",
+          },
+          {
+            type: "email",
+            target: "msgID|email2.com",
+            status: "removed",
+            id: "125",
+          },
+          {
+            type: "email",
+            target: "msgID|email3.com",
+            status: "restored",
+            id: "126",
+          },
+        ],
 
-      selectedRemediations: [],
-    };
-  },
-
-  methods: {
-    close() {
-      this.selectedRemediations = [];
-      this.$store.dispatch("modals/close", this.name);
+        selectedRemediations: [],
+      };
     },
-  },
-};
+
+    methods: {
+      close() {
+        this.selectedRemediations = [];
+        this.$store.dispatch("modals/close", this.name);
+      },
+    },
+  };
 </script>

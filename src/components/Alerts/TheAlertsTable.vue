@@ -122,101 +122,103 @@
 </template>
 
 <script>
-import Button from "primevue/button";
-import Column from "primevue/column";
-import DataTable from "primevue/datatable";
-import { FilterMatchMode } from "primevue/api";
-import InputText from "primevue/inputtext";
-import MultiSelect from "primevue/multiselect";
-import Tag from "primevue/tag";
-import Toolbar from "primevue/toolbar";
+  import Button from "primevue/button";
+  import Column from "primevue/column";
+  import DataTable from "primevue/datatable";
+  import { FilterMatchMode } from "primevue/api";
+  import InputText from "primevue/inputtext";
+  import MultiSelect from "primevue/multiselect";
+  import Tag from "primevue/tag";
+  import Toolbar from "primevue/toolbar";
 
-export default {
-  name: "TheAlertsTable",
-  components: {
-    Button,
-    Column,
-    DataTable,
-    InputText,
-    MultiSelect,
-    Tag,
-    Toolbar,
-  },
-
-  data() {
-    return {
-      alerts: [],
-      alertTableFilter: null,
-
-      columns: [
-        { field: "alert_date", header: "Alert Date" },
-        { field: "name", header: "Name" },
-        { field: "disposition", header: "Disposition" },
-        { field: "owner", header: "Owner" },
-        { field: "type", header: "Type" },
-        { field: "disposition_by", header: "Dispositioned By" },
-        { field: "event_date", header: "Event Date" },
-        { field: "queue", header: "Queue" },
-        { field: "remediated_by", header: "Remediated By" },
-        { field: "remediated_date", header: "Remediated Date" },
-        { field: "remediation_status", header: "Remediation Status" },
-      ],
-
-      expandedRows: [],
-      selectedColumns: null,
-      selectedRows: null,
-    };
-  },
-
-  async created() {
-    this.resetAlertTable();
-    // this is where we can query for alerts to show
-    // this.alerts = await alert.getAlerts();
-  },
-
-  methods: {
-    alertSelect(alert) {
-      this.$store.dispatch("selectedAlerts/select", alert.uuid);
+  export default {
+    name: "TheAlertsTable",
+    components: {
+      Button,
+      Column,
+      DataTable,
+      InputText,
+      MultiSelect,
+      Tag,
+      Toolbar,
     },
 
-    alertUnselect(alert) {
-      this.$store.dispatch("selectedAlerts/unselect", alert.uuid);
-    },
+    data() {
+      return {
+        alerts: [],
+        alertTableFilter: null,
 
-    alertSelectAll() {
-      let all_alert_uuids = [];
-      for (let i = 0; i < this.alerts.length; i++) {
-        all_alert_uuids.push(this.alerts[i].uuid);
-      }
-      this.$store.dispatch("selectedAlerts/selectAll", all_alert_uuids);
-    },
+        columns: [
+          { field: "alert_date", header: "Alert Date" },
+          { field: "name", header: "Name" },
+          { field: "disposition", header: "Disposition" },
+          { field: "owner", header: "Owner" },
+          { field: "type", header: "Type" },
+          { field: "disposition_by", header: "Dispositioned By" },
+          { field: "event_date", header: "Event Date" },
+          { field: "queue", header: "Queue" },
+          { field: "remediated_by", header: "Remediated By" },
+          { field: "remediated_date", header: "Remediated Date" },
+          { field: "remediation_status", header: "Remediation Status" },
+        ],
 
-    alertUnselectAll() {
-      this.$store.dispatch("selectedAlerts/unselectAll");
-    },
-
-    resetAlertTable() {
-      // Sets the alert table selected columns and keyword search back to default
-      this.initAlertTable();
-      this.selectedColumns = this.columns.slice(0, 5);
-    },
-
-    initAlertTable() {
-      // Initializes alert filter (the keyword search)
-      this.alertTableFilter = {
-        global: { value: null, matchMode: FilterMatchMode.CONTAINS },
+        expandedRows: [],
+        selectedColumns: null,
+        selectedRows: null,
       };
     },
 
-    onColumnToggle(value) {
-      // Toggles selected columns to display
-      this.selectedColumns = this.columns.filter((col) => value.includes(col));
+    async created() {
+      this.resetAlertTable();
+      // this is where we can query for alerts to show
+      // this.alerts = await alert.getAlerts();
     },
 
-    exportCSV() {
-      // Exports currently filtered alerts to CSV
-      this.$refs.dt.exportCSV();
+    methods: {
+      alertSelect(alert) {
+        this.$store.dispatch("selectedAlerts/select", alert.uuid);
+      },
+
+      alertUnselect(alert) {
+        this.$store.dispatch("selectedAlerts/unselect", alert.uuid);
+      },
+
+      alertSelectAll() {
+        let all_alert_uuids = [];
+        for (let i = 0; i < this.alerts.length; i++) {
+          all_alert_uuids.push(this.alerts[i].uuid);
+        }
+        this.$store.dispatch("selectedAlerts/selectAll", all_alert_uuids);
+      },
+
+      alertUnselectAll() {
+        this.$store.dispatch("selectedAlerts/unselectAll");
+      },
+
+      resetAlertTable() {
+        // Sets the alert table selected columns and keyword search back to default
+        this.initAlertTable();
+        this.selectedColumns = this.columns.slice(0, 5);
+      },
+
+      initAlertTable() {
+        // Initializes alert filter (the keyword search)
+        this.alertTableFilter = {
+          global: { value: null, matchMode: FilterMatchMode.CONTAINS },
+        };
+      },
+
+      onColumnToggle(value) {
+        // Toggles selected columns to display
+        this.selectedColumns = this.columns.filter((col) =>
+          value.includes(col),
+        );
+      },
+
+      exportCSV() {
+        // Exports currently filtered alerts to CSV
+        this.$refs.dt.exportCSV();
+      },
     },
-  },
-};
+  };
 </script>

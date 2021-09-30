@@ -39,106 +39,106 @@
 </template>
 
 <script>
-import { mapState, mapGetters, mapActions } from "vuex";
+  import { mapState, mapGetters, mapActions } from "vuex";
 
-import Button from "primevue/button";
-import Dropdown from "primevue/dropdown";
-import Message from "primevue/message";
-import ProgressSpinner from "primevue/progressspinner";
+  import Button from "primevue/button";
+  import Dropdown from "primevue/dropdown";
+  import Message from "primevue/message";
+  import ProgressSpinner from "primevue/progressspinner";
 
-import BaseModal from "./BaseModal";
+  import BaseModal from "./BaseModal";
 
-export default {
-  name: "AssignModal",
-  components: { BaseModal, Button, Dropdown, Message, ProgressSpinner },
+  export default {
+    name: "AssignModal",
+    components: { BaseModal, Button, Dropdown, Message, ProgressSpinner },
 
-  computed: {
-    name() {
-      return this.$options.name;
+    computed: {
+      name() {
+        return this.$options.name;
+      },
+      isOpen() {
+        return this.$store.getters["modals/allOpen"].includes(this.name);
+      },
+      ...mapActions({
+        updateAlert: "alerts/updateAlert",
+        updateAlerts: "alerts/updateAlerts",
+      }),
+      ...mapState({
+        users: (state) => state.users.users,
+        selectedAlerts: (state) => state.selectedAlerts.selected,
+      }),
+      ...mapGetters({
+        anyAlertsSelected: "selectedAlerts/anySelected",
+        multipleAlertsSelected: "selectedAlerts/multipleSelected",
+      }),
     },
-    isOpen() {
-      return this.$store.getters["modals/allOpen"].includes(this.name);
-    },
-    ...mapActions({
-      updateAlert: "alerts/updateAlert",
-      updateAlerts: "alerts/updateAlerts",
-    }),
-    ...mapState({
-      users: (state) => state.users.users,
-      selectedAlerts: (state) => state.selectedAlerts.selected,
-    }),
-    ...mapGetters({
-      anyAlertsSelected: "selectedAlerts/anySelected",
-      multipleAlertsSelected: "selectedAlerts/multipleSelected",
-    }),
-  },
 
-  data() {
-    return {
-      error: null,
-      isLoading: false,
-      selectedUser: null,
-    };
-  },
+    data() {
+      return {
+        error: null,
+        isLoading: false,
+        selectedUser: null,
+      };
+    },
 
-  created() {
-    this.loadUsers();
-  },
+    created() {
+      this.loadUsers();
+    },
 
-  watch: {
-    isOpen: function (oldValue, newValue) {
-      if (newValue === false) {
-        this.loadUsers();
-      }
+    watch: {
+      isOpen: function (oldValue, newValue) {
+        if (newValue === false) {
+          this.loadUsers();
+        }
+      },
     },
-  },
 
-  methods: {
-    async loadUsers() {
-      this.isLoading = true;
-      try {
-        await this.$store.dispatch("users/getAllUsers");
-      } catch (error) {
-        this.error = error.message || "Something went wrong!";
-      }
-      this.isLoading = false;
+    methods: {
+      async loadUsers() {
+        this.isLoading = true;
+        try {
+          await this.$store.dispatch("users/getAllUsers");
+        } catch (error) {
+          this.error = error.message || "Something went wrong!";
+        }
+        this.isLoading = false;
+      },
+      assignUserClicked() {
+        this.isLoading = true;
+        if (this.multipleAlertsSelected) {
+          this.assignUserToMultiple();
+        }
+        this.assignUser();
+        this.isLoading = false;
+        this.close();
+      },
+      async assignUser() {
+        try {
+          await this.updateAlert({
+            oldAlertUUID: this.selectedAlerts[0],
+            update: { owner: this.selectedUser },
+          });
+        } catch (error) {
+          this.error = error.message || "Something went wrong!";
+        }
+      },
+      async assignUserToMultiple() {
+        try {
+          await this.updateAlerts({
+            oldAlertUUIDs: this.selectedAlerts,
+            update: { owner: this.selectedUser },
+          });
+        } catch (error) {
+          this.error = error.message || "Something went wrong!";
+        }
+      },
+      handleError() {
+        this.error = null;
+      },
+      close() {
+        this.selectedUser = null;
+        this.$store.dispatch("modals/close", this.name);
+      },
     },
-    assignUserClicked() {
-      this.isLoading = true;
-      if (this.multipleAlertsSelected) {
-        this.assignUserToMultiple();
-      }
-      this.assignUser();
-      this.isLoading = false;
-      this.close();
-    },
-    async assignUser() {
-      try {
-        await this.updateAlert({
-          oldAlertUUID: this.selectedAlerts[0],
-          update: { owner: this.selectedUser },
-        });
-      } catch (error) {
-        this.error = error.message || "Something went wrong!";
-      }
-    },
-    async assignUserToMultiple() {
-      try {
-        await this.updateAlerts({
-          oldAlertUUIDs: this.selectedAlerts,
-          update: { owner: this.selectedUser },
-        });
-      } catch (error) {
-        this.error = error.message || "Something went wrong!";
-      }
-    },
-    handleError() {
-      this.error = null;
-    },
-    close() {
-      this.selectedUser = null;
-      this.$store.dispatch("modals/close", this.name);
-    },
-  },
-};
+  };
 </script>

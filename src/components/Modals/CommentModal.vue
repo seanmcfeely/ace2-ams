@@ -33,34 +33,34 @@
 </template>
 
 <script>
-import Button from "primevue/button";
-import Dropdown from "primevue/dropdown";
-import Textarea from "primevue/textarea";
+  import Button from "primevue/button";
+  import Dropdown from "primevue/dropdown";
+  import Textarea from "primevue/textarea";
 
-import BaseModal from "./BaseModal";
+  import BaseModal from "./BaseModal";
 
-export default {
-  name: "CommentModal",
-  components: { BaseModal, Button, Dropdown, Textarea },
+  export default {
+    name: "CommentModal",
+    components: { BaseModal, Button, Dropdown, Textarea },
 
-  computed: {
-    name() {
-      return this.$options.name;
+    computed: {
+      name() {
+        return this.$options.name;
+      },
     },
-  },
 
-  data() {
-    return {
-      newComment: null,
-      suggestedComments: ["this is an old comment", "and another"],
-    };
-  },
-
-  methods: {
-    close() {
-      this.newComment = null;
-      this.$store.dispatch("modals/close", this.name);
+    data() {
+      return {
+        newComment: null,
+        suggestedComments: ["this is an old comment", "and another"],
+      };
     },
-  },
-};
+
+    methods: {
+      close() {
+        this.newComment = null;
+        this.$store.dispatch("modals/close", this.name);
+      },
+    },
+  };
 </script>
