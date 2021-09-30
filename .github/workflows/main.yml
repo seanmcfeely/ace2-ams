@@ -22,7 +22,7 @@ jobs:
         uses: creyD/prettier_action@v4.0
         with:
           dry: True
-          prettier_options: --config .prettierrc.json --ignore-path ".devcontainer" --ignore-path ".github" --ignore-path "docs" --ignore-path "node_modules" --ignore-path "public" --write .
+          prettier_options: --config .prettierrc.json --ignore-path .prettierignore --write .
         
       - name: Build
         run: docker-compose build frontend
