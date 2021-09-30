@@ -18,11 +18,11 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Prettify code
-        uses: creyD/prettier_action@v4.0
-        with:
-          dry: True
-          prettier_options: --config .prettierrc.json --ignore-path .prettierignore --write .
+      - name: Prettier
+        run: npx prettier --check .
+
+      - name: ESLint
+        run: eslint .
         
       - name: Build
         run: docker-compose build frontend
