@@ -1,9 +1,12 @@
+/**
+ * @jest-environment node
+ */
+
 import Vuex from "vuex";
 import alerts from "@/store/alerts";
-import { UUID } from "../../../../models/base";
+import myNock from "../../services/api/nock";
 import { AlertRead } from "../../../../models/alert";
-import axiosInstance from "@/../services/api/axios";
-import mock = jest.mock;
+import snakecaseKeys from "snakecase-keys";
 const actions = alerts.actions;
 const mutations = alerts.mutations;
 
@@ -12,13 +15,13 @@ const mockAlertCreate = {
   type: "MockType",
   uuid: "uuid1",
   version: "VersionId1",
-  eventTime: new Date(),
+  eventTime: new Date(0),
   name: "MockAlert",
 };
 
 const mockAlertRead = {
   analysis: {},
-  insertTime: new Date(),
+  insertTime: new Date(0).toDateString(),
   queue: "default",
   type: "MockType",
   uuid: "uuid1",
@@ -27,7 +30,7 @@ const mockAlertRead = {
   threats: [],
   tags: [],
   version: "VersionId1",
-  eventTime: new Date(),
+  eventTime: new Date(0).toDateString(),
   instructions: "MockInstructions",
   name: "MockAlert",
 };
@@ -75,16 +78,6 @@ describe("alerts Mutations", () => {
 });
 
 describe("alerts Actions", () => {
-  let mockRequest: jest.SpyInstance;
-
-  beforeEach(() => {
-    mockRequest = jest.spyOn(axiosInstance, "request");
-  });
-
-  afterEach(() => {
-    jest.clearAllMocks();
-  });
-
   it("will request to create an alert with a given AlertCreate object, and set the openAlert to result on success", async () => {
     const queriedAlerts: AlertRead[] = [];
     const state = {
@@ -93,48 +86,15 @@ describe("alerts Actions", () => {
       queriedAlerts: queriedAlerts,
     };
     const store = new Vuex.Store({ state, mutations, actions });
-    const result = {
-      status: 200,
-      data: mockAlertRead,
-    };
-    mockRequest.mockImplementation(() => Promise.resolve(result));
+    const mockRequest = myNock
+      .post("/alert/", JSON.stringify(snakecaseKeys(mockAlertCreate)))
+      .reply(200, mockAlertRead);
+
     await store.dispatch("createAlert", mockAlertCreate);
 
-    expect(mockRequest).toHaveBeenCalled();
-    expect(mockRequest.mock.calls.length).toEqual(1);
-
+    expect(mockRequest.isDone()).toEqual(true);
     expect(state.openAlert).toEqual(mockAlertRead);
   });
-
-  // The getAlerts API call is not implemented right now, so this test won't work yet
-  // it('will fetch query for alerts and update state variables upon queryAlerts action', async() => {
-  //     let queriedAlerts: AlertRead[] = Array();
-  //     let state = {
-  //         openAlert: null,
-  //         lastQueriedAlertsTime: null,
-  //         queriedAlerts: queriedAlerts
-  //     };
-  //     const store = new Vuex.Store({state, mutations, actions});
-  //     const result = {
-  //         status: 200,
-  //         data: [mockAlertRead, mockAlertRead]
-  //     };
-  //     mockRequest.mockImplementation(() => Promise.resolve(result));
-  //
-  //     let before_time = new Date().getTime();
-  //     await store.dispatch('queryAlerts', {query: 'default'});
-  //     let after_time = new Date().getTime();
-  //
-  //     expect(mockRequest).toHaveBeenCalled();
-  //     expect(mockRequest.mock.calls.length).toEqual(1);
-  //
-  //     expect(state.queriedAlerts[0]).toEqual(mockAlertRead);
-  //     expect(state.queriedAlerts.length).toEqual(2);
-  //
-  //     expect(state.lastQueriedAlertsTime).toBeGreaterThanOrEqual(before_time);
-  //     expect(state.lastQueriedAlertsTime).toBeLessThanOrEqual(after_time);
-  //
-  // });
 
   it("will make fetch alert data given an alert ID", async () => {
     const queriedAlerts: AlertRead[] = [];
@@ -144,19 +104,13 @@ describe("alerts Actions", () => {
       queriedAlerts: queriedAlerts,
     };
     const store = new Vuex.Store({ state, mutations, actions });
-    const result = {
-      status: 200,
-      data: mockAlertRead,
-    };
-    mockRequest.mockImplementation(() => Promise.resolve(result));
+    const mockRequest = myNock.get("/alert/uuid1").reply(200, mockAlertRead);
     await store.dispatch("openAlert", "uuid1");
 
-    expect(mockRequest).toHaveBeenCalled();
-    expect(mockRequest.mock.calls.length).toEqual(1);
+    expect(mockRequest.isDone()).toEqual(true);
 
     expect(state.openAlert).toEqual(mockAlertRead);
   });
-
   it("will make a request to update an alert given the UUID and update data upon the updateAlert action", async () => {
     const queriedAlerts: AlertRead[] = [];
     const state = {
@@ -165,18 +119,13 @@ describe("alerts Actions", () => {
       queriedAlerts: queriedAlerts,
     };
     const store = new Vuex.Store({ state, mutations, actions });
-    const result = {
-      status: 200,
-    };
-    mockRequest.mockImplementation(() => Promise.resolve(result));
+    const mockRequest = myNock.patch("/alert/uuid1").reply(200);
     await store.dispatch("updateAlert", {
       oldAlertUUID: "uuid1",
       updateData: { disposition: "test" },
     });
 
-    expect(mockRequest).toHaveBeenCalled();
-    expect(mockRequest.mock.calls.length).toEqual(1);
-
+    expect(mockRequest.isDone()).toEqual(true);
     // None of these should be changed
     expect(state.openAlert).toBeNull();
     expect(state.queriedAlerts).toEqual(queriedAlerts);
@@ -191,18 +140,16 @@ describe("alerts Actions", () => {
       queriedAlerts: queriedAlerts,
     };
     const store = new Vuex.Store({ state, mutations, actions });
-    const result = {
-      status: 200,
-    };
-    mockRequest.mockImplementation(() => Promise.resolve(result));
+    const mockRequest = myNock
+      .patch(/\/alert\/uuid\d/)
+      .twice()
+      .reply(200);
     await store.dispatch("updateAlerts", {
       oldAlertUUIDs: ["uuid1", "uuid2"],
       updateData: { disposition: "test" },
     });
 
-    expect(mockRequest).toHaveBeenCalled();
-    expect(mockRequest.mock.calls.length).toEqual(2);
-
+    expect(mockRequest.isDone()).toEqual(true);
     // None of these should be changed
     expect(state.openAlert).toBeNull();
     expect(state.queriedAlerts).toEqual(queriedAlerts);
@@ -217,29 +164,34 @@ describe("alerts Actions", () => {
       queriedAlerts: queriedAlerts,
     };
     const store = new Vuex.Store({ state, mutations, actions });
-    const result = {
-      status: 403,
-      statusText: "mockError",
-    };
-    mockRequest.mockImplementation(() => Promise.resolve(result));
+    const mockRequest = myNock
+      .persist()
+      .post(/\/alert\/*/)
+      .reply(403, "Bad request :(")
+      .get(/\/alert\/*/)
+      .reply(403, "Bad request :(")
+      .patch(/\/alert\/*/)
+      .reply(403, "Bad request :(");
 
     await expect(store.dispatch("createAlert")).rejects.toEqual(
-      new Error("create failed: 403: mockError")
+      new Error("Request failed with status code 403")
     );
     await expect(store.dispatch("openAlert")).rejects.toEqual(
-      new Error("fetch failed: 403: mockError")
+      new Error("Request failed with status code 403")
     );
     await expect(
       store.dispatch("updateAlert", {
         oldAlertUUID: "uuid1",
         updateData: { disposition: "test" },
       })
-    ).rejects.toEqual(new Error("update failed: 403: mockError"));
+    ).rejects.toEqual(new Error("Request failed with status code 403"));
     await expect(
       store.dispatch("updateAlerts", {
         oldAlertUUIDs: ["uuid1"],
         updateData: { disposition: "test" },
       })
-    ).rejects.toEqual(new Error("update failed: 403: mockError"));
+    ).rejects.toEqual(new Error("Request failed with status code 403"));
+
+    mockRequest.persist(false); // cleanup persisted nock request
   });
 });
