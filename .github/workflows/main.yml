@@ -18,20 +18,22 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
+      - name: Setup Node
+        uses: actions/setup-node@v2
+        with:
+          node-version: "16"
+        
+      - name: Build
+        run: npm install
+
       - name: Prettier
         run: npx prettier --check .
 
       - name: ESLint
-        run: npx eslint .
-        
-      - name: Build
-        run: docker-compose build frontend
-          
-      - name: Lint
-        run: docker-compose run frontend npm run lint
+        run: eslint .
         
       - name: Unit tests
-        run: docker-compose run frontend npm run test:unit
+        run: npm run test:unit
         
 #       - name: End to end tests
-#         run: docker-compose run frontend npm run test:e2e
+#         run: npm run test:e2e
