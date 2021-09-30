@@ -29,7 +29,7 @@ describe("TheAlertActionToolbar.vue", () => {
   });
 
   it("contains toolbar", () => {
-    let toolbar = wrapper.findComponent(Toolbar);
+    const toolbar = wrapper.findComponent(Toolbar);
     expect(toolbar.exists()).toBe(true);
   });
 
@@ -43,7 +43,7 @@ describe("TheAlertActionToolbar.vue", () => {
   });
 
   it("contains buttons to open each component", () => {
-    let buttonsWrapper: VueWrapper<any>[] = wrapper.findAllComponents(Button);
+    const buttonsWrapper: VueWrapper<any>[] = wrapper.findAllComponents(Button);
     expect(buttonsWrapper.length).toBe(8);
     expect(buttonsWrapper[0].vm.label).toBe("Disposition");
     expect(buttonsWrapper[1].vm.label).toBe("Comment");
