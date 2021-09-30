@@ -90,7 +90,16 @@ import BaseModal from "./BaseModal";
 
 export default {
   name: "SaveToEventModal",
-  components: { BaseModal, Button, Dropdown, InputText, RadioButton, TabPanel, TabView, Textarea },
+  components: {
+    BaseModal,
+    Button,
+    Dropdown,
+    InputText,
+    RadioButton,
+    TabPanel,
+    TabView,
+    Textarea,
+  },
 
   computed: {
     anyEventSelected: function () {

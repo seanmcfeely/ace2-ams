@@ -2,11 +2,11 @@
 site_name: ACE2 AMS - GUI
 site_description: Documentation for ACE 2.0 Alert Management System - GUI
 site_author: ACE Ecosystem
-site_url: 
+site_url:
 
 # Repository
 repo_name: ace2-ams-gui
-repo_url: 
+repo_url:
 edit_uri: ""
 docs_dir: docs
 

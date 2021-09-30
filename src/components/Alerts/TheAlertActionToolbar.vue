@@ -60,7 +60,7 @@
       <DeleteModal />
     </template>
     <template #right>
-      <Button icon="pi pi-link" class="p-button-rounded" label="Link"/>
+      <Button icon="pi pi-link" class="p-button-rounded" label="Link" />
     </template>
   </Toolbar>
 </template>

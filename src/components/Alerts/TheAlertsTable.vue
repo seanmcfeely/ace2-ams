@@ -133,7 +133,15 @@ import Toolbar from "primevue/toolbar";
 
 export default {
   name: "TheAlertsTable",
-  components: {Button, Column, DataTable, InputText, MultiSelect, Tag, Toolbar},
+  components: {
+    Button,
+    Column,
+    DataTable,
+    InputText,
+    MultiSelect,
+    Tag,
+    Toolbar,
+  },
 
   data() {
     return {
@@ -178,7 +186,7 @@ export default {
     alertSelectAll() {
       let all_alert_uuids = [];
       for (let i = 0; i < this.alerts.length; i++) {
-        all_alert_uuids.push(this.alerts[i].uuid)
+        all_alert_uuids.push(this.alerts[i].uuid);
       }
       this.$store.dispatch("selectedAlerts/selectAll", all_alert_uuids);
     },

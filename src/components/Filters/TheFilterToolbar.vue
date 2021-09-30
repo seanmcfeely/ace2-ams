@@ -65,7 +65,7 @@ import EditFilterModal from "../Modals/FilterModal";
 
 export default {
   name: "TheFilterToolbar",
-  components: { Button, Calendar, EditFilterModal, Toolbar},
+  components: { Button, Calendar, EditFilterModal, Toolbar },
 
   data() {
     return {

@@ -1,26 +1,23 @@
 import TheHeader from "@/components/UserInterface/TheHeader.vue";
-import {mount, VueWrapper} from "@vue/test-utils";
+import { mount, VueWrapper } from "@vue/test-utils";
 import Button from "primevue/button";
-import router from "@/router/index"
-
+import router from "@/router/index";
 
 describe("TheHeader.vue", () => {
-
-    let wrapper: VueWrapper<any>;
-    beforeEach(() => {
-        wrapper = mount(TheHeader, {
-            global: {
-                plugins: [router]
-            }
-        });
+  let wrapper: VueWrapper<any>;
+  beforeEach(() => {
+    wrapper = mount(TheHeader, {
+      global: {
+        plugins: [router],
+      },
     });
+  });
 
-    it("renders", () => {
-        expect(wrapper.exists()).toBe(true);
-    });
+  it("renders", () => {
+    expect(wrapper.exists()).toBe(true);
+  });
 
-    it("renders all buttons", () => {
-        expect(wrapper.findAllComponents(Button).length).toBe(5);
-    });
-
+  it("renders all buttons", () => {
+    expect(wrapper.findAllComponents(Button).length).toBe(5);
+  });
 });
