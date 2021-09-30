@@ -1,0 +1,5 @@
+.devcontainer
+.github
+docs
+node_modules
+public
