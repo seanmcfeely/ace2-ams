@@ -1,6 +1,6 @@
 import Vuex from "vuex";
 import users from "@/store/users";
-import axiosInstance from "@/../services/api/axios";
+import myNock from "../../services/api/nock";
 import {UserRead} from "../../../../models/user";
 const actions = users.actions;
 const mutations = users.mutations;
@@ -52,33 +52,17 @@ describe("users Mutations", () => {
 });
 
 describe("users Actions", () => {
-  let mockRequest: jest.SpyInstance;
-
-  beforeEach(() => {
-    mockRequest = jest.spyOn(axiosInstance, "request");
-  });
-
-  afterEach(() => {
-    jest.clearAllMocks();
-  });
-
   it("will fetch users from backend and update state variables upon getAllUsers action", async () => {
     const users: UserRead[] | undefined = [];
     const state = { users: users, lastGetAll: 0 };
     const store = new Vuex.Store({ state, getters, mutations, actions });
-    const result = {
-      status: 200,
-      data: [mockUser, mockUser],
-    };
-    mockRequest.mockImplementation(() => Promise.resolve(result));
+    const mockRequest = myNock.get("/user/").reply(200, [mockUser, mockUser]);
 
     const before_time = new Date().getTime();
     await store.dispatch("getAllUsers");
     const after_time = new Date().getTime();
 
-    expect(mockRequest).toHaveBeenCalled();
-    expect(mockRequest.mock.calls.length).toEqual(1);
-
+    expect(mockRequest.isDone()).toEqual(true);
     expect(state.users[0]).toEqual(mockUser);
     expect(state.users.length).toEqual(2);
 
@@ -90,15 +74,10 @@ describe("users Actions", () => {
     const users: UserRead[] | undefined = [];
     const state = { users: users, lastGetAll: 0 };
     const store = new Vuex.Store({ state, getters, mutations, actions });
-    const result = {
-      status: 403,
-      statusText: "mockError",
-      data: [mockUser, mockUser],
-    };
-    mockRequest.mockImplementation(() => Promise.resolve(result));
+    myNock.get("/user/").reply(403, "Bad request :(");
 
     await expect(store.dispatch("getAllUsers")).rejects.toEqual(
-      new Error("fetch failed: 403: mockError")
+      new Error("Request failed with status code 403")
     );
   });
 });
