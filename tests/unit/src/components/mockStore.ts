@@ -4,8 +4,6 @@ import alerts from "@/store/alerts";
 import users from "@/store/users";
 import modals from "@/store/modals";
 import selectedAlerts from "@/store/selectedAlerts";
-import { AlertCreate } from "../../../../models/alert";
-import { UUID } from "../../../../models/base";
 
 const alertsState = alerts.state;
 const alertsMutations = alerts.mutations;
