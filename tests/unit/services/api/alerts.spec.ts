@@ -22,7 +22,7 @@ const mockCreateAlert = {
 };
 
 describe("/alert API calls", () => {
-  it("will make a post request when createRequest is called", async () => {
+  it("will make a post request when createAlert is called", async () => {
     myNock
       .post("/alert/", JSON.stringify(snakecaseKeys(mockCreateAlert)))
       .reply(200, "Create alert successful");
