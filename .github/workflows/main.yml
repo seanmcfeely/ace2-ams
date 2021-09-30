@@ -22,7 +22,7 @@ jobs:
         run: npx prettier --check .
 
       - name: ESLint
-        run: eslint .
+        run: npx eslint .
         
       - name: Build
         run: docker-compose build frontend
