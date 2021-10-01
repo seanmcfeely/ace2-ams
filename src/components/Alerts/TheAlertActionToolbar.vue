@@ -60,38 +60,38 @@
       <DeleteModal />
     </template>
     <template #right>
-      <Button icon="pi pi-link" class="p-button-rounded" label="Link"/>
+      <Button icon="pi pi-link" class="p-button-rounded" label="Link" />
     </template>
   </Toolbar>
 </template>
 
 <script>
-import Button from "primevue/button";
-import Toolbar from "primevue/toolbar";
+  import Button from "primevue/button";
+  import Toolbar from "primevue/toolbar";
 
-import AssignModal from "@/components/Modals/AssignModal";
-import CommentModal from "@/components/Modals/CommentModal";
-import TagModal from "@/components/Modals/TagModal";
-import RemediationModal from "@/components/Modals/RemediateModal";
-import DeleteModal from "@/components/Modals/DeleteModal";
-import DispositionModal from "@/components/Modals/DispositionModal";
+  import AssignModal from "@/components/Modals/AssignModal";
+  import CommentModal from "@/components/Modals/CommentModal";
+  import TagModal from "@/components/Modals/TagModal";
+  import RemediationModal from "@/components/Modals/RemediateModal";
+  import DeleteModal from "@/components/Modals/DeleteModal";
+  import DispositionModal from "@/components/Modals/DispositionModal";
 
-export default {
-  name: "TheAlertActionToolbar",
-  components: {
-    Button,
-    DispositionModal,
-    DeleteModal,
-    RemediationModal,
-    TagModal,
-    Toolbar,
-    CommentModal,
-    AssignModal,
-  },
-  methods: {
-    open(name) {
-      this.$store.dispatch("modals/open", name);
+  export default {
+    name: "TheAlertActionToolbar",
+    components: {
+      Button,
+      DispositionModal,
+      DeleteModal,
+      RemediationModal,
+      TagModal,
+      Toolbar,
+      CommentModal,
+      AssignModal,
     },
-  },
-};
+    methods: {
+      open(name) {
+        this.$store.dispatch("modals/open", name);
+      },
+    },
+  };
 </script>

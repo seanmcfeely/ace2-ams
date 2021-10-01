@@ -78,78 +78,87 @@
 </template>
 
 <script>
-import Button from "primevue/button";
-import Dropdown from "primevue/dropdown";
-import InputText from "primevue/inputtext";
-import RadioButton from "primevue/radiobutton";
-import TabPanel from "primevue/tabpanel";
-import TabView from "primevue/tabview";
-import Textarea from "primevue/textarea";
+  import Button from "primevue/button";
+  import Dropdown from "primevue/dropdown";
+  import InputText from "primevue/inputtext";
+  import RadioButton from "primevue/radiobutton";
+  import TabPanel from "primevue/tabpanel";
+  import TabView from "primevue/tabview";
+  import Textarea from "primevue/textarea";
 
-import BaseModal from "./BaseModal";
+  import BaseModal from "./BaseModal";
 
-export default {
-  name: "SaveToEventModal",
-  components: { BaseModal, Button, Dropdown, InputText, RadioButton, TabPanel, TabView, Textarea },
-
-  computed: {
-    anyEventSelected: function () {
-      return Boolean(this.selectedEvent);
+  export default {
+    name: "SaveToEventModal",
+    components: {
+      BaseModal,
+      Button,
+      Dropdown,
+      InputText,
+      RadioButton,
+      TabPanel,
+      TabView,
+      Textarea,
     },
 
-    newEventSelected: function () {
-      return this.selectedEvent === "New Event";
+    computed: {
+      anyEventSelected: function () {
+        return Boolean(this.selectedEvent);
+      },
+
+      newEventSelected: function () {
+        return this.selectedEvent === "New Event";
+      },
+
+      name() {
+        return this.$options.name;
+      },
     },
 
-    name() {
-      return this.$options.name;
-    },
-  },
+    emits: ["save-to-event"],
 
-  emits: ["save-to-event"],
+    data() {
+      return {
+        selectedEvent: null,
+        displaySaveToEventModal: false,
 
-  data() {
-    return {
-      selectedEvent: null,
-      displaySaveToEventModal: false,
+        existingEvents: [
+          { title: "Open", events: ["event1", "event2"] },
+          { title: "Closed", events: ["event3", "event4"] },
+        ],
 
-      existingEvents: [
-        { title: "Open", events: ["event1", "event2"] },
-        { title: "Closed", events: ["event3", "event4"] },
-      ],
-
-      newEventComment: null,
-      newEventName: null,
-      suggestedComments: ["this is an old comment", "and another"],
-    };
-  },
-
-  created() {
-    this.autoSetEventName();
-  },
-
-  methods: {
-    autoSetEventName() {
-      // Automagically set new event name using data from selected alerts
-      this.newEventName = "this is a placeholder";
+        newEventComment: null,
+        newEventName: null,
+        suggestedComments: ["this is an old comment", "and another"],
+      };
     },
 
-    close() {
-      this.selectedEvent = null;
-      this.displaySaveToEventModal = false;
-      this.existingEvents = [
-        { title: "Open", events: ["event1", "event2"] },
-        { title: "Closed", events: ["event3", "event4"] },
-      ];
-      this.newEventComment = null;
-      this.newEventName = null;
-      this.$store.dispatch("modals/close", this.name);
+    created() {
+      this.autoSetEventName();
     },
 
-    save() {
-      this.close();
-      this.$emit("save-to-event");
+    methods: {
+      autoSetEventName() {
+        // Automagically set new event name using data from selected alerts
+        this.newEventName = "this is a placeholder";
+      },
+
+      close() {
+        this.selectedEvent = null;
+        this.displaySaveToEventModal = false;
+        this.existingEvents = [
+          { title: "Open", events: ["event1", "event2"] },
+          { title: "Closed", events: ["event3", "event4"] },
+        ];
+        this.newEventComment = null;
+        this.newEventName = null;
+        this.$store.dispatch("modals/close", this.name);
+      },
+
+      save() {
+        this.close();
+        this.$emit("save-to-event");
+      },
     },
-  },
-};
+  };
 </script>

@@ -27,44 +27,44 @@
 </template>
 
 <script>
-import Button from "primevue/button";
-import Chips from "primevue/chips";
-import Dropdown from "primevue/dropdown";
+  import Button from "primevue/button";
+  import Chips from "primevue/chips";
+  import Dropdown from "primevue/dropdown";
 
-import BaseModal from "./BaseModal";
+  import BaseModal from "./BaseModal";
 
-export default {
-  name: "TagModal",
-  components: { BaseModal, Button, Chips, Dropdown },
+  export default {
+    name: "TagModal",
+    components: { BaseModal, Button, Chips, Dropdown },
 
-  computed: {
-    name() {
-      return this.$options.name;
-    },
-  },
-
-  data() {
-    return {
-      newTags: [],
-
-      tags: [
-        { label: "oh_no", id: 1 },
-        { label: "bad", id: 2 },
-        { label: "malware", id: 3 },
-      ],
-    };
-  },
-
-  methods: {
-    addExistingTag(event) {
-      // Add an existing tag to the list of tags to be added
-      this.newTags.push(event.value.label);
+    computed: {
+      name() {
+        return this.$options.name;
+      },
     },
 
-    close() {
-      this.newTags = [];
-      this.$store.dispatch("modals/close", this.name);
+    data() {
+      return {
+        newTags: [],
+
+        tags: [
+          { label: "oh_no", id: 1 },
+          { label: "bad", id: 2 },
+          { label: "malware", id: 3 },
+        ],
+      };
     },
-  },
-};
+
+    methods: {
+      addExistingTag(event) {
+        // Add an existing tag to the list of tags to be added
+        this.newTags.push(event.value.label);
+      },
+
+      close() {
+        this.newTags = [];
+        this.$store.dispatch("modals/close", this.name);
+      },
+    },
+  };
 </script>

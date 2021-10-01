@@ -1,36 +1,39 @@
-import user from "../../services/api/users"
-import {UserRead} from "../../models/user"
-import {CommitFunction} from "@/store/index";
+import user from "../../services/api/users";
+import { UserRead } from "../../models/user";
+import { CommitFunction } from "@/store/index";
 
-const store =  {
-    namespaced: true,
+const store = {
+  namespaced: true,
 
-    state: {
-        // last time all users were fetched
-        lastGetAll: null,
-        // all users
-        users: []
+  state: {
+    // last time all users were fetched
+    lastGetAll: null,
+    // all users
+    users: [],
+  },
+
+  mutations: {
+    SET_USERS(state: { users: UserRead[] }, users: UserRead[]) {
+      state.users = users;
     },
-
-    mutations: {
-        SET_USERS (state: { users: UserRead[] }, users: UserRead[]) {
-            state.users = users;
-        },
-        SET_GET_ALL_TIMESTAMP(state: { lastGetAll: number }) {
-            state.lastGetAll = new Date().getTime();
-        }
+    SET_GET_ALL_TIMESTAMP(state: { lastGetAll: number }) {
+      state.lastGetAll = new Date().getTime();
     },
+  },
 
-    actions: {
-        getAllUsers ({ commit }: CommitFunction) {
-            return user.getAllUsers()
-            .then(users => {
-                commit('SET_USERS', users);
-                commit('SET_GET_ALL_TIMESTAMP');
-            })
-            .catch(error => {throw error});
-        }
-    }
+  actions: {
+    getAllUsers({ commit }: CommitFunction) {
+      return user
+        .getAllUsers()
+        .then((users) => {
+          commit("SET_USERS", users);
+          commit("SET_GET_ALL_TIMESTAMP");
+        })
+        .catch((error) => {
+          throw error;
+        });
+    },
+  },
 };
 
 export default store;

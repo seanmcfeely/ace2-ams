@@ -1,4 +1,4 @@
-import {Commit, createStore} from "vuex";
+import { Commit, createStore } from "vuex";
 
 import alerts from "./alerts";
 import modals from "./modals";

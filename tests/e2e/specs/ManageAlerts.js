@@ -3,6 +3,6 @@
 describe("ManageAlerts.vue", () => {
   it("Visits Manage Alerts", () => {
     cy.visit("/");
-    cy.get('div[name="AlertsTable"]').should('be.visible');
+    cy.get('div[name="AlertsTable"]').should("be.visible");
   });
 });

@@ -12,11 +12,11 @@
 </template>
 
 <script>
-import TheAlertActionToolbar from "@/components/Alerts/TheAlertActionToolbar";
-import TheFilterToolbar from "@/components/Filters/TheFilterToolbar";
-import TheAlertsTable from "@/components/Alerts/TheAlertsTable";
+  import TheAlertActionToolbar from "@/components/Alerts/TheAlertActionToolbar";
+  import TheFilterToolbar from "@/components/Filters/TheFilterToolbar";
+  import TheAlertsTable from "@/components/Alerts/TheAlertsTable";
 
-export default {
-  components: { TheAlertsTable, TheFilterToolbar, TheAlertActionToolbar },
-};
+  export default {
+    components: { TheAlertsTable, TheFilterToolbar, TheAlertActionToolbar },
+  };
 </script>
