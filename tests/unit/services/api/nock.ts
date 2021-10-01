@@ -1,3 +1,5 @@
+/* Sets up the nock instance to mock out any requests being made */
+
 import nock from "nock";
 
 const defaultReplyHeaders = {
