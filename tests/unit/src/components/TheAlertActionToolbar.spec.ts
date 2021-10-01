@@ -1,5 +1,5 @@
 import TheAlertActionToolbar from "@/components/Alerts/TheAlertActionToolbar.vue";
-import { shallowMount, mount, VueWrapper } from "@vue/test-utils";
+import { mount, VueWrapper } from "@vue/test-utils";
 import AssignModal from "@/components/Modals/AssignModal.vue";
 import CommentModal from "@/components/Modals/CommentModal.vue";
 import TagModal from "@/components/Modals/TagModal.vue";

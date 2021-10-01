@@ -6,8 +6,6 @@ import snakecaseKeys from "snakecase-keys";
 type Method = "GET" | "DELETE" | "POST" | "PATCH";
 
 export default class BaseApi {
-  SUCCESS_RESPONSE_CODES = [200, 201, 202, 203, 204, 205, 206];
-
   formatIncomingData(data: Record<string, any>) {
     return camelcaseKeys(data, { deep: true });
   }
@@ -42,15 +40,10 @@ export default class BaseApi {
     });
 
     if (response) {
-      if (this.SUCCESS_RESPONSE_CODES.includes(response.status)) {
-        if (Array.isArray(response.data)) {
-          return response.data.map(this.formatIncomingData);
-        }
-        return this.formatIncomingData(response.data);
+      if (Array.isArray(response.data)) {
+        return response.data.map(this.formatIncomingData);
       }
-      throw new Error(
-        `${this.methodDict[method]} failed: ${response.status}: ${response.statusText}`,
-      );
+      return this.formatIncomingData(response.data);
     }
     throw new Error(`${this.methodDict[method]} failed!`);
   }

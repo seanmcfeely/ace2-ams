@@ -11,12 +11,20 @@ const store = {
     // all users
     users: [],
   },
-
+  getters: {
+    users: (state: { users: UserRead[] }) => state.users,
+  },
   mutations: {
-    SET_USERS(state: { users: UserRead[] }, users: UserRead[]) {
+    SET_USERS(
+      state: { users: UserRead[]; lastGetAll: number | null },
+      users: UserRead[],
+    ) {
       state.users = users;
     },
-    SET_GET_ALL_TIMESTAMP(state: { lastGetAll: number }) {
+    SET_GET_ALL_TIMESTAMP(state: {
+      users: UserRead[];
+      lastGetAll: number | null;
+    }) {
       state.lastGetAll = new Date().getTime();
     },
   },

@@ -7,22 +7,22 @@
       <!--      DATE PICKER -->
       <i class="pi pi-calendar"></i>
       <Calendar
-        class="p-m-1"
         id="startTimeFilter"
         v-model="startTimeFilterData"
-        :manualInput="true"
-        :showTime="true"
-        selectionMode="single"
+        class="p-m-1"
+        :manual-input="true"
+        :show-time="true"
+        selection-mode="single"
         style="width: 180px"
       />
       to
       <Calendar
-        class="p-m-1"
         id="endTimeFilter"
         v-model="endTimeFilterData"
-        :manualInput="true"
-        :showTime="true"
-        selectionMode="single"
+        class="p-m-1"
+        :manual-input="true"
+        :show-time="true"
+        selection-mode="single"
         style="width: 180px"
       />
       <!--      EDIT FILTERS -->

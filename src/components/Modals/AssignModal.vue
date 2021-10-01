@@ -2,22 +2,22 @@
 <!-- 'Assign' alert action modal -->
 
 <template>
-  <BaseModal :name="this.name" header="Assign Ownership">
+  <BaseModal :name="name" header="Assign Ownership">
     <div>
-      <div class="p-col" v-if="error">
+      <div v-if="error" class="p-col">
         <Message severity="error" @close="handleError">{{ error }}</Message>
       </div>
     </div>
     <div class="p-m-1 p-grid p-fluid p-formgrid p-grid">
-      <div class="p-field p-col" v-if="!isLoading">
+      <div v-if="!isLoading" class="p-field p-col">
         <Dropdown
           v-model="selectedUser"
           :options="users"
-          optionLabel="displayName"
+          option-label="displayName"
           placeholder="Select a user"
         />
       </div>
-      <div class="p-col p-offset-3" v-if="isLoading">
+      <div v-if="isLoading" class="p-col p-offset-3">
         <ProgressSpinner />
       </div>
     </div>
@@ -25,14 +25,14 @@
       <Button
         label="Nevermind"
         icon="pi pi-times"
-        @click="close"
         class="p-button-text"
+        @click="close"
       />
       <Button
         label="Assign"
         icon="pi pi-check"
-        @click="assignUserClicked()"
         :disabled="!anyAlertsSelected"
+        @click="assignUserClicked()"
       />
     </template>
   </BaseModal>
@@ -59,10 +59,6 @@
       isOpen() {
         return this.$store.getters["modals/allOpen"].includes(this.name);
       },
-      ...mapActions({
-        updateAlert: "alerts/updateAlert",
-        updateAlerts: "alerts/updateAlerts",
-      }),
       ...mapState({
         users: (state) => state.users.users,
         selectedAlerts: (state) => state.selectedAlerts.selected,
@@ -81,10 +77,6 @@
       };
     },
 
-    created() {
-      this.loadUsers();
-    },
-
     watch: {
       isOpen: function (oldValue, newValue) {
         if (newValue === false) {
@@ -93,7 +85,15 @@
       },
     },
 
+    created() {
+      this.loadUsers();
+    },
+
     methods: {
+      ...mapActions({
+        updateAlert: "alerts/updateAlert",
+        updateAlerts: "alerts/updateAlerts",
+      }),
       async loadUsers() {
         this.isLoading = true;
         try {
@@ -107,10 +107,10 @@
         this.isLoading = true;
         if (this.multipleAlertsSelected) {
           this.assignUserToMultiple();
+        } else {
+          this.assignUser();
         }
-        this.assignUser();
         this.isLoading = false;
-        this.close();
       },
       async assignUser() {
         try {
@@ -118,6 +118,7 @@
             oldAlertUUID: this.selectedAlerts[0],
             update: { owner: this.selectedUser },
           });
+          this.close();
         } catch (error) {
           this.error = error.message || "Something went wrong!";
         }
@@ -128,6 +129,7 @@
             oldAlertUUIDs: this.selectedAlerts,
             update: { owner: this.selectedUser },
           });
+          this.close();
         } catch (error) {
           this.error = error.message || "Something went wrong!";
         }
