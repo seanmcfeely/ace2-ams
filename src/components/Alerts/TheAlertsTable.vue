@@ -3,6 +3,10 @@
 
 <template>
   <DataTable
+    ref="dt"
+    v-model:expandedRows="expandedRows"
+    v-model:filters="alertTableFilter"
+    v-model:selection="selectedRows"
     :value="alerts"
     :global-filter-fields="[
       'alert_date',
@@ -17,15 +21,11 @@
       'remediation_status',
       'type',
     ]"
-    ref="dt"
     :paginator="true"
     :resizable-columns="true"
     :rows="10"
-    v-model:expandedRows="expandedRows"
     :rows-per-page-options="[5, 10, 50]"
-    v-model:filters="alertTableFilter"
     :sort-order="1"
-    v-model:selection="selectedRows"
     column-resize-mode="fit"
     current-page-report-template="Showing {first} to {last} of {totalRecords}"
     data-key="id"

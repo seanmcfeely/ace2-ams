@@ -48,7 +48,7 @@ describe("/user API calls", () => {
     myNock.get("/user/1").reply(404, "User not found :(");
 
     await expect(user.getUser("1")).rejects.toEqual(
-      new Error("Request failed with status code 404")
+      new Error("Request failed with status code 404"),
     );
   });
 });

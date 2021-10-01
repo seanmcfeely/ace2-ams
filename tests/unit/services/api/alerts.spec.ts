@@ -50,7 +50,7 @@ describe("/alert API calls", () => {
     myNock.get("/alert/1").reply(404, "Alert not found :(");
 
     await expect(alert.getAlert("1")).rejects.toEqual(
-      new Error("Request failed with status code 404")
+      new Error("Request failed with status code 404"),
     );
   });
 });

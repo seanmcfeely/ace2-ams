@@ -57,7 +57,7 @@ const usersStore = {
 
       if (testVars.errorCondition) {
         promise = Promise.reject<Array<string> | Error>(
-          new Error("Call failed")
+          new Error("Call failed"),
         );
       }
       return promise

@@ -8,7 +8,7 @@ const defaultReplyHeaders = {
 };
 
 const myNock = nock("http://test_app.com:1234").defaultReplyHeaders(
-  defaultReplyHeaders
+  defaultReplyHeaders,
 );
 
 export default myNock;

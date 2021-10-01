@@ -77,7 +77,7 @@ describe("users Actions", () => {
     myNock.get("/user/").reply(403, "Bad request :(");
 
     await expect(store.dispatch("getAllUsers")).rejects.toEqual(
-      new Error("Request failed with status code 403")
+      new Error("Request failed with status code 403"),
     );
   });
 });

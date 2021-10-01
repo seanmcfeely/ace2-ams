@@ -174,22 +174,22 @@ describe("alerts Actions", () => {
       .reply(403, "Bad request :(");
 
     await expect(store.dispatch("createAlert")).rejects.toEqual(
-      new Error("Request failed with status code 403")
+      new Error("Request failed with status code 403"),
     );
     await expect(store.dispatch("openAlert")).rejects.toEqual(
-      new Error("Request failed with status code 403")
+      new Error("Request failed with status code 403"),
     );
     await expect(
       store.dispatch("updateAlert", {
         oldAlertUUID: "uuid1",
         updateData: { disposition: "test" },
-      })
+      }),
     ).rejects.toEqual(new Error("Request failed with status code 403"));
     await expect(
       store.dispatch("updateAlerts", {
         oldAlertUUIDs: ["uuid1"],
         updateData: { disposition: "test" },
-      })
+      }),
     ).rejects.toEqual(new Error("Request failed with status code 403"));
 
     mockRequest.persist(false); // cleanup persisted nock request

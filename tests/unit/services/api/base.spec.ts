@@ -61,13 +61,13 @@ describe("BaseAPI calls", () => {
   it("will throw an error if a request fails", async () => {
     myNock.patch("/update").replyWithError("Request failed :(");
     await expect(api.updateRequest("/update")).rejects.toEqual(
-      new Error("Request failed :(")
+      new Error("Request failed :("),
     );
   });
   it("will throw an error if a request completes, but without a successful response code", async () => {
     myNock.patch("/update").reply(404, "Not found :(");
     await expect(api.updateRequest("/update")).rejects.toEqual(
-      new Error("Request failed with status code 404")
+      new Error("Request failed with status code 404"),
     );
   });
 });
