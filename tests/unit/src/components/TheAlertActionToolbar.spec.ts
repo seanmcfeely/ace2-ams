@@ -1,5 +1,5 @@
 import TheAlertActionToolbar from "@/components/Alerts/TheAlertActionToolbar.vue";
-import { shallowMount, mount, VueWrapper } from "@vue/test-utils";
+import { mount, VueWrapper } from "@vue/test-utils";
 import AssignModal from "@/components/Modals/AssignModal.vue";
 import CommentModal from "@/components/Modals/CommentModal.vue";
 import TagModal from "@/components/Modals/TagModal.vue";
@@ -10,7 +10,6 @@ import Toolbar from "primevue/toolbar";
 import Button from "primevue/button";
 
 describe("TheAlertActionToolbar.vue", () => {
-  // @ts-ignore
   const wrapper = mount(TheAlertActionToolbar, {
     global: {
       stubs: {
