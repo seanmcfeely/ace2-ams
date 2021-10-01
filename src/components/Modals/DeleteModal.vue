@@ -20,24 +20,24 @@
 </template>
 
 <script>
-import Button from "primevue/button";
+  import Button from "primevue/button";
 
-import BaseModal from "./BaseModal";
+  import BaseModal from "./BaseModal";
 
-export default {
-  name: "DeleteModal",
-  components: { BaseModal, Button },
+  export default {
+    name: "DeleteModal",
+    components: { BaseModal, Button },
 
-  computed: {
-    name() {
-      return this.$options.name;
+    computed: {
+      name() {
+        return this.$options.name;
+      },
     },
-  },
 
-  methods: {
-    close() {
-      this.$store.dispatch("modals/close", this.name);
+    methods: {
+      close() {
+        this.$store.dispatch("modals/close", this.name);
+      },
     },
-  },
-};
+  };
 </script>
