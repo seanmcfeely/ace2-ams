@@ -32,7 +32,7 @@ describe("AssignModal.vue", () => {
     wrapper.vm.close();
     expect(wrapper.vm.isOpen).toBe(false);
   });
-  it("has the correctly assigned name 'AssignModal'",  () => {
+  it("has the correctly assigned name 'AssignModal'", () => {
     expect(wrapper.vm.name).toEqual("AssignModal");
   });
   it("will set the 'users' property when loadUsers is called and completed successfully", async () => {

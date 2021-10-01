@@ -10,8 +10,8 @@ import "primeicons/primeicons.css";
 import "primevue/resources/primevue.min.css";
 import "primevue/resources/themes/saga-blue/theme.css";
 
-import "camelcase-keys"
-import "snakecase-keys"
+import "camelcase-keys";
+import "snakecase-keys";
 
 const app = createApp(App).use(store).use(router).use(PrimeVue);
 

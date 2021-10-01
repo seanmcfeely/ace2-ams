@@ -62,7 +62,14 @@ import SaveToEventModal from "./SaveToEventModal";
 
 export default {
   name: "DispositionModal",
-  components: { BaseModal, Button, Dropdown, RadioButton, SaveToEventModal, Textarea },
+  components: {
+    BaseModal,
+    Button,
+    Dropdown,
+    RadioButton,
+    SaveToEventModal,
+    Textarea,
+  },
 
   computed: {
     name() {

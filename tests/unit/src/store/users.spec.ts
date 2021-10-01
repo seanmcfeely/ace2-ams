@@ -1,7 +1,7 @@
 import Vuex from "vuex";
 import users from "@/store/users";
 import myNock from "../../services/api/nock";
-import {UserRead} from "../../../../models/user";
+import { UserRead } from "../../../../models/user";
 const actions = users.actions;
 const mutations = users.mutations;
 const getters = users.getters;

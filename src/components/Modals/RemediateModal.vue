@@ -20,9 +20,9 @@
         selectionMode="multiple"
         headerStyle="width: 3em"
       />
-      <Column field="type" header="Type" :sortable="true"/>
-      <Column field="target" header="Target" :sortable="true"/>
-      <Column field="status" header="Status" :sortable="true"/>
+      <Column field="type" header="Type" :sortable="true" />
+      <Column field="target" header="Target" :sortable="true" />
+      <Column field="status" header="Status" :sortable="true" />
     </DataTable>
     <template #footer>
       <Button label="Stop" class="p-button-text" />

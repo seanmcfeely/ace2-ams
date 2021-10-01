@@ -1,13 +1,11 @@
 import TheAlertsTable from "@/components/Alerts/TheAlertsTable.vue";
-import {shallowMount, mount, VueWrapper} from "@vue/test-utils";
-
+import { shallowMount, mount, VueWrapper } from "@vue/test-utils";
 
 describe("TheAlertsTable.vue", () => {
-    // @ts-ignore
-    const wrapper = mount(TheAlertsTable);
+  // @ts-ignore
+  const wrapper = mount(TheAlertsTable);
 
-    it("renders", () => {
-        expect(wrapper.exists()).toBe(true);
-    });
-
-})
+  it("renders", () => {
+    expect(wrapper.exists()).toBe(true);
+  });
+});
