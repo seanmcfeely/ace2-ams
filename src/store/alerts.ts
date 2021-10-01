@@ -21,7 +21,7 @@ const store = {
     },
     SET_QUERIED_ALERTS(
       state: { queriedAlerts: AlertRead[] },
-      alerts: AlertRead[]
+      alerts: AlertRead[],
     ) {
       state.queriedAlerts = alerts;
     },
@@ -44,7 +44,7 @@ const store = {
     },
     queryAlerts(
       { commit }: CommitFunction,
-      queryFilters: Record<string, unknown>
+      queryFilters: Record<string, unknown>,
     ) {
       return alert
         .getAlerts(queryFilters)
@@ -68,7 +68,7 @@ const store = {
     },
     updateAlert(
       { commit }: CommitFunction,
-      payload: { oldAlertUUID: UUID; updateData: Record<string, unknown> }
+      payload: { oldAlertUUID: UUID; updateData: Record<string, unknown> },
     ) {
       return alert
         .updateAlert(payload.updateData, payload.oldAlertUUID)
@@ -78,14 +78,14 @@ const store = {
     },
     updateAlerts(
       { commit }: CommitFunction,
-      payload: { oldAlertUUIDs: UUID[]; updateData: Record<string, unknown> }
+      payload: { oldAlertUUIDs: UUID[]; updateData: Record<string, unknown> },
     ) {
       // I have no idea if this is the right way to do this
       // but basically pushing all the requests to update into an array
       const promises = [];
       for (let i = 0; i < payload.oldAlertUUIDs.length; i++) {
         promises.push(
-          alert.updateAlert(payload.updateData, payload.oldAlertUUIDs[i])
+          alert.updateAlert(payload.updateData, payload.oldAlertUUIDs[i]),
         );
       }
 

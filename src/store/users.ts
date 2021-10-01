@@ -17,7 +17,7 @@ const store = {
   mutations: {
     SET_USERS(
       state: { users: UserRead[]; lastGetAll: number | null },
-      users: UserRead[]
+      users: UserRead[],
     ) {
       state.users = users;
     },
