@@ -54,7 +54,9 @@ export default class BaseApi {
       "accessToken",
       `Bearer ${response.data.access_token}`,
     );
-    sessionStorage.setItem("refreshToken", response.data.refresh_token);
+    if (!refresh) {
+      sessionStorage.setItem("refreshToken", response.data.refresh_token);
+    }
   }
 
   protected async baseRequest(

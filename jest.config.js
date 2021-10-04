@@ -3,5 +3,6 @@ module.exports = {
   transform: {
     "^.+\\.vue$": "vue-jest",
   },
-  setupFiles: ["<rootDir>/.jest/setEnvVars.js", "mock-local-storage"],
+  setupFiles: ["<rootDir>/.jest/setEnvVars.js"],
+  setupFilesAfterEnv: ["mock-local-storage"],
 };

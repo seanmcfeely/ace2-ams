@@ -6,7 +6,10 @@ export default {
   endpoint: "/auth",
 
   // AUTH
-  async authenticate(loginData: { username: string; password: string }) {
+  async authenticate(loginData: {
+    username: string;
+    password: string;
+  }): Promise<void> {
     return await api
       .authRequest(this.endpoint, false, loginData)
       .catch((err) => {
@@ -15,7 +18,7 @@ export default {
   },
 
   // REFRESH AUTH
-  async refeshAuth() {
+  async refeshAuth(): Promise<void> {
     return await api.authRequest("/refresh", true).catch((err) => {
       throw err;
     });
