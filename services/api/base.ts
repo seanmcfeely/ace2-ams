@@ -23,7 +23,7 @@ export default class BaseApi {
 
   async authRequest(
     url: string,
-    refresh: boolean = false,
+    refresh = false,
     auth?: { username: string; password: string },
   ) {
     const config: AxiosRequestConfig = {
@@ -36,7 +36,7 @@ export default class BaseApi {
         refreshToken: sessionStorage.refreshToken,
       });
     } else if (auth) {
-      let formData = new FormData();
+      const formData = new FormData();
       formData.append("username", auth.username);
       formData.append("password", auth.password);
       config["data"] = formData;
