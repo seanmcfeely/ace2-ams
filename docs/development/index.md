@@ -62,9 +62,11 @@ This script will generate random passwords for the database user and the secret 
 
 Once the both the frontend and backend development environments are built and started, you can access the components:
 
-- Frontend: http://localhost:8080
-- Backend API Swagger documentation: http://localhost:8888/docs
-- Backend API ReDoc documentation: http://localhost:8888/redoc
+* Frontend: http://localhost:8080
+* Backend API Swagger documentation: http://localhost:8888/docs
+* Backend API ReDoc documentation: http://localhost:8888/redoc
+
+The documentation for the `ace2-ams-api` project can be found at https://ace-ecosystem.github.io/ace2-ams-api/.
 
 ## Managing NPM packages
 
