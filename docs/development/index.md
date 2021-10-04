@@ -76,11 +76,13 @@ You can execute the end-to-end tests directly inside of the devcontainer:
 npm run test:e2e
 ```
 
+**NOTE:** The end-to-end tests will not work inside of the devcontainer if your host system is a Mac with the M1 processor. However, you will be able to run them as outlined below in the [Test Runner](#Test-Runner) section.
+
 #### Test Runner
 
 Cypress also comes with an amazing [Test Runner](https://docs.cypress.io/guides/core-concepts/test-runner) that lets you see and interact with the tests in your local web browser. This can be helpful when writing end-to-end tests to ensure they are working properly as well as any debugging you might need to do.
 
-However, this will need to be performed on your local system ouside of the devcontainer. To do this, you will need to have Node.js 16 installed.
+However, this will need to be performed on your local system ouside of the devcontainer. To do this, you will need to have Node.js 16 and Cypress [installed on your local system](#Optional-setup).
 
 **Step 1:** Inside of the devcontainer, run the application so that it is available on port 8080:
 ```
