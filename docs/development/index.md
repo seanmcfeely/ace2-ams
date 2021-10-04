@@ -7,6 +7,7 @@ This project has VSCode devcontainer support to ensure that anyone working on th
 ### Required setup
 
 In order to work within the devcontainer, you will need the following installed on your system:
+
 * [Docker](https://www.docker.com/products/docker-desktop)
 * [VSCode](https://code.visualstudio.com/)
 * [Remote Development](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.vscode-remote-extensionpack) VSCode extension pack
@@ -16,6 +17,7 @@ NOTE: If you are developing in Windows, you will need to make sure that you have
 ### Optional setup
 
 The end-to-end tests with Cypress can be executed within the devcontainer, but if you would like to use the Cypress Test Runner, it must run outside of the devcontainer on your local system. You will need to install:
+
 * [Node.js 16](https://nodejs.org/en/download/current/)
 
 After Node.js is installed, you will need to install Cypress on your local system:
