@@ -21,7 +21,7 @@ export default class BaseApi {
     DELETE: "delete",
   };
 
-   async authRequest(
+  async authRequest(
     url: string,
     refresh: boolean = false,
     auth?: { username: string; password: string },
@@ -48,8 +48,8 @@ export default class BaseApi {
     const response = await instance.request(config).catch((error) => {
       throw error;
     });
-    
-    // todo make this more secure :)
+
+    // todo decode, move this to vuex, etc.
     sessionStorage.setItem(
       "accessToken",
       `Bearer ${response.data.access_token}`,
@@ -69,6 +69,10 @@ export default class BaseApi {
 
     if (data) {
       config["data"] = this.formatOutgoingData(data);
+    }
+
+    if (sessionStorage.accessToken) {
+      config["headers"] = { Authorization: sessionStorage.accessToken };
     }
 
     const response = await instance.request(config).catch((error) => {

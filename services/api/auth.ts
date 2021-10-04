@@ -10,13 +10,13 @@ export default {
     return await api
       .authRequest(this.endpoint, false, loginData)
       .catch((err) => {
-      throw err;
-    });
+        throw err;
+      });
   },
 
   // REFRESH AUTH
   async refeshAuth() {
-    return await api.authRequest('/refresh', true).catch((err) => {
+    return await api.authRequest("/refresh", true).catch((err) => {
       throw err;
     });
   },
