@@ -1,5 +1,5 @@
 import TheAlertsTable from "@/components/Alerts/TheAlertsTable.vue";
-import { shallowMount, mount, VueWrapper } from "@vue/test-utils";
+import { mount } from "@vue/test-utils";
 
 describe("TheAlertsTable.vue", () => {
   const wrapper = mount(TheAlertsTable);

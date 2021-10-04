@@ -2,7 +2,7 @@
 <!-- 'Save to Event' alert action modal, will close the Disposition Modal that opened it -->
 
 <template>
-  <BaseModal :name="this.name" header="Save to Event">
+  <BaseModal :name="name" header="Save to Event">
     <TabView class="p-m-1">
       <TabPanel
         v-for="eventType of existingEvents"
@@ -16,36 +16,36 @@
         >
           <RadioButton
             :id="eventItem"
+            v-model="selectedEvent"
             name="eventItem"
             :value="eventItem"
-            v-model="selectedEvent"
           />
           <label :for="eventItem">{{ eventItem }}</label>
         </div>
         <div class="p-field-radiobutton p-inputgroup">
           <RadioButton
             id="newEventItem"
+            v-model="selectedEvent"
             name="newEventItem"
             value="New Event"
-            v-model="selectedEvent"
           />
           <label for="newEventItem">New Event</label>
         </div>
         <div v-if="newEventSelected" class="p-m-1 p-grid p-fluid p-formgrid">
           <div class="p-field p-col p-m-1">
-            <InputText name="newEventName" type="text" v-model="newEventName" />
+            <InputText v-model="newEventName" name="newEventName" type="text" />
             <Textarea
+              id="newEventComment"
               v-model="newEventComment"
-              :autoResize="true"
+              :auto-resize="true"
               rows="5"
               cols="30"
-              id="newEventComment"
               placeholder="Add a comment..."
             />
             <Dropdown
               v-model="newEventComment"
               :options="suggestedComments"
-              :showClear="true"
+              :show-clear="true"
               placeholder="Select from a past comment"
             />
           </div>
@@ -64,14 +64,14 @@
       <Button
         label="Back"
         icon="pi pi-arrow-left"
-        @click="close"
         class="p-button-text"
+        @click="close"
       />
       <Button
         label="Save"
         icon="pi pi-check"
-        @click="save"
         :disabled="!anyEventSelected"
+        @click="save"
       />
     </template>
   </BaseModal>
@@ -101,20 +101,6 @@
       Textarea,
     },
 
-    computed: {
-      anyEventSelected: function () {
-        return Boolean(this.selectedEvent);
-      },
-
-      newEventSelected: function () {
-        return this.selectedEvent === "New Event";
-      },
-
-      name() {
-        return this.$options.name;
-      },
-    },
-
     emits: ["save-to-event"],
 
     data() {
@@ -131,6 +117,20 @@
         newEventName: null,
         suggestedComments: ["this is an old comment", "and another"],
       };
+    },
+
+    computed: {
+      anyEventSelected: function () {
+        return Boolean(this.selectedEvent);
+      },
+
+      newEventSelected: function () {
+        return this.selectedEvent === "New Event";
+      },
+
+      name() {
+        return this.$options.name;
+      },
     },
 
     created() {

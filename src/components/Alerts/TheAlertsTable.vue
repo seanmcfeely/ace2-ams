@@ -3,8 +3,12 @@
 
 <template>
   <DataTable
+    ref="dt"
+    v-model:expandedRows="expandedRows"
+    v-model:filters="alertTableFilter"
+    v-model:selection="selectedRows"
     :value="alerts"
-    :globalFilterFields="[
+    :global-filter-fields="[
       'alert_date',
       'disposition',
       'disposition_by',
@@ -18,37 +22,33 @@
       'type',
     ]"
     :paginator="true"
-    :resizableColumns="true"
+    :resizable-columns="true"
     :rows="10"
-    :rowsPerPageOptions="[5, 10, 50]"
-    :sortOrder="1"
-    columnResizeMode="fit"
-    currentPageReportTemplate="Showing {first} to {last} of {totalRecords}"
-    dataKey="id"
-    paginatorTemplate="CurrentPageReport FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink RowsPerPageDropdown"
-    ref="dt"
-    removableSort
-    responsiveLayout="scroll"
-    sortField="name"
-    v-model:expandedRows="expandedRows"
-    v-model:filters="alertTableFilter"
-    v-model:selection="selectedRows"
+    :rows-per-page-options="[5, 10, 50]"
+    :sort-order="1"
+    column-resize-mode="fit"
+    current-page-report-template="Showing {first} to {last} of {totalRecords}"
+    data-key="id"
+    paginator-template="CurrentPageReport FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink RowsPerPageDropdown"
+    removable-sort
+    responsive-layout="scroll"
+    sort-field="name"
+    name="AlertsTable"
     @row-select="alertSelect($event.data)"
     @row-unselect="alertUnselect($event.data)"
     @row-select-all="alertSelectAll"
     @row-unselect-all="alertUnselectAll"
-    name="AlertsTable"
   >
     <!--        ALERT TABLE TOOLBAR-->
     <template #header>
       <Toolbar style="border: none">
         <template #left>
           <MultiSelect
-            :modelValue="selectedColumns"
+            :model-value="selectedColumns"
             :options="columns"
-            optionLabel="header"
-            @update:modelValue="onColumnToggle"
+            option-label="header"
             placeholder="Select Columns"
+            @update:modelValue="onColumnToggle"
           />
         </template>
         <template #right>
@@ -76,21 +76,21 @@
     </template>
 
     <!-- DROPDOWN COLUMN-->
-    <Column id="alert-expand" :expander="true" headerStyle="width: 3rem" />
+    <Column id="alert-expand" :expander="true" header-style="width: 3rem" />
 
     <!-- CHECKBOX COLUMN -->
     <Column
       id="alert-select"
-      selectionMode="multiple"
-      headerStyle="width: 3em"
+      selection-mode="multiple"
+      header-style="width: 3em"
     />
 
     <!-- DATA COLUMN -->
     <Column
       v-for="(col, index) of selectedColumns"
+      :key="col.field + '_' + index"
       :field="col.field"
       :header="col.header"
-      :key="col.field + '_' + index"
       :sortable="true"
     >
       <!-- DATA COLUMN BODY-->

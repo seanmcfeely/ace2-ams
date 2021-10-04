@@ -28,7 +28,7 @@ export default {
   },
 
   // UPDATE
-  async updateUser(user: UserUpdate, uuid: UUID) {
+  async updateUser(user: Record<string, unknown>, uuid: UUID) {
     return await api
       .updateRequest(`${this.endpoint}${uuid}`, user)
       .catch((err) => {
