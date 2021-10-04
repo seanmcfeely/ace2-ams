@@ -21,6 +21,7 @@ The end-to-end tests with Cypress can be executed within the devcontainer, but i
 * [Node.js 16](https://nodejs.org/en/download/current/)
 
 After Node.js is installed, you will need to install Cypress on your local system:
+
 ```
 npm install -g cypress
 ```
@@ -74,6 +75,7 @@ You should not directly edit the dependencies or devDependencies inside of `pack
 ### Install new dependency package
 
 You would install a package like this if it is something the final compiled application needs:
+
 ```
 npm install <package>
 ```
@@ -81,6 +83,7 @@ npm install <package>
 ### Install new dev dependency package
 
 You would install a package like this if it is only needed during development:
+
 ```
 npm install -D <package>
 ```
@@ -120,11 +123,13 @@ Cypress also comes with an amazing [Test Runner](https://docs.cypress.io/guides/
 However, this will need to be performed on your local system ouside of the devcontainer. To do this, you will need to have Node.js 16 and Cypress [installed on your local system](#Optional-setup).
 
 **Step 1:** Inside of the devcontainer, run the application so that it is available on port 8080:
+
 ```
 npm run serve
 ```
 
 **Step 2:** Outside of the devcontainer on your local system (but still inside of the project directory), open the Test Runner:
+
 ```
 cypress open
 ```
