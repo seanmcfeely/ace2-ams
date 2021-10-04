@@ -6,28 +6,30 @@ const store = {
 
   state: {
     // state of login
-    loggedIn: false
+    loggedIn: false,
   },
   getters: {
     loggedIn: (state: { loggedIn: boolean }) => state.loggedIn,
   },
   mutations: {
-    SET_LOGGEDIN(
-      state: { loggedIn: boolean },
-      loggedIn: boolean,
-    ) {
+    SET_LOGGEDIN(state: { loggedIn: boolean }, loggedIn: boolean) {
       state.loggedIn = loggedIn;
     },
   },
   actions: {
-    async login({ commit }: CommitFunction, payload: {username: string, password: string}) {
-        await auth
+    async login(
+      { commit }: CommitFunction,
+      payload: { username: string; password: string },
+    ) {
+      await auth
         .authenticate(payload)
-        .then(() => {commit("SET_LOGGEDIN", true);})
-        .catch ((error) => {
+        .then(() => {
+          commit("SET_LOGGEDIN", true);
+        })
+        .catch((error) => {
           commit("SET_LOGGEDIN", false);
           throw error;
-        }) 
+        });
     },
   },
 };

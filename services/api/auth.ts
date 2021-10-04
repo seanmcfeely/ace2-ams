@@ -6,8 +6,10 @@ export default {
   endpoint: "/auth",
 
   // AUTH
-  async authenticate(loginData: {username: string, password: string}) {
-    return await api.authRequest(this.endpoint, false, loginData).catch((err) => {
+  async authenticate(loginData: { username: string; password: string }) {
+    return await api
+      .authRequest(this.endpoint, false, loginData)
+      .catch((err) => {
       throw err;
     });
   },
