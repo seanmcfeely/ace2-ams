@@ -15,7 +15,13 @@ NOTE: If you are developing in Windows, you will need to make sure that you have
 
 ### Optional setup
 
-The end-to-end tests with Cypress can be executed within the devcontainer, but if you would like to use the Cypress Test Runner, you will also need to install [Node.js 16](https://nodejs.org/en/download/current/), as this needs to run outside of the devcontainer on your local system.
+The end-to-end tests with Cypress can be executed within the devcontainer, but if you would like to use the Cypress Test Runner, it must run outside of the devcontainer on your local system. You will need to install:
+* [Node.js 16](https://nodejs.org/en/download/current/)
+
+After Node.js is installed, you will need to install Cypress on your local system:
+```
+npm install -g cypress
+```
 
 ## Working in the VSCode devcontainer
 
@@ -83,7 +89,7 @@ npm run serve
 
 **Step 2:** Outside of the devcontainer on your local system (but still inside of the project directory), open the Test Runner:
 ```
-npx cypress open
+cypress open
 ```
 
 ![Test Runner](test-runner.png)
