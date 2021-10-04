@@ -21,7 +21,6 @@ export default class BaseApi {
     DELETE: "delete",
   };
 
-
    async authRequest(
     url: string,
     refresh: boolean = false,
