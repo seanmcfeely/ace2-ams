@@ -17,9 +17,9 @@
           >
           <InputText
             id="username"
+            v-model="username"
             type="text"
             class="w-full mb-3"
-            v-model="username"
           />
 
           <label for="password" class="block text-900 font-medium mb-2"
@@ -27,9 +27,9 @@
           >
           <InputText
             id="password"
+            v-model="password"
             type="password"
             class="w-full mb-3"
-            v-model="password"
           />
 
           <Button
@@ -45,17 +45,21 @@
 </template>
 
 <script>
-  import { mapState, mapGetters, mapActions } from "vuex";
+  import { mapState } from "vuex";
 
   import Button from "primevue/button";
   import InputText from "primevue/inputtext";
-  import Checkbox from "primevue/checkbox";
 
   export default {
     components: {
       Button,
       InputText,
-      Checkbox,
+    },
+    data() {
+      return {
+        username: null,
+        password: null,
+      };
     },
     computed: {
       loginData() {
@@ -64,12 +68,6 @@
       ...mapState({
         isLoggedIn: (state) => state.auth.loggedIn,
       }),
-    },
-    data() {
-      return {
-        username: null,
-        password: null,
-      };
     },
     methods: {
       async login() {
