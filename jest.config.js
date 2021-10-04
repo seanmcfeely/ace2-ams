@@ -4,4 +4,5 @@ module.exports = {
     "^.+\\.vue$": "vue-jest",
   },
   setupFiles: ["<rootDir>/.jest/setEnvVars.js"],
+  setupFilesAfterEnv: ["mock-local-storage"],
 };

@@ -1,3 +1,7 @@
+/**
+ * @jest-environment node
+ */
+
 import Vuex from "vuex";
 import users from "@/store/users";
 import myNock from "../../services/api/nock";

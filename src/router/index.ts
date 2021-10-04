@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from "vue-router";
 import ManageAlerts from "../pages/Alerts/ManageAlerts.vue";
+import TheLogin from "../pages/User/TheLogin.vue";
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -8,8 +9,13 @@ const routes: Array<RouteRecordRaw> = [
     component: ManageAlerts,
   },
   {
+    path: "/login",
+    name: "Login",
+    component: TheLogin,
+  },
+  {
     path: "/",
-    redirect: "/manage_alerts",
+    redirect: "/login",
   },
 ];
 
