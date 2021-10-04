@@ -21,6 +21,36 @@ export default class BaseApi {
     DELETE: "delete",
   };
 
+
+   async authRequest(
+    url: string,
+    refresh: boolean = false,
+    auth?: {username: string, password: string}
+  ) {
+    const config: AxiosRequestConfig = {
+      url: url,
+      method: "POST",
+    };
+
+    if (refresh && sessionStorage.refreshToken) {
+      config["data"] = this.formatOutgoingData({refreshToken: sessionStorage.refreshToken});
+    } else if (auth) {
+      let formData = new FormData();
+      formData.append('username', auth.username);
+      formData.append('password', auth.password);
+      config["data"] = formData;
+      config["headers"] = { 'content-type': 'application/x-www-form-urlencoded' };
+    }
+
+    const response = await instance.request(config).catch((error) => {
+      throw error;
+    });
+    
+    // todo make this more secure :)
+    sessionStorage.setItem("accessToken", `Bearer ${response.data.access_token}`);
+    sessionStorage.setItem("refreshToken", response.data.refresh_token);
+  }
+
   protected async baseRequest(
     url: string,
     method: Method,
