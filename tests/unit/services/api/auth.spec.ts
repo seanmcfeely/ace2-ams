@@ -6,10 +6,6 @@ const mockLoginData = {
   password: "pass",
 };
 
-const mockFormData = new FormData();
-mockFormData.append("username", "user");
-mockFormData.append("password", "pass");
-
 const mockAuthResponseData = {
   access_token: "abcd1234",
   refresh_token: "1234abcd",
