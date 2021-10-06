@@ -144,9 +144,15 @@ If you are using Windows and feel adventurous, you can set everything up within 
 
 To do this, you will need Docker installed and configured to work with WSL 2 as outlined in [Docker's documentation](https://docs.docker.com/desktop/windows/wsl/).
 
+### Open the project in VSCode
+
+Clone your `ace2-ams-gui` git repo somewhere inside of your WSL 2 instance. Then open VSCode and click on the "Remote Explorer" extension on the far left of VSCode. In the pane that opens, select "WSL Targets" from the drop-down menu at the top. Then click the "Connect to WSL" button next to the name of your WSL 2 instance. Mine is "Ubuntu". This will open a new VSCode window that is now attached to your WSL 2 instance. From there, you can open a directory like normal and have it open the `ace2-ams-gui` project. From this point, it will recognize the devcontainer setup and will prompt you to reopen the project inside of the devcontainer.
+
+It will automatically reopen the devcontainer the next time you open VSCode, so you should not need to repeat this step.
+
 ### Install VcXsrv
 
-On your Windows host, you will need to install an X-server so that you can run GUI application from within your WSL 2 instance. To do that, install [VcXsrv](https://sourceforge.net/projects/vcxsrv/).
+On your Windows host, you will need to install an X-server so that you can run GUI applications from within your WSL 2 instance. To do that, install [VcXsrv](https://sourceforge.net/projects/vcxsrv/).
 
 The first time you run the program, make sure you allow the firewall notification when it pops up.
 
