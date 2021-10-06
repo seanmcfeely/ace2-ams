@@ -32,6 +32,7 @@
 		"octref.vetur",
 		"esbenp.prettier-vscode",
 		"stylelint.vscode-stylelint",
+		"ms-vsliveshare.vsliveshare-pack",
 	],
 
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
