@@ -32,7 +32,7 @@ const store = {
   actions: {
     getAllUsers({ commit }: CommitFunction) {
       return user
-        .getAllUsers()
+        .getAll()
         .then((users) => {
           commit("SET_USERS", users);
           commit("SET_GET_ALL_TIMESTAMP");

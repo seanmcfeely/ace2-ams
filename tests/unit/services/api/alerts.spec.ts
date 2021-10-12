@@ -27,7 +27,7 @@ describe("/alert API calls", () => {
       .post("/alert/", JSON.stringify(snakecaseKeys(mockCreateAlert)))
       .reply(200, "Create alert successful");
 
-    const res = await alert.createAlert(mockCreateAlert);
+    const res = await alert.create(mockCreateAlert);
     expect(res).toEqual("Create alert successful");
   });
   it("will make a get request to /alert/{uuid} when getAlert is called", async () => {
@@ -35,7 +35,7 @@ describe("/alert API calls", () => {
     // the data in alerts.ts
     myNock.get("/alert/1").reply(200, "Read alert successful");
 
-    const res = await alert.getAlert("1");
+    const res = await alert.getSingle("1");
     expect(res).toEqual("Read alert successful");
   });
   it("will make a patch request to /alert/{uuid} when updateAlert is called", async () => {
@@ -43,13 +43,16 @@ describe("/alert API calls", () => {
       .patch("/alert/1", JSON.stringify({ disposition: "false_positive" }))
       .reply(200, "Update alert successful");
 
-    const res = await alert.updateAlert({ disposition: "false_positive" }, "1");
+    const res = await alert.updateSingle(
+      { disposition: "false_positive" },
+      "1",
+    );
     expect(res).toEqual("Update alert successful");
   });
   it("will throw an error if a request fails", async () => {
     myNock.get("/alert/1").reply(404, "Alert not found :(");
 
-    await expect(alert.getAlert("1")).rejects.toEqual(
+    await expect(alert.getSingle("1")).rejects.toEqual(
       new Error("Request failed with status code 404"),
     );
   });

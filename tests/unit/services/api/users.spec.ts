@@ -19,7 +19,7 @@ describe("/user API calls", () => {
       .post("/user/", JSON.stringify(snakecaseKeys(mockCreateUser)))
       .reply(200, "Create user successful");
 
-    const res = await user.createUser(mockCreateUser);
+    const res = await user.create(mockCreateUser);
     expect(res).toEqual("Create user successful");
   });
   it("will make a get request to /user/{uuid} when getUser is called", async () => {
@@ -27,13 +27,13 @@ describe("/user API calls", () => {
     // the data in users.ts
     myNock.get("/user/1").reply(200, "Read user successful");
 
-    const res = await user.getUser("1");
+    const res = await user.getSingle("1");
     expect(res).toEqual("Read user successful");
   });
   it("will make a get request to /user/ when getUsers is called", async () => {
     myNock.get("/user/").reply(200, [mockCreateUser, mockCreateUser]);
 
-    const res = await user.getAllUsers();
+    const res = await user.getAll();
     expect(res).toEqual([mockCreateUser, mockCreateUser]);
   });
   it("will make a patch request to /user/{uuid} when updateUser is called", async () => {
@@ -41,13 +41,13 @@ describe("/user API calls", () => {
       .patch("/user/1", JSON.stringify({ disposition: "false_positive" }))
       .reply(200, "Update user successful");
 
-    const res = await user.updateUser({ disposition: "false_positive" }, "1");
+    const res = await user.updateSingle({ disposition: "false_positive" }, "1");
     expect(res).toEqual("Update user successful");
   });
   it("will throw an error if a request fails", async () => {
     myNock.get("/user/1").reply(404, "User not found :(");
 
-    await expect(user.getUser("1")).rejects.toEqual(
+    await expect(user.getSingle("1")).rejects.toEqual(
       new Error("Request failed with status code 404"),
     );
   });

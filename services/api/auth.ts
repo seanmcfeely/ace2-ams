@@ -1,4 +1,4 @@
-import BaseApi from "./base";
+import { BaseApi } from "./base";
 
 const api = new BaseApi();
 

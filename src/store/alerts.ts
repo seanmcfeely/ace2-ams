@@ -31,9 +31,9 @@ const store = {
   },
 
   actions: {
-    createAlert({ commit }: CommitFunction, newAlert: AlertCreate) {
+    createAlert({ commit }: CommitFunction, newAlert: Record<string, unknown>) {
       return alert
-        .createAlert(newAlert)
+        .create(newAlert)
         .then((alert) => {
           commit("SET_OPEN_ALERT", alert);
           //may have to return id?
@@ -42,23 +42,9 @@ const store = {
           throw error;
         });
     },
-    queryAlerts(
-      { commit }: CommitFunction,
-      queryFilters: Record<string, unknown>,
-    ) {
-      return alert
-        .getAlerts(queryFilters)
-        .then((alerts) => {
-          commit("SET_USERS", alerts);
-          commit("SET_QUERY_TIMESTAMP");
-        })
-        .catch((error) => {
-          throw error;
-        });
-    },
     openAlert({ commit }: CommitFunction, alertUUID: UUID) {
       return alert
-        .getAlert(alertUUID)
+        .getSingle(alertUUID)
         .then((alert) => {
           commit("SET_OPEN_ALERT", alert);
         })
@@ -71,7 +57,7 @@ const store = {
       payload: { oldAlertUUID: UUID; updateData: Record<string, unknown> },
     ) {
       return alert
-        .updateAlert(payload.updateData, payload.oldAlertUUID)
+        .updateSingle(payload.updateData, payload.oldAlertUUID)
         .catch((error) => {
           throw error;
         });
@@ -85,7 +71,7 @@ const store = {
       const promises = [];
       for (let i = 0; i < payload.oldAlertUUIDs.length; i++) {
         promises.push(
-          alert.updateAlert(payload.updateData, payload.oldAlertUUIDs[i]),
+          alert.updateSingle(payload.updateData, payload.oldAlertUUIDs[i]),
         );
       }
 
