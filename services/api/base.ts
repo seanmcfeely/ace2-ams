@@ -7,10 +7,11 @@ type Method = "GET" | "DELETE" | "POST" | "PATCH";
 
 export default class BaseApi {
   formatIncomingData(data: Record<string, any>) {
+  formatIncomingData(data: Record<string, unknown>): Record<string, unknown> {
     return camelcaseKeys(data, { deep: true });
   }
 
-  formatOutgoingData(data: Record<string, any>) {
+  formatOutgoingData(data: Record<string, unknown>): Record<string, unknown> {
     return snakecaseKeys(data);
   }
 
@@ -25,7 +26,7 @@ export default class BaseApi {
     url: string,
     refresh = false,
     auth?: { username: string; password: string },
-  ) {
+  ): Promise<void> {
     const config: AxiosRequestConfig = {
       url: url,
       method: "POST",
@@ -62,8 +63,8 @@ export default class BaseApi {
   protected async baseRequest(
     url: string,
     method: Method,
-    data?: Record<string, any>,
-  ) {
+    data?: Record<string, unknown>,
+  ): Promise<unknown> {
     const config: AxiosRequestConfig = {
       url: url,
       method: method,
@@ -90,15 +91,21 @@ export default class BaseApi {
     throw new Error(`${this.methodDict[method]} failed!`);
   }
 
-  async createRequest(url: string, data?: Record<string, any>) {
+  async createRequest(
+    url: string,
+    data?: Record<string, unknown>,
+  ): Promise<unknown> {
     return await this.baseRequest(url, "POST", data);
   }
 
-  async readRequest(url: string) {
+  async readRequest(url: string): Promise<unknown> {
     return await this.baseRequest(url, "GET");
   }
 
-  async updateRequest(url: string, data?: Record<string, any>) {
+  async updateRequest(
+    url: string,
+    data?: Record<string, unknown>,
+  ): Promise<unknown> {
     return await this.baseRequest(url, "PATCH", data);
   }
 }
