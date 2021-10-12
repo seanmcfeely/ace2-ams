@@ -18,14 +18,14 @@
           <Dropdown
             id="type"
             v-model="type"
-            :options="types"
+            :options="alertTypes"
             option-label="type"
           />
           <InputText id="value" v-model="o_value" type="text"></InputText>
           <Dropdown
-            id="type"
-            v-model="type"
-            :options="types"
+            id="queue"
+            v-model="queue"
+            :options="alertQueues"
             option-label="type"
           />
         </Fieldset>
@@ -45,7 +45,7 @@
             <Dropdown
               id="observable-type"
               v-model="observable.type"
-              :options="types"
+              :options="observableTypes"
               option-label="Type"
             />
 
@@ -78,6 +78,8 @@
 </template>
 
 <script>
+  import { mapState, mapGetters, mapActions } from "vuex";
+
   import Dropdown from "primevue/dropdown";
 
   import Calendar from "primevue/calendar";
@@ -114,9 +116,16 @@
       lastObservableIndex() {
         return this.observables.length - 1;
       },
+      ...mapGetters({
+        directives: "nodeDirectives/nodeDirectives",
+        alertTypes: "alertType/alertTypes",
+        alertQueues: "alertQueue/alertQueues",
+        observableTypes: "observableType/observableTypes",
+      }),
     },
     created() {
       this.init();
+      this.loadInitialData();
     },
     methods: {
       init() {
@@ -126,6 +135,12 @@
           type: "file",
           directives: ["sandbox"],
         });
+      },
+      async loadInitialData() {
+        await this.$store.dispatch("alertQueue/getAllAlertQueues");
+        await this.$store.dispatch("alertType/getAllAlertTypes");
+        await this.$store.dispatch("nodeDirective/getAllNodeDirectives");
+        await this.$store.dispatch("observableType/getAllObservableTypes");
       },
       addFormObservable() {
         this.observables.push({

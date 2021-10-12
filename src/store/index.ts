@@ -1,8 +1,12 @@
 import { Commit, createStore } from "vuex";
 
-import auth from "./auth";
+import alertQueue from "./alertQueue";
 import alerts from "./alerts";
+import alertType from "./alertType";
+import auth from "./auth";
 import modals from "./modals";
+import nodeDirectives from "./nodeDirectives";
+import observableType from "./observableType";
 import selectedAlerts from "./selectedAlerts";
 import users from "./users";
 
@@ -17,5 +21,15 @@ export default createStore({
   state: {},
   mutations: {},
   actions: {},
-  modules: { auth, alerts, modals, selectedAlerts, users },
+  modules: {
+    alertQueue,
+    auth,
+    alerts,
+    alertType,
+    modals,
+    nodeDirectives,
+    observableType,
+    selectedAlerts,
+    users,
+  },
 });
