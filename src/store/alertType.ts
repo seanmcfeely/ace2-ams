@@ -33,7 +33,7 @@ const store = {
   actions: {
     getAllAlertTypes({ commit }: CommitFunction): Promise<void> {
       return alertType
-        .getAllAlertTypes()
+        .getAll()
         .then((alertTypes) => {
           commit("SET_ALERT_TYPES", alertTypes);
           commit("SET_GET_ALL_TIMESTAMP");

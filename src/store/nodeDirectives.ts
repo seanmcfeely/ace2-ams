@@ -37,7 +37,7 @@ const store = {
   actions: {
     getAllNodeDirectives({ commit }: CommitFunction): Promise<void> {
       return nodeDirective
-        .getAllNodeDirectives()
+        .getAll()
         .then((nodeDirectives) => {
           commit("SET_NODE_DIRECTIVES", nodeDirectives);
           commit("SET_GET_ALL_TIMESTAMP");

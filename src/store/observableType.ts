@@ -37,7 +37,7 @@ const store = {
   actions: {
     getAllObservableTypes({ commit }: CommitFunction): Promise<void> {
       return observableType
-        .getAllObservableTypes()
+        .getAll()
         .then((observableTypes) => {
           commit("SET_OBSERVABLE_TYPES", observableTypes);
           commit("SET_GET_ALL_TIMESTAMP");
