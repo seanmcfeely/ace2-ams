@@ -2,11 +2,11 @@ import { AxiosRequestConfig } from "axios";
 import instance from "./axios";
 import camelcaseKeys from "camelcase-keys";
 import snakecaseKeys from "snakecase-keys";
+import { UUID } from "models/base";
 
 type Method = "GET" | "DELETE" | "POST" | "PATCH";
 
-export default class BaseApi {
-  formatIncomingData(data: Record<string, any>) {
+export class BaseApi {
   formatIncomingData(data: Record<string, unknown>): Record<string, unknown> {
     return camelcaseKeys(data, { deep: true });
   }
@@ -107,5 +107,50 @@ export default class BaseApi {
     data?: Record<string, unknown>,
   ): Promise<unknown> {
     return await this.baseRequest(url, "PATCH", data);
+  }
+}
+
+export class GenericEndpoint {
+  api = new BaseApi();
+  endpoint: string;
+
+  constructor(endpoint: string) {
+    this.endpoint = endpoint;
+  }
+
+  // CREATE
+  async create(object: Record<string, unknown>): Promise<unknown> {
+    return await this.api
+      .createRequest(`${this.endpoint}`, object)
+      .catch((err) => {
+        throw err;
+      });
+  }
+
+  // READ
+  async getAll(): Promise<unknown> {
+    return await this.api.readRequest(`${this.endpoint}`).catch((err) => {
+      throw err;
+    });
+  }
+
+  async getSingle(uuid: UUID): Promise<unknown> {
+    return await this.api
+      .readRequest(`${this.endpoint}${uuid}`)
+      .catch((err) => {
+        throw err;
+      });
+  }
+
+  // UPDATE
+  async updateSingle(
+    object: Record<string, unknown>,
+    uuid: UUID,
+  ): Promise<unknown> {
+    return await this.api
+      .updateRequest(`${this.endpoint}${uuid}`, object)
+      .catch((err) => {
+        throw err;
+      });
   }
 }
