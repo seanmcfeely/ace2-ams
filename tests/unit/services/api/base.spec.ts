@@ -2,7 +2,7 @@
  * @jest-environment node
  */
 
-import BaseApi from "../../../../services/api/base";
+import BaseApi from "../../../../src/services/api/base";
 import myNock from "./nock";
 
 describe("BaseAPI calls", () => {

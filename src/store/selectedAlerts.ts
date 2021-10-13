@@ -1,7 +1,7 @@
 // Store to track which alerts are currently selected
 // Can be used in 'alert actions' modals (or elsewhere) to determine what alerts to apply actions on
 import { CommitFunction } from "@/store/index";
-import { UUID } from "../../models/base";
+import { UUID } from "@/models/base";
 
 const store = {
   namespaced: true,

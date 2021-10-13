@@ -1,5 +1,5 @@
-import user from "../../services/api/users";
-import { UserRead } from "../../models/user";
+import user from "@/services/api/users";
+import { UserRead } from "@/models/user";
 import { CommitFunction } from "@/store/index";
 
 const store = {

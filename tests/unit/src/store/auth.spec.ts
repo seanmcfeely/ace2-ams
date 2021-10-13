@@ -1,8 +1,7 @@
 import Vuex from "vuex";
 import auth from "@/store/auth";
 import myNock from "../../services/api/nock";
-const actions = auth.actions;
-const mutations = auth.mutations;
+
 const getters = auth.getters;
 
 describe("auth Getters", () => {
@@ -47,7 +46,7 @@ describe("auth Actions", () => {
   it("will set loggedIn to true upon successful login action", async () => {
     const loggedIn = false;
     const state = { loggedIn: loggedIn };
-    const store = new Vuex.Store({ state, getters, mutations, actions });
+    const store = new Vuex.Store({ state, getters });
     const mockRequest = myNock.post("/auth").reply(
       200,
       {
@@ -67,7 +66,7 @@ describe("auth Actions", () => {
   it("will throw an error and set loggedIn to false if the login action fails", async () => {
     const loggedIn = false;
     const state = { loggedIn: loggedIn };
-    const store = new Vuex.Store({ state, getters, mutations, actions });
+    const store = new Vuex.Store({ state, getters });
     myNock.post("/auth").reply(401, "Login failed :(", authHeaders);
 
     await expect(store.dispatch("login")).rejects.toEqual(

@@ -1,4 +1,4 @@
-import auth from "../../../../services/api/auth";
+import auth from "../../../../src/services/api/auth";
 import myNock from "./nock";
 
 const mockLoginData = {

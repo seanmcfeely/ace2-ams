@@ -8,7 +8,6 @@ import selectedAlerts from "@/store/selectedAlerts";
 
 const authState = auth.state;
 const authGetters = auth.getters;
-const authMutations = auth.mutations;
 
 const alertsState = alerts.state;
 const alertsMutations = alerts.mutations;
@@ -82,7 +81,6 @@ const authStore = {
 
   state: authState,
   getters: authGetters,
-  mutations: authMutations,
 
   actions: {
     login({ commit }: CommitFunction) {
