@@ -29,6 +29,7 @@ export default class BaseApi {
     const config: AxiosRequestConfig = {
       url: url,
       method: "POST",
+      withCredentials: true,
     };
 
     if (refresh && sessionStorage.refreshToken) {
@@ -45,18 +46,9 @@ export default class BaseApi {
       };
     }
 
-    const response = await instance.request(config).catch((error) => {
+    await instance.request(config).catch((error) => {
       throw error;
     });
-
-    // todo decode, move this to vuex, etc.
-    sessionStorage.setItem(
-      "accessToken",
-      `Bearer ${response.data.access_token}`,
-    );
-    if (!refresh) {
-      sessionStorage.setItem("refreshToken", response.data.refresh_token);
-    }
   }
 
   protected async baseRequest(
@@ -67,14 +59,11 @@ export default class BaseApi {
     const config: AxiosRequestConfig = {
       url: url,
       method: method,
+      withCredentials: true,
     };
 
     if (data) {
       config["data"] = this.formatOutgoingData(data);
-    }
-
-    if (sessionStorage.accessToken) {
-      config["headers"] = { Authorization: sessionStorage.accessToken };
     }
 
     const response = await instance.request(config).catch((error) => {
