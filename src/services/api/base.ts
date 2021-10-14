@@ -6,11 +6,11 @@ import snakecaseKeys from "snakecase-keys";
 type Method = "GET" | "DELETE" | "POST" | "PATCH";
 
 export default class BaseApi {
-  formatIncomingData(data: Record<string, any>) {
+  formatIncomingData(data: Record<string, unknown>): Record<string, unknown> {
     return camelcaseKeys(data, { deep: true });
   }
 
-  formatOutgoingData(data: Record<string, any>) {
+  formatOutgoingData(data: Record<string, unknown>): Record<string, unknown> {
     return snakecaseKeys(data);
   }
 
@@ -21,41 +21,11 @@ export default class BaseApi {
     DELETE: "delete",
   };
 
-  async authRequest(
-    url: string,
-    refresh = false,
-    auth?: { username: string; password: string },
-  ) {
-    const config: AxiosRequestConfig = {
-      url: url,
-      method: "POST",
-      withCredentials: true,
-    };
-
-    if (refresh && sessionStorage.refreshToken) {
-      config["data"] = this.formatOutgoingData({
-        refreshToken: sessionStorage.refreshToken,
-      });
-    } else if (auth) {
-      const formData = new FormData();
-      formData.append("username", auth.username);
-      formData.append("password", auth.password);
-      config["data"] = formData;
-      config["headers"] = {
-        "content-type": "application/x-www-form-urlencoded",
-      };
-    }
-
-    await instance.request(config).catch((error) => {
-      throw error;
-    });
-  }
-
   protected async baseRequest(
     url: string,
     method: Method,
-    data?: Record<string, any>,
-  ) {
+    data?: Record<string, unknown>,
+  ): Promise<unknown> {
     const config: AxiosRequestConfig = {
       url: url,
       method: method,
@@ -79,15 +49,21 @@ export default class BaseApi {
     throw new Error(`${this.methodDict[method]} failed!`);
   }
 
-  async createRequest(url: string, data?: Record<string, any>) {
+  async createRequest(
+    url: string,
+    data?: Record<string, unknown>,
+  ): Promise<unknown> {
     return await this.baseRequest(url, "POST", data);
   }
 
-  async readRequest(url: string) {
+  async readRequest(url: string): Promise<unknown> {
     return await this.baseRequest(url, "GET");
   }
 
-  async updateRequest(url: string, data?: Record<string, any>) {
+  async updateRequest(
+    url: string,
+    data?: Record<string, unknown>,
+  ): Promise<unknown> {
     return await this.baseRequest(url, "PATCH", data);
   }
 }
