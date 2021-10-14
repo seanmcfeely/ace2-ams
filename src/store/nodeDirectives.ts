@@ -1,5 +1,5 @@
-import nodeDirective from "../../services/api/nodeDirective";
-import { NodeDirectiveRead } from "../../models/nodeDirective";
+import nodeDirective from "../services/api/nodeDirective";
+import { NodeDirectiveRead } from "../models/nodeDirective";
 import { CommitFunction } from "@/store/index";
 
 const store = {

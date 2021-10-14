@@ -1,6 +1,6 @@
 import Vuex from "vuex";
 import auth from "@/store/auth";
-import myNock from "../../services/api/nock";
+import myNock from "../services/api/nock";
 const actions = auth.actions;
 const mutations = auth.mutations;
 const getters = auth.getters;

@@ -2,7 +2,7 @@
  * @jest-environment node
  */
 
-import alert from "../../../../services/api/alerts";
+import alert from "../../../../../src/services/api/alerts";
 
 describe("/alert API calls", () => {
   it("will raise an error when getAll is called (not a valid or implemented endpoint)", async () => {

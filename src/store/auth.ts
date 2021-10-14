@@ -1,4 +1,4 @@
-import auth from "../../services/api/auth";
+import auth from "../services/api/auth";
 import { CommitFunction } from "@/store/index";
 
 const store = {

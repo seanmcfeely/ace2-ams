@@ -1,5 +1,5 @@
-import observableType from "../../services/api/observableType";
-import { ObservableTypeRead } from "../../models/observableType";
+import observableType from "../services/api/observableType";
+import { ObservableTypeRead } from "../models/observableType";
 import { CommitFunction } from "@/store/index";
 
 const store = {

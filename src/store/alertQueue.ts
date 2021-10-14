@@ -1,5 +1,5 @@
-import alertQueue from "../../services/api/alertQueue";
-import { AlertQueueRead } from "../../models/alertQueue";
+import alertQueue from "../services/api/alertQueue";
+import { AlertQueueRead } from "../models/alertQueue";
 import { CommitFunction } from "@/store/index";
 
 const store = {

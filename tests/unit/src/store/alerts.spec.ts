@@ -4,8 +4,8 @@
 
 import Vuex from "vuex";
 import alerts from "@/store/alerts";
-import myNock from "../../services/api/nock";
-import { AlertRead } from "../../../../models/alert";
+import myNock from "../services/api/nock";
+import { AlertRead } from "../../../../src/models/alert";
 import snakecaseKeys from "snakecase-keys";
 const actions = alerts.actions;
 const mutations = alerts.mutations;

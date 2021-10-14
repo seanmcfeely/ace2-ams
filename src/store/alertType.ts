@@ -1,5 +1,5 @@
-import alertType from "../../services/api/alertType";
-import { AlertTypeRead } from "../../models/alertType";
+import alertType from "../services/api/alertType";
+import { AlertTypeRead } from "../models/alertType";
 import { CommitFunction } from "@/store/index";
 
 const store = {
