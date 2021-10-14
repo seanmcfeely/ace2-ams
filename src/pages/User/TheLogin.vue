@@ -1,7 +1,7 @@
 <!-- ManageAlerts.vue -->
 
 <template>
-  <div class="card">
+  <div class="card" name="loginForm">
     <div class="flex align-items-center justify-content-center">
       <div class="surface-card p-4 shadow-2 border-round w-full lg:w-6">
         <div class="text-center mb-5">
