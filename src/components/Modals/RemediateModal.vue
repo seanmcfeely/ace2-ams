@@ -37,7 +37,7 @@
   import Column from "primevue/column";
   import DataTable from "primevue/datatable";
 
-  import BaseModal from "./BaseModal";
+  import BaseModal from "@/components/Modals/BaseModal";
 
   export default {
     name: "RemediationModal",

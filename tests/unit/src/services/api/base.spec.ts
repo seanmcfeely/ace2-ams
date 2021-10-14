@@ -3,8 +3,8 @@
  */
 
 import snakecaseKeys from "snakecase-keys";
-import { BaseApi, GenericEndpoint } from "../../../../../src/services/api/base";
-import myNock from "./nock";
+import { BaseApi, GenericEndpoint } from "@/services/api/base";
+import myNock from "@unit/services/api/nock";
 
 describe("BaseAPI calls", () => {
   const api = new BaseApi();

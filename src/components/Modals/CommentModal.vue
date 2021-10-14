@@ -37,7 +37,7 @@
   import Dropdown from "primevue/dropdown";
   import Textarea from "primevue/textarea";
 
-  import BaseModal from "./BaseModal";
+  import BaseModal from "@/components/Modals/BaseModal";
 
   export default {
     name: "CommentModal",

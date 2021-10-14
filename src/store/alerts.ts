@@ -1,7 +1,7 @@
-import alert from "../services/api/alerts";
-import { AlertCreate, AlertRead } from "../models/alert";
+import alert from "@/services/api/alerts";
+import { AlertCreate, AlertRead } from "@/models/alert";
 import { CommitFunction } from "@/store/index";
-import { UUID } from "../models/base";
+import { UUID } from "@/models/base";
 
 const store = {
   namespaced: true,

@@ -46,7 +46,7 @@
   import Message from "primevue/message";
   import ProgressSpinner from "primevue/progressspinner";
 
-  import BaseModal from "./BaseModal";
+  import BaseModal from "@/components/Modals/BaseModal";
 
   export default {
     name: "AssignModal",

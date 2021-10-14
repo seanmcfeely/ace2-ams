@@ -1,4 +1,4 @@
-import { UUID } from "./base";
+import { UUID } from "@/models/base";
 
 interface UserBase {
   defaultAlertQueue?: string;

@@ -61,7 +61,7 @@
   import Calendar from "primevue/calendar";
   import Toolbar from "primevue/toolbar";
 
-  import EditFilterModal from "../Modals/FilterModal";
+  import EditFilterModal from "@/components/Modals/FilterModal";
 
   export default {
     name: "TheFilterToolbar",

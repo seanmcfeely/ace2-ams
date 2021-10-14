@@ -1,14 +1,14 @@
 import { Commit, createStore } from "vuex";
 
 import alertQueue from "./alertQueue";
-import alerts from "./alerts";
 import alertType from "./alertType";
-import auth from "./auth";
-import modals from "./modals";
 import nodeDirectives from "./nodeDirectives";
-import observableType from "./observableType";
-import selectedAlerts from "./selectedAlerts";
-import users from "./users";
+import observableType from "@/services/api/observableType";
+import auth from "@/store/auth";
+import alerts from "@/store/alerts";
+import modals from "@/store/modals";
+import selectedAlerts from "@/store/selectedAlerts";
+import users from "@/store/users";
 
 // todo: add selectedAlerts to store
 // probably also want to add applied filters.

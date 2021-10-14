@@ -31,7 +31,7 @@
   import Chips from "primevue/chips";
   import Dropdown from "primevue/dropdown";
 
-  import BaseModal from "./BaseModal";
+  import BaseModal from "@/components/Modals/BaseModal";
 
   export default {
     name: "TagModal",

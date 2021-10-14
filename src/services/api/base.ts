@@ -2,7 +2,7 @@ import { AxiosRequestConfig } from "axios";
 import instance from "./axios";
 import camelcaseKeys from "camelcase-keys";
 import snakecaseKeys from "snakecase-keys";
-import { UUID } from "models/base";
+import { UUID } from "@/models/base";
 
 type Method = "GET" | "DELETE" | "POST" | "PATCH";
 
@@ -32,60 +32,19 @@ export class BaseApi {
     DELETE: "delete",
   };
 
-  async authRequest(
-    url: string,
-    refresh = false,
-    auth?: { username: string; password: string },
-  ): Promise<void> {
-    const config: AxiosRequestConfig = {
-      url: url,
-      method: "POST",
-    };
-
-    if (refresh && sessionStorage.refreshToken) {
-      config["data"] = this.formatOutgoingData({
-        refreshToken: sessionStorage.refreshToken,
-      });
-    } else if (auth) {
-      const formData = new FormData();
-      formData.append("username", auth.username);
-      formData.append("password", auth.password);
-      config["data"] = formData;
-      config["headers"] = {
-        "content-type": "application/x-www-form-urlencoded",
-      };
-    }
-
-    const response = await instance.request(config).catch((error) => {
-      throw error;
-    });
-
-    // todo decode, move this to vuex, etc.
-    sessionStorage.setItem(
-      "accessToken",
-      `Bearer ${response.data.access_token}`,
-    );
-    if (!refresh) {
-      sessionStorage.setItem("refreshToken", response.data.refresh_token);
-    }
-  }
-
   protected async baseRequest(
     url: string,
     method: Method,
-    data?: Record<string, unknown>,
+    data?: Record<string, any>,
   ): Promise<unknown> {
     const config: AxiosRequestConfig = {
       url: url,
       method: method,
+      withCredentials: true,
     };
 
     if (data) {
       config["data"] = this.formatOutgoingData(data);
-    }
-
-    if (sessionStorage.accessToken) {
-      config["headers"] = { Authorization: sessionStorage.accessToken };
     }
 
     const response = await instance.request(config).catch((error) => {
@@ -93,22 +52,17 @@ export class BaseApi {
     });
 
     if (response) {
-      if (response.data) {
-        if (Array.isArray(response.data)) {
-          return response.data.map(this.formatIncomingData);
-        }
-        return this.formatIncomingData(response.data);
-      } else if (method == "POST" && response.headers["content-location"]) {
-        console.log(response.headers["content-location"]);
-        return this.extractUUID(response.headers["content-location"]);
+      if (Array.isArray(response.data)) {
+        return response.data.map(this.formatIncomingData);
       }
+      return this.formatIncomingData(response.data);
     }
     throw new Error(`${this.methodDict[method]} failed!`);
   }
 
   async createRequest(
     url: string,
-    data?: Record<string, unknown>,
+    data?: Record<string, any>,
   ): Promise<unknown> {
     return await this.baseRequest(url, "POST", data);
   }
@@ -119,7 +73,7 @@ export class BaseApi {
 
   async updateRequest(
     url: string,
-    data?: Record<string, unknown>,
+    data?: Record<string, any>,
   ): Promise<unknown> {
     return await this.baseRequest(url, "PATCH", data);
   }
