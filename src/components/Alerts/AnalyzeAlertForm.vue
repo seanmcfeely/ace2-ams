@@ -4,62 +4,54 @@
       <TabPanel key="basic" header="Basic">
         <br />
         <span class="p-float-label p-field">
-          <InputText id="description" v-model="value" type="text"></InputText>
+          <InputText
+            id="description"
+            v-model="alertDescription"
+            type="text"
+          ></InputText>
           <label for="description">Alert Description</label>
         </span>
         <br />
         <Fieldset legend="Advanced" :toggleable="true" :collapsed="true">
           <Calendar
-            id="time24"
-            v-model="date8"
+            id="alert-date"
+            v-model="alertDate"
             :show-time="true"
             :show-seconds="true"
           />
-          <Dropdown
-            id="type"
-            v-model="type"
-            :options="alertTypes"
-            option-label="type"
-          />
-          <InputText id="value" v-model="o_value" type="text"></InputText>
-          <Dropdown
-            id="queue"
-            v-model="queue"
-            :options="alertQueues"
-            option-label="type"
-          />
+          <Dropdown id="timezone" v-model="timezone" :options="timezones" />
+          <Dropdown id="type" v-model="alertType" :options="alertTypes" />
+          <Dropdown id="queue" v-model="alertQueue" :options="alertQueues" />
         </Fieldset>
         <p>Observables</p>
-        <div id="observables-list">
+        <div id="observables-list" class="p-grid">
           <div
             v-for="(observable, index) in observables"
             :key="observable.index"
+            class="p-col-12"
           >
             <Calendar
               id="observable-time"
-              :v-model="observable.time"
+              :v-model="observables[index].time"
               :show-time="true"
               :show-seconds="true"
             />
-
             <Dropdown
               id="observable-type"
-              v-model="observable.type"
+              v-model="observables[index].type"
               :options="observableTypes"
-              option-label="Type"
             />
 
             <InputText
               id="observable-value"
-              v-model="observable.value"
+              v-model="observables[index].value"
               type="text"
             ></InputText>
 
             <Dropdown
               id="observable-directives"
-              v-model="observable.directive"
+              v-model="observables[index].directive"
               :options="directives"
-              option-label="Directives"
             />
 
             <Button
@@ -78,9 +70,11 @@
 </template>
 
 <script>
-  import { mapState, mapGetters, mapActions } from "vuex";
+  import { mapGetters } from "vuex";
 
   import Dropdown from "primevue/dropdown";
+
+  import FileUpload from "primevue/fileupload";
 
   import Calendar from "primevue/calendar";
   import InputText from "primevue/inputtext";
@@ -90,6 +84,8 @@
 
   import TabPanel from "primevue/tabpanel";
   import TabView from "primevue/tabview";
+
+  import moment from "moment-timezone";
 
   export default {
     name: "AnalyzeAlertForm",
@@ -106,10 +102,15 @@
       return {
         alertDate: null,
         timezone: null,
+        timezones: moment.tz.names(),
         alertType: null,
         alertDescription: null,
         alertQueue: null,
         observables: [],
+        directives: ["sandbox"],
+        alertTypes: ["manual"],
+        alertQueues: ["default"],
+        observableTypes: ["file", "ipv4"],
       };
     },
     computed: {
@@ -117,10 +118,10 @@
         return this.observables.length - 1;
       },
       ...mapGetters({
-        directives: "nodeDirectives/nodeDirectives",
-        alertTypes: "alertType/alertTypes",
-        alertQueues: "alertQueue/alertQueues",
-        observableTypes: "observableType/observableTypes",
+        // directives: "nodeDirectives/nodeDirectives",
+        // alertTypes: "alertType/alertTypes",
+        // alertQueues: "alertQueue/alertQueues",
+        // observableTypes: "observableType/observableTypes",
       }),
     },
     created() {
@@ -131,10 +132,21 @@
       init() {
         this.observables.push({
           index: 0,
-          time: null,
+          time: new Date(),
           type: "file",
           directives: ["sandbox"],
         });
+        this.observables.push({
+          index: 1,
+          time: new Date(),
+          type: "ipv4",
+          directives: [],
+        });
+        this.alertDate = new Date().toUTCString();
+        this.timezone = "UTC";
+        this.alertType = "Manual";
+        this.alertDescription = "Test Alert!";
+        this.alertQueue = "Default";
       },
       async loadInitialData() {
         await this.$store.dispatch("alertQueue/getAllAlertQueues");
@@ -144,7 +156,7 @@
       },
       addFormObservable() {
         this.observables.push({
-          time: null,
+          time: new Date(),
           type: "file",
           directives: ["sandbox"],
         });
