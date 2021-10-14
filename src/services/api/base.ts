@@ -6,11 +6,11 @@ import snakecaseKeys from "snakecase-keys";
 type Method = "GET" | "DELETE" | "POST" | "PATCH";
 
 export default class BaseApi {
-  formatIncomingData(data: Record<string, unknown>): Record<string, unknown> {
+  formatIncomingData(data: Record<string, any>): Record<string, any> {
     return camelcaseKeys(data, { deep: true });
   }
 
-  formatOutgoingData(data: Record<string, unknown>): Record<string, unknown> {
+  formatOutgoingData(data: Record<string, any>): Record<string, any> {
     return snakecaseKeys(data);
   }
 
@@ -24,7 +24,7 @@ export default class BaseApi {
   protected async baseRequest(
     url: string,
     method: Method,
-    data?: Record<string, unknown>,
+    data?: Record<string, any>,
   ): Promise<unknown> {
     const config: AxiosRequestConfig = {
       url: url,
@@ -51,7 +51,7 @@ export default class BaseApi {
 
   async createRequest(
     url: string,
-    data?: Record<string, unknown>,
+    data?: Record<string, any>,
   ): Promise<unknown> {
     return await this.baseRequest(url, "POST", data);
   }
@@ -62,7 +62,7 @@ export default class BaseApi {
 
   async updateRequest(
     url: string,
-    data?: Record<string, unknown>,
+    data?: Record<string, any>,
   ): Promise<unknown> {
     return await this.baseRequest(url, "PATCH", data);
   }
