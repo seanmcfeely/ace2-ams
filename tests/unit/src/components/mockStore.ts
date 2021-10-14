@@ -1,13 +1,9 @@
 import { createStore } from "vuex";
 import { CommitFunction } from "@/store";
-import auth from "@/store/auth";
 import alerts from "@/store/alerts";
 import users from "@/store/users";
 import modals from "@/store/modals";
 import selectedAlerts from "@/store/selectedAlerts";
-
-const authState = auth.state;
-const authGetters = auth.getters;
 
 const alertsState = alerts.state;
 const alertsMutations = alerts.mutations;
@@ -76,31 +72,6 @@ const usersStore = {
   },
 };
 
-const authStore = {
-  namespaced: true,
-
-  state: authState,
-  getters: authGetters,
-
-  actions: {
-    login({ commit }: CommitFunction) {
-      let promise = Promise.resolve<undefined | Error>(undefined);
-
-      if (testVars.errorCondition) {
-        promise = Promise.reject<undefined | Error>(new Error("Call failed"));
-      }
-      return promise
-        .then(() => {
-          commit("SET_LOGGEDIN", true);
-        })
-        .catch((error) => {
-          commit("SET_LOGGEDIN", false);
-          throw error;
-        });
-    },
-  },
-};
-
 export default createStore({
   state: {},
   mutations: {},
@@ -110,6 +81,5 @@ export default createStore({
     users: usersStore,
     selectedAlerts: selectedAlerts,
     alerts: alertsStore,
-    auth: authStore,
   },
 });

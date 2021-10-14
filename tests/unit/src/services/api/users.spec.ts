@@ -2,8 +2,8 @@
  * @jest-environment node
  */
 
-import user from "../../../../../src/services/api/users";
-import myNock from "./nock";
+import user from "@/services/api/users";
+import myNock from "@unit/services/api/nock";
 
 import snakecaseKeys from "snakecase-keys";
 

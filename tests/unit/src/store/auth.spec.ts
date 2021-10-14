@@ -1,7 +1,7 @@
 import Cookies from "js-cookie";
 import Vuex from "vuex";
 
-import auth from "../../../../src/store/auth";
+import auth from "@/store/auth";
 
 const getters = auth.getters;
 

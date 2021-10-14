@@ -1,6 +1,6 @@
-import BaseApi from "./base";
-import { UUID } from "../../models/base";
-import { AlertCreate, AlertUpdate } from "../../models/alert";
+import BaseApi from "@/services/api/base";
+import { UUID } from "@/models/base";
+import { AlertCreate, AlertUpdate } from "@/models/alert";
 
 const api = new BaseApi();
 

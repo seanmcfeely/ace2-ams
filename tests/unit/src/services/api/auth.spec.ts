@@ -1,7 +1,7 @@
 import Cookies from "js-cookie";
 
-import auth from "../../../../../src/services/api/auth";
-import myNock from "./nock";
+import auth from "@/services/api/auth";
+import myNock from "@unit/services/api/nock";
 
 const mockLoginData = {
   username: "user",

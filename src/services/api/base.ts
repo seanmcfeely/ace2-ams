@@ -1,5 +1,5 @@
 import { AxiosRequestConfig } from "axios";
-import instance from "./axios";
+import instance from "@/services/api/axios";
 import camelcaseKeys from "camelcase-keys";
 import snakecaseKeys from "snakecase-keys";
 

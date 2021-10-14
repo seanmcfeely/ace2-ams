@@ -57,8 +57,8 @@
   import RadioButton from "primevue/radiobutton";
   import Textarea from "primevue/textarea";
 
-  import BaseModal from "./BaseModal";
-  import SaveToEventModal from "./SaveToEventModal";
+  import BaseModal from "@/components/Modals/BaseModal";
+  import SaveToEventModal from "@/components/Modals/SaveToEventModal";
 
   export default {
     name: "DispositionModal",

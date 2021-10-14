@@ -1,6 +1,6 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from "vue-router";
-import ManageAlerts from "../pages/Alerts/ManageAlerts.vue";
-import TheLogin from "../pages/User/TheLogin.vue";
+import ManageAlerts from "@/pages/Alerts/ManageAlerts.vue";
+import TheLogin from "@/pages/User/TheLogin.vue";
 import store from "@/store";
 
 const routes: Array<RouteRecordRaw> = [

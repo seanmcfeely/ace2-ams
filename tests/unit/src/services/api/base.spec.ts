@@ -2,8 +2,8 @@
  * @jest-environment node
  */
 
-import BaseApi from "../../../../../src/services/api/base";
-import myNock from "./nock";
+import BaseApi from "@/services/api/base";
+import myNock from "@unit/services/api/nock";
 
 describe("BaseAPI calls", () => {
   const api = new BaseApi();

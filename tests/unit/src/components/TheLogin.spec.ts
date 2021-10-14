@@ -1,5 +1,5 @@
 import TheLogin from "@/pages/User/TheLogin.vue";
-import store from "./mockStore";
+import store from "@unit/components/mockStore";
 import { shallowMount } from "@vue/test-utils";
 
 describe("TheLogin.vue", () => {

@@ -1,4 +1,4 @@
-import { UUID } from "./base";
+import { UUID } from "@/models/base";
 
 export interface NodeBase {
   directives: Array<string>;

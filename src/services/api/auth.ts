@@ -1,6 +1,6 @@
 import { AxiosRequestConfig } from "axios";
 
-import instance from "./axios";
+import instance from "@/services/api/axios";
 
 export default {
   // AUTH

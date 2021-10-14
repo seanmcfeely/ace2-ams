@@ -1,5 +1,5 @@
-import { UUID } from "./base";
-import { NodeBase, NodeCreate, NodeRead, NodeUpdate } from "./node";
+import { UUID } from "@/models/base";
+import { NodeBase, NodeCreate, NodeRead, NodeUpdate } from "@/models/node";
 
 interface AlertBase extends NodeBase {
   description?: string;

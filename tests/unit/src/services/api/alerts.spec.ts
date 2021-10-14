@@ -2,8 +2,8 @@
  * @jest-environment node
  */
 
-import alert from "../../../../../src/services/api/alerts";
-import myNock from "./nock";
+import alert from "@/services/api/alerts";
+import myNock from "@unit/services/api/nock";
 
 import camelcaseKeys from "camelcase-keys";
 import snakecaseKeys from "snakecase-keys";
