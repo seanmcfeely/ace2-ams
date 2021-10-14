@@ -7,5 +7,10 @@ module.exports = {
         changeOrigin: true,
       },
     },
+    watchOptions: {
+      ignored: ["/node_modules/"],
+      aggregateTimeout: 300,
+      poll: 300,
+    },
   },
 };
