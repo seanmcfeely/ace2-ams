@@ -3,7 +3,7 @@
  */
 
 import snakecaseKeys from "snakecase-keys";
-import { BaseApi, GenericEndpoint } from "../../../../services/api/base";
+import { BaseApi, GenericEndpoint } from "../../../../../src/services/api/base";
 import myNock from "./nock";
 
 describe("BaseAPI calls", () => {
