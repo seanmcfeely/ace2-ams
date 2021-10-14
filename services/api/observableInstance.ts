@@ -1,9 +1,9 @@
 import { GenericEndpoint } from "./base";
 
-class Alerts extends GenericEndpoint {
+class observableInstance extends GenericEndpoint {
   getAll() {
     return Promise.reject(Error("Not implemented."));
   }
 }
 
-export default new Alerts("/observable/instance");
+export default new observableInstance("/observable/instance");
