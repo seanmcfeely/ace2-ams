@@ -1,3 +1,7 @@
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const SpeedMeasurePlugin = require("speed-measure-webpack-plugin");
+const smp = new SpeedMeasurePlugin();
+
 module.exports = {
   devServer: {
     proxy: {
@@ -13,4 +17,5 @@ module.exports = {
       poll: 300,
     },
   },
+  configureWebpack: smp.wrap({}),
 };
