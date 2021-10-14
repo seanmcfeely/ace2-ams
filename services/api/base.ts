@@ -7,6 +7,16 @@ import { UUID } from "models/base";
 type Method = "GET" | "DELETE" | "POST" | "PATCH";
 
 export class BaseApi {
+  extractUUID(contentLocation: string): { uuid: string } {
+    const uuid = contentLocation.split("/").pop();
+    if (uuid) {
+      return { uuid: uuid };
+    }
+    throw Error(
+      `UUID could not be extracted from content-location ${contentLocation}`,
+    );
+  }
+
   formatIncomingData(data: Record<string, unknown>): Record<string, unknown> {
     return camelcaseKeys(data, { deep: true });
   }
@@ -83,10 +93,15 @@ export class BaseApi {
     });
 
     if (response) {
-      if (Array.isArray(response.data)) {
-        return response.data.map(this.formatIncomingData);
+      if (response.data) {
+        if (Array.isArray(response.data)) {
+          return response.data.map(this.formatIncomingData);
+        }
+        return this.formatIncomingData(response.data);
+      } else if (method == "POST" && response.headers["content-location"]) {
+        console.log(response.headers["content-location"]);
+        return this.extractUUID(response.headers["content-location"]);
       }
-      return this.formatIncomingData(response.data);
     }
     throw new Error(`${this.methodDict[method]} failed!`);
   }
