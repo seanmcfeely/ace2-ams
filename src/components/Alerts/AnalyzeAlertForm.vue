@@ -32,7 +32,7 @@
           >
             <Calendar
               id="observable-time"
-              :v-model="observables[index].time"
+              v-model="observables[index].time"
               :show-time="true"
               :show-seconds="true"
             />
@@ -48,9 +48,9 @@
               type="text"
             ></InputText>
 
-            <Dropdown
+            <MultiSelect
               id="observable-directives"
-              v-model="observables[index].directive"
+              v-model="observables[index].directives"
               :options="directives"
             />
 
@@ -65,7 +65,7 @@
         <br />
       </TabPanel>
     </TabView>
-    <Button label="Analyze!" @click="save" />
+    <Button label="Analyze!" @click="printObservables" />
   </div>
 </template>
 
@@ -74,7 +74,7 @@
 
   import Dropdown from "primevue/dropdown";
 
-  import FileUpload from "primevue/fileupload";
+  import MultiSelect from "primevue/multiselect";
 
   import Calendar from "primevue/calendar";
   import InputText from "primevue/inputtext";
@@ -97,6 +97,7 @@
       InputText,
       TabPanel,
       TabView,
+      MultiSelect,
     },
     data() {
       return {
@@ -132,17 +133,12 @@
       init() {
         this.observables.push({
           index: 0,
-          time: new Date(),
+          time: moment.utc().format("MM/DD/YYYY HH:mm:ss"),
           type: "file",
           directives: ["sandbox"],
         });
-        this.observables.push({
-          index: 1,
-          time: new Date(),
-          type: "ipv4",
-          directives: [],
-        });
-        this.alertDate = new Date().toUTCString();
+        // this.alertDate = new Date().toUTCString();10/14/2021 16:24:13
+        this.alertDate = moment(new Date().format("MM/DD/YYYY HH:mm:ss")).utc();
         this.timezone = "UTC";
         this.alertType = "Manual";
         this.alertDescription = "Test Alert!";
@@ -163,6 +159,9 @@
       },
       deleteFormObservable(index) {
         this.observables.splice(index, 1);
+      },
+      printObservables() {
+        console.log(this.observables);
       },
     },
   };
