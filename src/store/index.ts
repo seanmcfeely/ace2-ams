@@ -1,9 +1,8 @@
 import { Commit, createStore } from "vuex";
 
-import alertQueue from "./alertQueue";
-import alertType from "./alertType";
-import nodeDirectives from "./nodeDirectives";
-import observableType from "@/services/api/observableType";
+import alertQueue from "@/store/alertQueue";
+import alertType from "@/store/alertType";
+import observableType from "@/store/observableType";
 import auth from "@/store/auth";
 import alerts from "@/store/alerts";
 import modals from "@/store/modals";
@@ -27,7 +26,6 @@ export default createStore({
     alerts,
     alertType,
     modals,
-    nodeDirectives,
     observableType,
     selectedAlerts,
     users,

@@ -1,26 +1,42 @@
-import { BaseApi } from "./base";
+import { AxiosRequestConfig } from "axios";
 
-const api = new BaseApi();
+import instance from "@/services/api/axios";
 
 export default {
-  endpoint: "/auth",
-
   // AUTH
   async authenticate(loginData: {
     username: string;
     password: string;
   }): Promise<void> {
-    return await api
-      .authRequest(this.endpoint, false, loginData)
-      .catch((err) => {
-        throw err;
-      });
+    const config: AxiosRequestConfig = {
+      url: "/auth",
+      method: "POST",
+      withCredentials: true,
+    };
+
+    const formData = new FormData();
+    formData.append("username", loginData.username);
+    formData.append("password", loginData.password);
+    config["data"] = formData;
+    config["headers"] = {
+      "content-type": "application/x-www-form-urlencoded",
+    };
+
+    await instance.request(config).catch((error) => {
+      throw error;
+    });
   },
 
   // REFRESH AUTH
-  async refeshAuth(): Promise<void> {
-    return await api.authRequest("/refresh", true).catch((err) => {
-      throw err;
+  async refresh(): Promise<void> {
+    const config: AxiosRequestConfig = {
+      url: "/auth/refresh",
+      method: "POST",
+      withCredentials: true,
+    };
+
+    await instance.request(config).catch((error) => {
+      throw error;
     });
   },
 };

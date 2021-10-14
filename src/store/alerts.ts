@@ -1,5 +1,5 @@
 import alert from "@/services/api/alerts";
-import { AlertCreate, AlertRead } from "@/models/alert";
+import { AlertRead } from "@/models/alert";
 import { CommitFunction } from "@/store/index";
 import { UUID } from "@/models/base";
 
