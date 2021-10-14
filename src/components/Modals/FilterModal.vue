@@ -19,7 +19,7 @@
 <script>
   import Button from "primevue/button";
 
-  import BaseModal from "./BaseModal";
+  import BaseModal from "@/components/Modals/BaseModal";
 
   export default {
     name: "EditFilterModal",

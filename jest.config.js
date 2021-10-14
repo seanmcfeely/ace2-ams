@@ -5,4 +5,8 @@ module.exports = {
   },
   setupFiles: ["<rootDir>/.jest/setEnvVars.js"],
   setupFilesAfterEnv: ["mock-local-storage"],
+  moduleNameMapper: {
+    "@/(.*)$": "<rootDir>/src/$1",
+    "@unit/(.*)$": "<rootDir>/tests/unit/src/$1",
+  },
 };

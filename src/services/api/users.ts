@@ -1,6 +1,6 @@
-import BaseApi from "./base";
-import { UUID } from "../../models/base";
-import { UserCreate, UserUpdate } from "../../models/user";
+import BaseApi from "@/services/api/base";
+import { UUID } from "@/models/base";
+import { UserCreate, UserUpdate } from "@/models/user";
 
 const api = new BaseApi();
 

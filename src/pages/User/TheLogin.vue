@@ -1,10 +1,7 @@
 <!-- ManageAlerts.vue -->
 
 <template>
-  <div class="card">
-    <p v-if="isLoggedIn">You're already logged in!</p>
-    <p v-else>You need to log in...</p>
-
+  <div class="card" name="loginForm">
     <div class="flex align-items-center justify-content-center">
       <div class="surface-card p-4 shadow-2 border-round w-full lg:w-6">
         <div class="text-center mb-5">
@@ -45,10 +42,10 @@
 </template>
 
 <script>
-  import { mapState } from "vuex";
-
   import Button from "primevue/button";
   import InputText from "primevue/inputtext";
+
+  import auth from "@/services/api/auth";
 
   export default {
     components: {
@@ -65,14 +62,16 @@
       loginData() {
         return { username: this.username, password: this.password };
       },
-      ...mapState({
-        isLoggedIn: (state) => state.auth.loggedIn,
-      }),
     },
     methods: {
       async login() {
-        await this.$store.dispatch("auth/login", this.loginData);
+        await auth.authenticate(this.loginData).catch((error) => {
+          // TODO: Add a proper message saying the login failed
+          throw error;
+        });
+
         this.resetData();
+        this.$router.replace("/manage_alerts");
       },
       resetData() {
         (this.username = null), (this.password = null);

@@ -1,6 +1,6 @@
 import AssignModal from "@/components/Modals/AssignModal.vue";
 import { flushPromises, mount } from "@vue/test-utils";
-import store, { testVars } from "./mockStore";
+import store, { testVars } from "@unit/components/mockStore";
 import PrimeVue from "primevue/config";
 
 describe("AssignModal.vue", () => {
