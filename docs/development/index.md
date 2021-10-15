@@ -12,19 +12,11 @@ In order to work within the devcontainer, you will need the following installed 
 * [VSCode](https://code.visualstudio.com/)
 * [Remote Development](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.vscode-remote-extensionpack) VSCode extension pack
 
-NOTE: If you are developing in Windows, you will need to make sure that you have WSL 2 set up and properly configured with Docker. That is outside the scope of this documentation, but you can find steps [here](https://docs.docker.com/desktop/windows/wsl/).
-
-### Optional setup
-
-The end-to-end tests with Cypress can be executed within the devcontainer, but if you would like to use the Cypress Test Runner, it must run outside of the devcontainer on your local system. You will need to install:
+Running the frontend application inside of the devcontainer is possible but can be very slow, especially when relying on hot-reload after you make changes. In order to run the frontend application locally (outside of the devcontainer), you will also need to install:
 
 * [Node.js 16](https://nodejs.org/en/download/current/)
 
-After Node.js is installed, you will need to install Cypress on your local system:
-
-```
-npm install -g cypress
-```
+> NOTE: If you are developing in Windows, you will need to make sure that you have WSL 2 set up and properly configured with Docker. That is outside the scope of this documentation, but you can find steps [here](https://docs.docker.com/desktop/windows/wsl/).
 
 ## Working in the VSCode devcontainer
 
@@ -40,13 +32,29 @@ Any work done on the application should be done through the devcontainer. If you
 
 ## Starting the application
 
-You can start the application inside of the devcontainer so that it uses hot-reloading anytime you change a file:
+You can start the application so that it uses hot-reloading anytime you change a file:
 
 ```
 npm run serve
 ```
 
 You will then be able to access the application on your local system (outside of the devcontainer) at [http://localhost:8080](http://localhost:8080).
+
+> **NOTE:** You can run the application from within the VSCode devcontainer, but the performance will be quite slow. It is best to run it locally on your host system.
+
+## Setting Vue environment variables
+
+Vue needs to know the base URL to the backend API. When you run the application within the VSCode devcontainer, this is already taken care of by the Dockerfile. However, when you run the application locally on your host system for better performance, you will need to properly set the `VUE_APP_BACKEND_URL` variable.
+
+Create a file named `.env.development.local` in the root of the project (which is ignored by Git) with the following contents:
+
+```
+VUE_APP_BACKEND_URL=http://localhost:8888/api
+```
+
+By default, the ACE2 AMS API runs on port 8888 when you start it using the instructions [as outlined](#Interaction-with-the-ACE2-AMS-API). If for some reason you have changed that port, also remember to change the port in the `.env.development.local` file.
+
+> **NOTE:** You can create a file named `.env.production.local` with the same variable inside of it that you set to wherever you are hosting the production ACE2 AMS API. This file will be used when building the frontend for production.
 
 ## Interaction with the ACE2 AMS API
 
@@ -70,7 +78,7 @@ The documentation for the `ace2-ams-api` project can be found at [https://ace-ec
 
 ## Managing NPM packages
 
-You should not directly edit the dependencies or devDependencies inside of `package.json` or anything in `package-lock.json`. **Any changes to packages should be performed inside of the devcontainer via the `npm` command**:
+You should not directly edit the dependencies or devDependencies inside of `package.json` or anything in `package-lock.json`. **Any changes to packages should be performed via the `npm` command**:
 
 ### Install new dependency package
 
@@ -98,142 +106,42 @@ npm uninstall <package>
 
 ## Running tests
 
-This application has a suite of unit tests performed by [Jest](https://jestjs.io/) and end-to-end tests performed by [Cypress](https://www.cypress.io/).
+This application has a suite of unit tests performed by [Jest](https://jestjs.io/) and end-to-end tests performed by [Cypress](https://www.cypress.io/). 
 
 ### Unit tests
-You can execute the unit tests directly inside of the devcontainer:
+You can execute the unit tests by running:
 
 ```
 npm run test:unit
 ```
 
+> **NOTE:** Running the unit tests within the devcontainer will work, but the performance will be quite slow. It is best to run them locally on your host system.
+
 ### End-to-end tests
-You can execute the end-to-end tests directly inside of the devcontainer:
+You can execute the end-to-end tests on your host system by running:
 
 ```
 npm run test:e2e
 ```
 
-**NOTE:** The end-to-end tests will not work inside of the devcontainer if your host system is a Mac with the M1 processor. However, you will be able to run them as outlined below in the [Test Runner](#Test-Runner) section.
-
 #### Test Runner
 
 Cypress also comes with an amazing [Test Runner](https://docs.cypress.io/guides/core-concepts/test-runner) that lets you see and interact with the tests in your local web browser. This can be helpful when writing end-to-end tests to ensure they are working properly as well as any debugging you might need to do.
 
-However, this will need to be performed on your local system ouside of the devcontainer. To do this, you will need to have Node.js 16 and Cypress [installed on your local system](#Optional-setup).
+However, this will need to be performed on your local system ouside of the devcontainer. To do this, you will need to have Node.js 16 [installed on your local system](#Required-setup).
 
-**Step 1:** Inside of the devcontainer, run the application so that it is available on port 8080:
-
-```
-npm run serve
-```
-
-**Step 2:** Outside of the devcontainer on your local system (but still inside of the project directory), open the Test Runner:
+**Step 1:** Run the application in production mode:
 
 ```
-cypress open
+npm run production
 ```
 
-![Test Runner](test-runner.png)
-
-For more information on what you can do with the Test Runner, view the Test Runner [documentation](https://docs.cypress.io/guides/core-concepts/test-runner).
-
-## WSL 2 setup
-
-If you are using Windows and feel adventurous, you can set everything up within Ubuntu (or your distro of choice) so that you do not need to clutter your Windows installation with things like Node.js, Python, Git, etc.
-
-To do this, you will need Docker installed and configured to work with WSL 2 as outlined in [Docker's documentation](https://docs.docker.com/desktop/windows/wsl/).
-
-### Open the project in VSCode
-
-Clone your `ace2-ams-gui` git repo somewhere inside of your WSL 2 instance. Then open VSCode and click on the "Remote Explorer" extension on the far left of VSCode. In the pane that opens, select "WSL Targets" from the drop-down menu at the top. Then click the "Connect to WSL" button next to the name of your WSL 2 instance. Mine is "Ubuntu". This will open a new VSCode window that is now attached to your WSL 2 instance. From there, you can open a directory like normal and have it open the `ace2-ams-gui` project. From this point, it will recognize the devcontainer setup and will prompt you to reopen the project inside of the devcontainer.
-
-It will automatically reopen the devcontainer the next time you open VSCode, so you should not need to repeat this step.
-
-### Install VcXsrv
-
-On your Windows host, you will need to install an X-server so that you can run GUI applications from within your WSL 2 instance. To do that, install [VcXsrv](https://sourceforge.net/projects/vcxsrv/).
-
-The first time you run the program, make sure you allow the firewall notification when it pops up.
-
-To display programs that launch on the WSL side of the machine as seperate windows, choose the options "Multiple windows" and "Start no client".
-
-On the page that lets you enable extra settings, be sure to disable access control. By default it only allows the local IP 127.0.0.1. Since WSL has its own IP address, which changes often, this will allow connections from all clients.
-
-### Configure Git
-
-Git should already be installed inside your WSL 2 instance (I'm using Ubuntu 20.04). Ensure it has the config that you want such as your name and email address:
-
-```
-git config --global user.name "John Doe"
-git config --global user.email "johndoe@test.com"
-```
-
-### Update packages
-
-```
-sudo apt update
-sudo apt upgrade
-```
-
-### Install Node.js and Cypress
-
-```
-sudo apt install nodejs npm libgtk2.0-0 libgtk-3-0 libgbm-dev libnotify-dev libgconf-2-4 libnss3 libxss1 libasound2 libxtst6 xauth xvfb
-sudo npm install -g cypress
-```
-
-### Install browsers
-
-You will likely want to install some web browsers to use with Cypress:
-
-```
-sudo apt install firefox chromium-browser
-```
-
-### .bashrc configuration
-
-Edit your `.bashrc` or `.zshrc` file and add the following to the end:
-
-```
-# set DISPLAY variable to the IP automatically assigned to WSL 2
-export DISPLAY=$(cat /etc/resolv.conf | grep nameserver | awk '{print $2; exit;}'):0.0
-
-sudo /etc/init.d/dbus start &> /dev/null
-```
-
-### Sudoers configuration
-
-Your user within WSL 2 needs to be able to run the `dbus` service that was added in your `.bashrc` file without being prompted for a password. To do that, edit the sudoers configuration:
-
-```
-sudo visudo -f /etc/sudoers.d/dbus
-```
-
-Within the `nano` window that opens, add the following (replacing `username` with whatever your username is inside of WSL):
-
-```
-username ALL = (root) NOPASSWD: /etc/init.d/dbus
-```
-
-### Reload your shell
-
-The changes made to your `.bashrc` file need to be sourced so that they take effect. Either close and reopen your WSL 2 window or run:
-
-```
-source ~/.bashrc
-```
-
-### Verify
-
-At this point, you should be able to open Cypress within WSL 2 and have the GUI open. Make sure you are inside of the cloned `ace2-ams-gui` repo directory before running:
+**Step 2:** In another terminal on your local system (but still inside of the project directory), open the Test Runner:
 
 ```
 npx cypress open
 ```
 
-If you see an error saying "Cypress could not verify that this server is running", it means you have not started the Vue.js application. You can do so either from a second WSL 2 window or inside of VSCode in the devcontainer by running:
+![Test Runner](test-runner.png)
 
-```
-npm run serve
-```
+For more information on what you can do with the Test Runner, view the Test Runner [documentation](https://docs.cypress.io/guides/core-concepts/test-runner).
