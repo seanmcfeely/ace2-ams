@@ -2,6 +2,7 @@ import { createApp } from "vue";
 import App from "@/App.vue";
 import PrimeVue from "primevue/config";
 
+import auth from "@/services/api/auth";
 import router from "@/router";
 import store from "@/store";
 
@@ -13,6 +14,17 @@ import "primevue/resources/themes/saga-blue/theme.css";
 import "camelcase-keys";
 import "snakecase-keys";
 
-const app = createApp(App).use(store).use(router).use(PrimeVue);
-
-app.mount("#app");
+auth
+  .refresh()
+  .then(() => {
+    console.debug("already logged in");
+    sessionStorage.setItem("authenticated", "yes");
+  })
+  .catch(() => {
+    console.debug("need to login");
+    sessionStorage.removeItem("authenticated");
+  })
+  .finally(() => {
+    const app = createApp(App).use(store).use(router).use(PrimeVue);
+    app.mount("#app");
+  });
