@@ -20,17 +20,33 @@
         ><Button icon="pi pi-cog" class="p-button-rounded p-m-1"
       /></router-link>
       <Button icon="pi pi-user" class="p-button-rounded p-m-1" />
+      <router-link :to="{ name: 'Login' }">
+        <Button
+          icon="pi pi-sign-out"
+          class="p-button-rounded p-m-1"
+          @click="logout"
+      /></router-link>
     </template>
   </Menubar>
 </template>
 
-<script lang="ts">
-  import { defineComponent } from "vue";
+<script>
   import Menubar from "primevue/menubar";
   import Button from "primevue/button";
 
-  export default defineComponent({
+  import auth from "@/services/api/auth";
+
+  export default {
     name: "TheHeader",
     components: { Menubar, Button },
-  });
+    methods: {
+      async logout() {
+        await auth.logout().catch((error) => {
+          throw error;
+        });
+
+        this.$router.replace({ name: "Login" });
+      },
+    },
+  };
 </script>
