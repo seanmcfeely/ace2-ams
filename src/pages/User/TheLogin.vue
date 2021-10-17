@@ -27,6 +27,7 @@
             v-model="password"
             type="password"
             class="w-full mb-3"
+            @keyup.enter="login"
           />
 
           <Button
@@ -71,7 +72,7 @@
         });
 
         this.resetData();
-        this.$router.replace("/manage_alerts");
+        this.$router.replace({ name: "Manage Alerts" });
       },
       resetData() {
         (this.username = null), (this.password = null);
