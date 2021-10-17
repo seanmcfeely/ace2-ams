@@ -38,12 +38,10 @@ instance.interceptors.response.use(
       console.debug("trying to refresh tokens");
       await auth.refresh().catch(() => {
         console.debug("refresh token not present or expired");
-        sessionStorage.removeItem("authenticated");
         router.replace({ name: "Login" });
         return Promise.reject(error);
       });
       console.debug("successfully refreshed tokens");
-      sessionStorage.setItem("authenticated", "yes");
       return await instance(originalRequest);
     }
 

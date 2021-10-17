@@ -16,14 +16,8 @@ import "snakecase-keys";
 
 auth
   .refresh()
-  .then(() => {
-    console.debug("already logged in");
-    sessionStorage.setItem("authenticated", "yes");
-  })
-  .catch(() => {
-    console.debug("need to login");
-    sessionStorage.removeItem("authenticated");
-  })
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  .catch(() => {})
   .finally(() => {
     const app = createApp(App).use(store).use(router).use(PrimeVue);
     app.mount("#app");

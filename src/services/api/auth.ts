@@ -44,10 +44,12 @@ export default {
     };
 
     await instance.request(config).catch((error) => {
+      console.debug("need to authenticate");
       sessionStorage.removeItem("authenticated");
       throw error;
     });
 
+    console.debug("authenticated");
     sessionStorage.setItem("authenticated", "yes");
   },
 
