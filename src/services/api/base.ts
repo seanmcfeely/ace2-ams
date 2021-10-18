@@ -52,6 +52,9 @@ export class BaseApi {
     });
 
     if (response) {
+      if ("content-location" in response.headers) {
+        return await this.readRequest(response.headers["content-location"]);
+      }
       if (Array.isArray(response.data)) {
         return response.data.map(this.formatIncomingData);
       }

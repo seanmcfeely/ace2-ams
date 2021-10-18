@@ -14,7 +14,9 @@ const store = {
     // all alerts returned from current filter settings
     queriedAlerts: [],
   },
-
+  getters: {
+    openAlert: (state: { openAlert: AlertRead }) => state.openAlert,
+  },
   mutations: {
     SET_OPEN_ALERT(state: { openAlert: AlertRead | null }, alert: AlertRead) {
       state.openAlert = alert;
