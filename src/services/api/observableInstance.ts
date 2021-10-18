@@ -6,4 +6,4 @@ class observableInstance extends GenericEndpoint {
   }
 }
 
-export default new observableInstance("/observable/instance");
+export default new observableInstance("/observable/instance/");

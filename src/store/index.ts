@@ -6,6 +6,7 @@ import observableType from "@/store/observableType";
 import auth from "@/store/auth";
 import alerts from "@/store/alerts";
 import modals from "@/store/modals";
+import nodeDirectives from "@/store/nodeDirectives";
 import selectedAlerts from "@/store/selectedAlerts";
 import users from "@/store/users";
 
@@ -26,6 +27,7 @@ export default createStore({
     alerts,
     alertType,
     modals,
+    nodeDirectives,
     observableType,
     selectedAlerts,
     users,

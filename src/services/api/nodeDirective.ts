@@ -1,3 +1,3 @@
 import { GenericEndpoint } from "./base";
 
-export default new GenericEndpoint("/node/directive");
+export default new GenericEndpoint("/node/directive/");

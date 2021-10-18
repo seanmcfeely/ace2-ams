@@ -1,3 +1,3 @@
 import { GenericEndpoint } from "./base";
 
-export default new GenericEndpoint("/alert/type");
+export default new GenericEndpoint("/alert/type/");
