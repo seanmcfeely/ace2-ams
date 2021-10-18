@@ -9,7 +9,6 @@
 <script>
   import TheHeader from "@/components/UserInterface/TheHeader";
   import auth from "@/services/api/auth";
-  import router from "@/router";
 
   export default {
     components: { TheHeader },
@@ -18,9 +17,7 @@
       setInterval(() => {
         if (this.$route.name !== "Login") {
           auth.validate().catch(() => {
-            console.debug("refresh token not present or expired");
-            sessionStorage.removeItem("authenticated");
-            router.replace({ name: "Login" });
+            this.$router.replace({ name: "Login" });
           });
         }
       }, 60000);
