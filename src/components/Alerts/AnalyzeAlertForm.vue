@@ -68,11 +68,7 @@
               :options="directives"
             />
 
-            <Button
-              v-if="observable.index != 0"
-              icon="pi pi-times"
-              @click="deleteFormObservable(index)"
-            />
+            <Button icon="pi pi-times" @click="deleteFormObservable(index)" />
           </div>
         </div>
         <Button icon="pi pi-plus" @click="addFormObservable" />
@@ -158,9 +154,9 @@
         this.alertDate = new Date();
         // this.alertDate = moment(new Date().format("M/M/DD/YYYY HH:mm:ss")).utc();
         this.timezone = "UTC";
-        this.alertType = "Manual";
+        this.alertType = "manual";
         this.alertDescription = "Test Alert!";
-        this.alertQueue = "Default";
+        this.alertQueue = "default";
       },
       async loadInitialData() {
         await this.$store.dispatch("alertQueue/getAllAlertQueues");
@@ -186,12 +182,8 @@
         const alert = {
           alertDescription: this.alertDescription,
           eventTime: this.alertDate,
-          instructions: "NO instructions",
           name: this.alertDescription,
-          owner: "analyst",
           queue: this.alertQueue,
-          tool: null,
-          toolInstance: null,
           type: this.alertType,
         };
 
