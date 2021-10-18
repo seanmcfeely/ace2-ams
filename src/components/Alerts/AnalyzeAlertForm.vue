@@ -20,8 +20,20 @@
             :show-seconds="true"
           />
           <Dropdown id="timezone" v-model="timezone" :options="timezones" />
-          <Dropdown id="type" v-model="alertType" :options="alertTypes" />
-          <Dropdown id="queue" v-model="alertQueue" :options="alertQueues" />
+          <Dropdown
+            id="type"
+            v-model="alertType"
+            :options="alertTypes"
+            option-label="value"
+            option-value="value"
+          />
+          <Dropdown
+            id="queue"
+            v-model="alertQueue"
+            :options="alertQueues"
+            option-label="value"
+            option-value="value"
+          />
         </Fieldset>
         <p>Observables</p>
         <div id="observables-list" class="p-grid">
@@ -39,6 +51,8 @@
             <Dropdown
               id="observable-type"
               v-model="observables[index].type"
+              option-label="value"
+              option-value="value"
               :options="observableTypes"
             />
 
@@ -65,7 +79,11 @@
         <br />
       </TabPanel>
     </TabView>
-    <Button label="Analyze!" @click="printObservables" />
+    <Button
+      label="Analyze!"
+      :loading="loadingAlertCreation"
+      @click="createAlert()"
+    />
   </div>
 </template>
 
@@ -86,6 +104,8 @@
   import TabView from "primevue/tabview";
 
   import moment from "moment-timezone";
+
+  import ObservableInstance from "@/services/api/observableInstance";
 
   export default {
     name: "AnalyzeAlertForm",
@@ -108,10 +128,7 @@
         alertDescription: null,
         alertQueue: null,
         observables: [],
-        directives: ["sandbox"],
-        alertTypes: ["manual"],
-        alertQueues: ["default"],
-        observableTypes: ["file", "ipv4"],
+        loadingAlertCreation: false,
       };
     },
     computed: {
@@ -119,10 +136,11 @@
         return this.observables.length - 1;
       },
       ...mapGetters({
-        // directives: "nodeDirectives/nodeDirectives",
-        // alertTypes: "alertType/alertTypes",
-        // alertQueues: "alertQueue/alertQueues",
-        // observableTypes: "observableType/observableTypes",
+        openAlert: "alerts/openAlert",
+        directives: "nodeDirectives/nodeDirectives",
+        alertTypes: "alertType/alertTypes",
+        alertQueues: "alertQueue/alertQueues",
+        observableTypes: "observableType/observableTypes",
       }),
     },
     created() {
@@ -132,13 +150,13 @@
     methods: {
       init() {
         this.observables.push({
-          index: 0,
-          time: moment.utc().format("MM/DD/YYYY HH:mm:ss"),
-          type: "file",
-          directives: ["sandbox"],
+          time: null,
+          type: "ipv4",
+          value: null,
+          directives: [],
         });
-        // this.alertDate = new Date().toUTCString();10/14/2021 16:24:13
-        this.alertDate = moment(new Date().format("MM/DD/YYYY HH:mm:ss")).utc();
+        this.alertDate = new Date();
+        // this.alertDate = moment(new Date().format("M/M/DD/YYYY HH:mm:ss")).utc();
         this.timezone = "UTC";
         this.alertType = "Manual";
         this.alertDescription = "Test Alert!";
@@ -147,14 +165,15 @@
       async loadInitialData() {
         await this.$store.dispatch("alertQueue/getAllAlertQueues");
         await this.$store.dispatch("alertType/getAllAlertTypes");
-        await this.$store.dispatch("nodeDirective/getAllNodeDirectives");
+        await this.$store.dispatch("nodeDirectives/getAllNodeDirectives");
         await this.$store.dispatch("observableType/getAllObservableTypes");
       },
       addFormObservable() {
         this.observables.push({
-          time: new Date(),
-          type: "file",
-          directives: ["sandbox"],
+          time: null,
+          type: "ipv4",
+          value: null,
+          directives: [],
         });
       },
       deleteFormObservable(index) {
@@ -162,6 +181,35 @@
       },
       printObservables() {
         console.log(this.observables);
+      },
+      async createAlert() {
+        const alert = {
+          alertDescription: this.alertDescription,
+          eventTime: this.alertDate,
+          instructions: "NO instructions",
+          name: this.alertDescription,
+          owner: "analyst",
+          queue: this.alertQueue,
+          tool: null,
+          toolInstance: null,
+          type: this.alertType,
+        };
+
+        this.loadingAlertCreation = true;
+        await this.$store.dispatch("alerts/createAlert", alert);
+        await this.addObservables();
+        this.$router.push({ path: `/alert/${this.openAlert.uuid}` });
+      },
+      async addObservables() {
+        for (const obs_index in this.observables) {
+          const observable = {
+            alertUuid: this.openAlert.uuid,
+            parentAnalysisUuid: this.openAlert.analysis.uuid,
+            type: this.observables[obs_index].type,
+            value: this.observables[obs_index].value,
+          };
+          await ObservableInstance.create(observable);
+        }
       },
     },
   };
