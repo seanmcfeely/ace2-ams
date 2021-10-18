@@ -22,12 +22,10 @@
     async created() {
       console.log(this.openAlert);
       console.log(this.$route.params);
-      if (this.openAlert == null) {
-        await this.$store.dispatch(
-          "alerts/openAlert",
-          this.$route.params.alertID,
-        );
-      }
+      await this.$store.dispatch(
+        "alerts/openAlert",
+        this.$route.params.alertID,
+      );
     },
   };
 </script>
