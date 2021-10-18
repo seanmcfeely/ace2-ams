@@ -49,7 +49,7 @@ export default {
       throw error;
     });
 
-    console.debug("authenticated");
+    console.debug("successfully refreshed tokens");
     sessionStorage.setItem("authenticated", "yes");
   },
 
@@ -62,6 +62,8 @@ export default {
     };
 
     await instance.request(config).catch((error) => {
+      console.debug("refresh token not present or expired");
+      sessionStorage.removeItem("authenticated");
       throw error;
     });
   },

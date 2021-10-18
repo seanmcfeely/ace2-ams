@@ -13,6 +13,10 @@ const instance = axios.create({
   timeout: 10000, // 10 seconds
 });
 
+function isAuthUrl(url: string): boolean {
+  return [authUrl, refreshUrl, validateUrl].includes(url);
+}
+
 // Set an interceptor that will refresh the tokens if a request gets a 401 response
 instance.interceptors.response.use(
   // Don't do anything if the response was successful
@@ -20,32 +24,42 @@ instance.interceptors.response.use(
     return response;
   },
 
-  // Check to see if the response was a 401 and try to refresh the tokens
   async function (error) {
+    // Reject the promise if it was not a 401 error
+    if (error.response.status !== 401) {
+      return Promise.reject(error);
+    }
+
     const originalRequest = error.config;
     console.debug("error accessing: " + originalRequest.url);
 
     // Redirect to the login page if the 401 came from one of the auth URLs
-    if ([authUrl, refreshUrl, validateUrl].includes(originalRequest.url)) {
+    if (isAuthUrl(originalRequest.url)) {
       console.debug("redirecting to login page");
-      sessionStorage.removeItem("authenticated");
       router.replace({ name: "Login" });
       return Promise.reject(error);
     }
 
-    // If the error was a 401, try to refresh the auth tokens
-    if (error.response.status === 401) {
-      console.debug("trying to refresh tokens");
-      await auth.refresh().catch(() => {
+    // Try to refresh the tokens and replay the original request
+    console.debug("trying to refresh tokens");
+    return auth
+      .refresh()
+      .then(() => {
+        return new Promise((resolve, reject) => {
+          instance(originalRequest)
+            .then((response) => {
+              resolve(response);
+            })
+            .catch((error) => {
+              reject(error);
+            });
+        });
+      })
+      .catch(() => {
         console.debug("refresh token not present or expired");
         router.replace({ name: "Login" });
         return Promise.reject(error);
       });
-      console.debug("successfully refreshed tokens");
-      return await instance(originalRequest);
-    }
-
-    return Promise.reject(error);
   },
 );
 
