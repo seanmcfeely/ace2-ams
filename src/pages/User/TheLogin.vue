@@ -66,9 +66,9 @@
     },
     methods: {
       async login() {
-        await auth.authenticate(this.loginData).catch((error) => {
+        await auth.authenticate(this.loginData).catch(() => {
           // TODO: Add a proper message saying the login failed
-          throw error;
+          console.error("Invalid username or password");
         });
 
         this.resetData();
