@@ -159,7 +159,7 @@
           directives: [],
         });
         this.alertDate = new Date();
-        this.timezone = "UTC";
+        this.timezone = moment.tz.guess();
         this.alertType = "manual";
         this.alertDescription = "Test Alert!";
         this.alertQueue = "default";
