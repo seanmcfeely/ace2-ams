@@ -16,8 +16,10 @@ import "snakecase-keys";
 
 auth
   .refresh()
-  // eslint-disable-next-line @typescript-eslint/no-empty-function
-  .catch(() => {})
+  .catch(() => {
+    console.debug("redirecting to login page");
+    router.replace({ name: "Login" });
+  })
   .finally(() => {
     const app = createApp(App).use(store).use(router).use(PrimeVue);
     app.mount("#app");

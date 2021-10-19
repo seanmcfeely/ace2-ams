@@ -1,11 +1,6 @@
 import { AxiosRequestConfig } from "axios";
 
-import instance from "@/services/api/axios";
-
-export const authUrl = "/auth";
-export const logoutUrl = "/auth/logout";
-export const refreshUrl = "/auth/refresh";
-export const validateUrl = "/auth/validate";
+import instance, { axiosRefresh } from "@/services/api/axios";
 
 export default {
   // AUTH
@@ -14,7 +9,7 @@ export default {
     password: string;
   }): Promise<void> {
     const config: AxiosRequestConfig = {
-      url: authUrl,
+      url: "/auth",
       method: "POST",
       withCredentials: true,
     };
@@ -37,26 +32,14 @@ export default {
 
   // REFRESH AUTH
   async refresh(): Promise<void> {
-    const config: AxiosRequestConfig = {
-      url: refreshUrl,
-      method: "GET",
-      withCredentials: true,
-    };
-
-    await instance.request(config).catch((error) => {
-      console.debug("need to authenticate");
-      sessionStorage.removeItem("authenticated");
-      throw error;
-    });
-
-    console.debug("successfully refreshed tokens");
-    sessionStorage.setItem("authenticated", "yes");
+    // The axiosRefresh function is used to avoid circular dependencies between auth.ts and axios.ts
+    return axiosRefresh();
   },
 
   // VALIDATE
   async validate(): Promise<void> {
     const config: AxiosRequestConfig = {
-      url: validateUrl,
+      url: "/auth/validate",
       method: "GET",
       withCredentials: true,
     };
@@ -71,7 +54,7 @@ export default {
   // LOGOUT
   async logout(): Promise<void> {
     const config: AxiosRequestConfig = {
-      url: logoutUrl,
+      url: "/auth/logout",
       method: "GET",
       withCredentials: true,
     };

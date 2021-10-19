@@ -17,6 +17,7 @@
       setInterval(() => {
         if (this.$route.name !== "Login") {
           auth.validate().catch(() => {
+            console.debug("redirecting to login page");
             this.$router.replace({ name: "Login" });
           });
         }

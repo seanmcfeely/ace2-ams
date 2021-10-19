@@ -1,8 +1,5 @@
 // create instance
-import axios from "axios";
-
-import auth, { authUrl, refreshUrl, validateUrl } from "@/services/api/auth";
-import router from "@/router";
+import axios, { AxiosRequestConfig } from "axios";
 
 const instance = axios.create({
   baseURL: `${process.env.VUE_APP_BACKEND_URL}`,
@@ -12,10 +9,6 @@ const instance = axios.create({
   // By default, axios has no timeout!
   timeout: 10000, // 10 seconds
 });
-
-function isAuthUrl(url: string): boolean {
-  return [authUrl, refreshUrl, validateUrl].includes(url);
-}
 
 // Set an interceptor that will refresh the tokens if a request gets a 401 response
 instance.interceptors.response.use(
@@ -34,16 +27,13 @@ instance.interceptors.response.use(
     console.debug("error accessing: " + originalRequest.url);
 
     // Redirect to the login page if the 401 came from one of the auth URLs
-    if (isAuthUrl(originalRequest.url)) {
-      console.debug("redirecting to login page");
-      router.replace({ name: "Login" });
+    if (originalRequest.url.includes("/auth")) {
       return Promise.reject(error);
     }
 
     // Try to refresh the tokens and replay the original request
     console.debug("trying to refresh tokens");
-    return auth
-      .refresh()
+    return axiosRefresh()
       .then(() => {
         return new Promise((resolve, reject) => {
           instance(originalRequest)
@@ -57,10 +47,26 @@ instance.interceptors.response.use(
       })
       .catch(() => {
         console.debug("refresh token not present or expired");
-        router.replace({ name: "Login" });
         return Promise.reject(error);
       });
   },
 );
+
+export async function axiosRefresh(): Promise<void> {
+  const config: AxiosRequestConfig = {
+    url: "/auth/refresh",
+    method: "GET",
+    withCredentials: true,
+  };
+
+  await instance.request(config).catch((error) => {
+    console.debug("need to authenticate");
+    sessionStorage.removeItem("authenticated");
+    throw error;
+  });
+
+  console.debug("successfully refreshed tokens");
+  sessionStorage.setItem("authenticated", "yes");
+}
 
 export default instance;
