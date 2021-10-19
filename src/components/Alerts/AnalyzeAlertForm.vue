@@ -77,9 +77,12 @@
     </TabView>
     <Button
       label="Analyze!"
-      :loading="loadingAlertCreation"
+      :loading="alertCreateLoading"
       @click="createAlert()"
     />
+    <Message v-if="error" severity="error" @close="handleError">{{
+      error
+    }}</Message>
   </div>
 </template>
 
@@ -87,6 +90,8 @@
   import { mapGetters } from "vuex";
 
   import Dropdown from "primevue/dropdown";
+
+  import Message from "primevue/message";
 
   import MultiSelect from "primevue/multiselect";
 
@@ -113,18 +118,20 @@
       InputText,
       TabPanel,
       TabView,
+      Message,
       MultiSelect,
     },
     data() {
       return {
+        alertCreateLoading: false,
         alertDate: null,
+        alertDescription: null,
+        alertType: null,
+        alertQueue: null,
+        error: null,
+        observables: [],
         timezone: null,
         timezones: moment.tz.names(),
-        alertType: null,
-        alertDescription: null,
-        alertQueue: null,
-        observables: [],
-        loadingAlertCreation: false,
       };
     },
     computed: {
@@ -152,7 +159,6 @@
           directives: [],
         });
         this.alertDate = new Date();
-        // this.alertDate = moment(new Date().format("M/M/DD/YYYY HH:mm:ss")).utc();
         this.timezone = "UTC";
         this.alertType = "manual";
         this.alertDescription = "Test Alert!";
@@ -175,8 +181,8 @@
       deleteFormObservable(index) {
         this.observables.splice(index, 1);
       },
-      printObservables() {
-        console.log(this.observables);
+      handleError() {
+        this.error = null;
       },
       async createAlert() {
         const alert = {
@@ -187,10 +193,17 @@
           type: this.alertType,
         };
 
-        this.loadingAlertCreation = true;
-        await this.$store.dispatch("alerts/createAlert", alert);
-        await this.addObservables();
-        this.$router.push({ path: `/alert/${this.openAlert.uuid}` });
+        this.alertCreateLoading = true;
+        try {
+          await this.$store.dispatch("alerts/createAlert", alert);
+          await this.addObservables();
+          this.$router.push({ path: `/alert/${this.openAlert.uuid}` });
+        } catch (error) {
+          this.error = `Could not create alert: ${error} ${JSON.stringify(
+            error.response.data.detail,
+          )}`;
+          this.alertCreateLoading = false;
+        }
       },
       async addObservables() {
         for (const obs_index in this.observables) {
@@ -200,7 +213,7 @@
             type: this.observables[obs_index].type,
             value: this.observables[obs_index].value,
           };
-          await ObservableInstance.create(observable);
+          await ObservableInstance.create(observable, false);
         }
       },
     },
