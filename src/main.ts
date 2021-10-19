@@ -14,6 +14,8 @@ import "primevue/resources/themes/saga-blue/theme.css";
 import "camelcase-keys";
 import "snakecase-keys";
 
+sessionStorage.removeItem("authenticated");
+
 auth
   .refresh()
   .catch(() => {
