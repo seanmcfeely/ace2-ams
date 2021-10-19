@@ -37,15 +37,20 @@ export class BaseApi {
     if (data) {
       config["data"] = this.formatOutgoingData(data);
     }
+    console.log(data);
 
     const response = await instance.request(config).catch((error) => {
+      console.log(error.response);
       throw error;
     });
 
+    console.log(response);
+
     if (response) {
-      if ("content-location" in response.headers) {
+      if ("content-location" in response.headers && getAfterCreate) {
         return await this.readRequest(response.headers["content-location"]);
       }
+
       if (Array.isArray(response.data)) {
         return response.data.map(this.formatIncomingData);
       }
