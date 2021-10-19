@@ -7,16 +7,6 @@ import { UUID } from "@/models/base";
 type Method = "GET" | "DELETE" | "POST" | "PATCH";
 
 export class BaseApi {
-  extractUUID(contentLocation: string): { uuid: string } {
-    const uuid = contentLocation.split("/").pop();
-    if (uuid) {
-      return { uuid: uuid };
-    }
-    throw Error(
-      `UUID could not be extracted from content-location ${contentLocation}`,
-    );
-  }
-
   formatIncomingData(data: Record<string, unknown>): Record<string, unknown> {
     return camelcaseKeys(data, { deep: true });
   }
@@ -36,6 +26,7 @@ export class BaseApi {
     url: string,
     method: Method,
     data?: Record<string, any>,
+    getAfterCreate = true,
   ): Promise<unknown> {
     const config: AxiosRequestConfig = {
       url: url,
@@ -66,8 +57,9 @@ export class BaseApi {
   async createRequest(
     url: string,
     data?: Record<string, any>,
+    getAfterCreate = true,
   ): Promise<unknown> {
-    return await this.baseRequest(url, "POST", data);
+    return await this.baseRequest(url, "POST", data, getAfterCreate);
   }
 
   async readRequest(url: string): Promise<unknown> {
@@ -91,9 +83,12 @@ export class GenericEndpoint {
   }
 
   // CREATE
-  async create(object: Record<string, unknown>): Promise<unknown> {
+  async create(
+    object: Record<string, unknown>,
+    getAfterCreate = true,
+  ): Promise<unknown> {
     return await this.api
-      .createRequest(`${this.endpoint}`, object)
+      .createRequest(`${this.endpoint}`, object, getAfterCreate)
       .catch((err) => {
         throw err;
       });
