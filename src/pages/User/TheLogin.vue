@@ -27,6 +27,7 @@
             v-model="password"
             type="password"
             class="w-full mb-3"
+            @keyup.enter="login"
           />
 
           <Button
@@ -65,13 +66,13 @@
     },
     methods: {
       async login() {
-        await auth.authenticate(this.loginData).catch((error) => {
+        await auth.authenticate(this.loginData).catch(() => {
           // TODO: Add a proper message saying the login failed
-          throw error;
+          console.error("Invalid username or password");
         });
 
         this.resetData();
-        this.$router.replace("/manage_alerts");
+        this.$router.replace({ name: "Manage Alerts" });
       },
       resetData() {
         (this.username = null), (this.password = null);
