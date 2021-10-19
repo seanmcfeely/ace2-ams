@@ -22,18 +22,17 @@ describe("/auth API calls", () => {
     await expect(auth.validate()).resolves.toBe(undefined);
   });
 
-  // TODO: Fix these tests - issue is with the axios interceptor trying to access vue-router
-  // it("will throw an error if refreshing without being authenticated", async () => {
-  //   myNock.get("/auth/refresh").reply(401, "Not authenticated");
-  //   await expect(auth.refresh()).rejects.toEqual(
-  //     new Error("Request failed with status code 401"),
-  //   );
-  // });
+  it("will throw an error if refreshing without being authenticated", async () => {
+    myNock.get("/auth/refresh").reply(401, "Not authenticated");
+    await expect(auth.refresh()).rejects.toEqual(
+      new Error("Request failed with status code 401"),
+    );
+  });
 
-  // it("will throw an error if authenticate request fails", () => {
-  //   myNock.post("/auth").reply(401, "Invalid username or password");
-  //   return expect(auth.authenticate(mockLoginData)).rejects.toEqual(
-  //     new Error("Request failed with status code 401"),
-  //   );
-  // });
+  it("will throw an error if authenticate request fails", async () => {
+    myNock.post("/auth").reply(401, "Invalid username or password");
+    await expect(auth.authenticate(mockLoginData)).rejects.toEqual(
+      new Error("Request failed with status code 401"),
+    );
+  });
 });
