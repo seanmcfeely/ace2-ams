@@ -1,6 +1,6 @@
 import { AxiosRequestConfig } from "axios";
 
-import instance from "@/services/api/axios";
+import instance, { axiosRefresh } from "@/services/api/axios";
 
 export default {
   // AUTH
@@ -23,20 +23,46 @@ export default {
     };
 
     await instance.request(config).catch((error) => {
+      sessionStorage.removeItem("authenticated");
       throw error;
     });
+
+    sessionStorage.setItem("authenticated", "yes");
   },
 
   // REFRESH AUTH
   async refresh(): Promise<void> {
+    // The axiosRefresh function is used to avoid circular dependencies between auth.ts and axios.ts
+    return axiosRefresh();
+  },
+
+  // VALIDATE
+  async validate(): Promise<void> {
     const config: AxiosRequestConfig = {
-      url: "/auth/refresh",
-      method: "POST",
+      url: "/auth/validate",
+      method: "GET",
+      withCredentials: true,
+    };
+
+    await instance.request(config).catch((error) => {
+      console.debug("refresh token not present or expired");
+      sessionStorage.removeItem("authenticated");
+      throw error;
+    });
+  },
+
+  // LOGOUT
+  async logout(): Promise<void> {
+    const config: AxiosRequestConfig = {
+      url: "/auth/logout",
+      method: "GET",
       withCredentials: true,
     };
 
     await instance.request(config).catch((error) => {
       throw error;
     });
+
+    sessionStorage.removeItem("authenticated");
   },
 };
