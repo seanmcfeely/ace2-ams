@@ -60,10 +60,10 @@
         return this.$store.getters["modals/allOpen"].includes(this.name);
       },
       ...mapState({
-        users: (state) => state.users.users,
         selectedAlerts: (state) => state.selectedAlerts.selected,
       }),
       ...mapGetters({
+        users: "users/allItems",
         anyAlertsSelected: "selectedAlerts/anySelected",
         multipleAlertsSelected: "selectedAlerts/multipleSelected",
       }),

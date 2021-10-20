@@ -11,8 +11,8 @@ export default function makeGenericModule(service: any = {}): {
   getters: {
     allItems: (state: any, getters: any) => any;
   };
-  actions: { getAll: ({ commit }: { commit: any }) => Promise<void> };
   mutations: { addItems: (state: any, items: any[]) => void };
+  actions: { getAll: ({ commit }: { commit: any }) => Promise<void> };
 } {
   return {
     namespaced: true,
@@ -22,7 +22,6 @@ export default function makeGenericModule(service: any = {}): {
 
     getters: {
       allItems: (state) => {
-        console.log(state.items);
         return state.items;
       },
     },
@@ -42,6 +41,7 @@ export default function makeGenericModule(service: any = {}): {
         return await service
           .getAll()
           .then((items: any[]) => {
+            console.log(items);
             commit("addItems", items);
           })
           .catch((error: Error) => {
