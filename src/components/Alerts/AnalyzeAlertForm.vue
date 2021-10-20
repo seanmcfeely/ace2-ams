@@ -229,10 +229,10 @@
       },
       ...mapGetters({
         openAlert: "alerts/openAlert",
-        directives: "nodeDirectives/nodeDirectives",
-        alertTypes: "alertType/alertTypes",
-        alertQueues: "alertQueue/alertQueues",
-        observableTypes: "observableType/observableTypes",
+        directives: "nodeDirective/allItems",
+        alertTypes: "alertType/allItems",
+        alertQueues: "alertQueue/allItems",
+        observableTypes: "observableType/allItems",
       }),
     },
     created() {
@@ -253,10 +253,10 @@
         this.alertQueue = "default";
       },
       async loadInitialData() {
-        await this.$store.dispatch("alertQueue/getAllAlertQueues");
-        await this.$store.dispatch("alertType/getAllAlertTypes");
-        await this.$store.dispatch("nodeDirectives/getAllNodeDirectives");
-        await this.$store.dispatch("observableType/getAllObservableTypes");
+        await this.$store.dispatch("alertQueue/getAll");
+        await this.$store.dispatch("alertType/getAll");
+        await this.$store.dispatch("nodeDirective/getAll");
+        await this.$store.dispatch("observableType/getAll");
       },
       addFormObservable() {
         this.observables.push({

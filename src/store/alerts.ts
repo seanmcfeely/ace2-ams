@@ -38,7 +38,6 @@ const store = {
         .create(newAlert)
         .then((alert) => {
           commit("SET_OPEN_ALERT", alert);
-          //may have to return id?
         })
         .catch((error) => {
           throw error;

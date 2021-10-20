@@ -1,35 +1,36 @@
 import { Commit, createStore } from "vuex";
 
-import alertQueue from "@/store/alertQueue";
-import alertType from "@/store/alertType";
-import observableType from "@/store/observableType";
+import makeGenericModule from "@/store/generic";
+import alertQueue from "@/services/api/alertQueue";
+import alertType from "@/services/api/alertType";
+import observableType from "@/services/api/observableType";
 import auth from "@/store/auth";
 import alerts from "@/store/alerts";
 import modals from "@/store/modals";
-import nodeDirectives from "@/store/nodeDirectives";
+import nodeDirective from "@/services/api/nodeDirective";
 import selectedAlerts from "@/store/selectedAlerts";
-import users from "@/store/users";
-
-// todo: add selectedAlerts to store
-// probably also want to add applied filters.
+import users from "@/services/api/users";
 
 export interface CommitFunction {
   commit: Commit;
 }
 
-export default createStore({
+const store = createStore({
   state: {},
   mutations: {},
   actions: {},
   modules: {
-    alertQueue,
     auth,
     alerts,
-    alertType,
     modals,
-    nodeDirectives,
-    observableType,
     selectedAlerts,
-    users,
   },
 });
+
+store.registerModule("alertQueue", makeGenericModule(alertQueue));
+store.registerModule("alertType", makeGenericModule(alertType));
+store.registerModule("nodeDirective", makeGenericModule(nodeDirective));
+store.registerModule("observableType", makeGenericModule(observableType));
+store.registerModule("users", makeGenericModule(users));
+
+export default store;
