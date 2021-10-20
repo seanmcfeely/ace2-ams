@@ -7,7 +7,7 @@
 
 export default function makeGenericModule(service: any = {}): {
   namespaced: boolean;
-  state: { lastGetAll: Date | null; items: any[] };
+  state: { items: any[] };
   getters: {
     allItems: (state: any, getters: any) => any;
   };
@@ -18,7 +18,6 @@ export default function makeGenericModule(service: any = {}): {
     namespaced: true,
     state: {
       items: [],
-      lastGetAll: null,
     },
 
     getters: {
