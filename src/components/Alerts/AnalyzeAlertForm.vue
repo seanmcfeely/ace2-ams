@@ -1,94 +1,179 @@
 <template>
-  <div>
-    <TabView>
-      <TabPanel key="basic" header="Basic">
-        <br />
-        <span class="p-float-label p-field">
-          <InputText
-            id="description"
-            v-model="alertDescription"
-            type="text"
-          ></InputText>
-          <label for="description">Alert Description</label>
-        </span>
-        <br />
-        <Fieldset legend="Advanced" :toggleable="true" :collapsed="true">
-          <Calendar
-            id="alert-date"
-            v-model="alertDate"
-            :show-time="true"
-            :show-seconds="true"
-          />
-          <Dropdown id="timezone" v-model="timezone" :options="timezones" />
-          <Dropdown
-            id="type"
-            v-model="alertType"
-            :options="alertTypes"
-            option-label="value"
-            option-value="value"
-          />
-          <Dropdown
-            id="queue"
-            v-model="alertQueue"
-            :options="alertQueues"
-            option-label="value"
-            option-value="value"
-          />
-        </Fieldset>
-        <p>Observables</p>
-        <div id="observables-list" class="p-grid">
-          <div
-            v-for="(observable, index) in observables"
-            :key="observable.index"
-            class="p-col-12"
-          >
-            <Calendar
-              id="observable-time"
-              v-model="observables[index].time"
-              :show-time="true"
-              :show-seconds="true"
-            />
-            <Dropdown
-              id="observable-type"
-              v-model="observables[index].type"
-              option-label="value"
-              option-value="value"
-              :options="observableTypes"
-            />
-
-            <InputText
-              id="observable-value"
-              v-model="observables[index].value"
-              type="text"
-            ></InputText>
-
-            <MultiSelect
-              id="observable-directives"
-              v-model="observables[index].directives"
-              :options="directives"
-            />
-
-            <Button icon="pi pi-times" @click="deleteFormObservable(index)" />
+  <TabView>
+    <TabPanel key="basic" header="Basic">
+      <Card>
+        <template #title>Alert Details </template>
+        <template #content>
+          <div class="formgrid grid">
+            <div class="field col-4">
+              <label for="description">Alert Description</label>
+              <InputText
+                id="description"
+                v-model="alertDescription"
+                class="inputfield w-full"
+                type="text"
+              ></InputText>
+            </div>
           </div>
-        </div>
-        <Button icon="pi pi-plus" @click="addFormObservable" />
-        <br />
-      </TabPanel>
-    </TabView>
+
+          <br />
+
+          <Fieldset legend="Advanced" :toggleable="true" :collapsed="true">
+            <div class="formgrid grid">
+              <div class="field col-4">
+                <label for="alert-date">Alert Datetime</label>
+                <Calendar
+                  id="alert-date"
+                  v-model="alertDate"
+                  class="inputfield w-full"
+                  :show-time="true"
+                  :show-seconds="true"
+                />
+              </div>
+            </div>
+            <div class="formgrid grid">
+              <div class="field col-4">
+                <label for="timezone">Timezone</label>
+                <Dropdown
+                  id="timezone"
+                  v-model="timezone"
+                  class="inputfield w-full"
+                  :options="timezones"
+                />
+              </div>
+            </div>
+            <div class="formgrid grid">
+              <div class="field col-4">
+                <label for="type">Alert Type</label>
+                <Dropdown
+                  id="type"
+                  v-model="alertType"
+                  class="inputfield w-full"
+                  :options="alertTypes"
+                  option-label="value"
+                  option-value="value"
+                />
+              </div>
+            </div>
+            <div class="formgrid grid">
+              <div class="field col-4">
+                <label for="queue">Queue</label>
+                <Dropdown
+                  id="queue"
+                  v-model="alertQueue"
+                  class="inputfield w-full"
+                  :options="alertQueues"
+                  option-label="value"
+                  option-value="value"
+                />
+              </div>
+            </div>
+          </Fieldset>
+        </template>
+      </Card>
+
+      <br />
+
+      <Card>
+        <template #title>Observables </template>
+        <template #content>
+          <div id="observables-list">
+            <div class="formgrid grid">
+              <div class="field col-2 px-1">
+                <label for="observable-time">Time</label>
+              </div>
+              <div class="field col-2 px-1">
+                <label for="observable-type">Type</label>
+              </div>
+              <div class="field col-3 px-1">
+                <label for="observable-value">Value</label>
+              </div>
+              <div class="field col-3 px-1">
+                <label for="observable-directives">Directives</label>
+              </div>
+            </div>
+            <div
+              v-for="(observable, index) in observables"
+              :key="observable.index"
+              class="p-col-12"
+            >
+              <div class="formgrid grid">
+                <div class="field col-2 px-1">
+                  <Calendar
+                    id="observable-time"
+                    v-model="observables[index].time"
+                    class="inputfield w-full"
+                    :show-time="true"
+                    :show-seconds="true"
+                  />
+                </div>
+                <div class="field col-2 px-1">
+                  <Dropdown
+                    id="observable-type"
+                    v-model="observables[index].type"
+                    class="inputfield w-full"
+                    option-label="value"
+                    option-value="value"
+                    :options="observableTypes"
+                  />
+                </div>
+                <div class="field col-3 px-1">
+                  <InputText
+                    id="observable-value"
+                    v-model="observables[index].value"
+                    class="inputfield w-full"
+                    type="text"
+                  ></InputText>
+                </div>
+                <div class="field col-3 px-1">
+                  <MultiSelect
+                    id="observable-directives"
+                    v-model="observables[index].directives"
+                    class="inputfield w-full"
+                    :options="directives"
+                  />
+                </div>
+                <div class="field col-1">
+                  <Button
+                    icon="pi pi-times"
+                    class="inputfield"
+                    @click="deleteFormObservable(index)"
+                  />
+                </div>
+                <div class="field col-1">
+                  <Button
+                    v-if="isLastObservable(index)"
+                    icon="pi pi-plus"
+                    class="inputfield w-full"
+                    @click="addFormObservable"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </template>
+      </Card>
+
+      <br />
+    </TabPanel>
+  </TabView>
+  <div class="pl-3">
     <Button
       label="Analyze!"
       :loading="alertCreateLoading"
+      class="p-button-lg"
       @click="createAlert()"
     />
-    <Message v-if="error" severity="error" @close="handleError">{{
-      error
-    }}</Message>
   </div>
+  <Message v-if="error" severity="error" @close="handleError">{{
+    error
+  }}</Message>
 </template>
 
 <script>
   import { mapGetters } from "vuex";
 
+  import Card from "primevue/card";
   import Dropdown from "primevue/dropdown";
 
   import Message from "primevue/message";
@@ -112,6 +197,7 @@
     name: "AnalyzeAlertForm",
     components: {
       Calendar,
+      Card,
       Dropdown,
       Button,
       Fieldset,
@@ -183,6 +269,9 @@
       },
       handleError() {
         this.error = null;
+      },
+      isLastObservable(index) {
+        return index == this.lastObservableIndex;
       },
       async createAlert() {
         const alert = {
