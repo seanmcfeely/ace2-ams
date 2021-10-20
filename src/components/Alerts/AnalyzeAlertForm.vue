@@ -147,7 +147,7 @@
                   <Button
                     v-if="isLastObservable(index)"
                     icon="pi pi-plus"
-                    class="inputfield w-full"
+                    class="p-button-rounded inputfield"
                     @click="addFormObservable"
                   />
                 </div>
