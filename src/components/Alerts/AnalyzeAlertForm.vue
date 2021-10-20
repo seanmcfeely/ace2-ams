@@ -6,10 +6,10 @@
         <template #content>
           <div class="formgrid grid">
             <div class="field col-4">
-              <label for="description">Alert Description</label>
               <InputText
                 id="description"
                 v-model="alertDescription"
+                placeholder="Alert Description"
                 class="inputfield w-full"
                 type="text"
               ></InputText>
@@ -102,6 +102,7 @@
                   <Calendar
                     id="observable-time"
                     v-model="observables[index].time"
+                    placeholder="No time selected"
                     class="inputfield w-full"
                     :show-time="true"
                     :show-seconds="true"
@@ -121,6 +122,7 @@
                   <InputText
                     id="observable-value"
                     v-model="observables[index].value"
+                    placeholder="Enter a value"
                     class="inputfield w-full"
                     type="text"
                   ></InputText>
@@ -129,6 +131,7 @@
                   <MultiSelect
                     id="observable-directives"
                     v-model="observables[index].directives"
+                    placeholder="No directives selected"
                     class="inputfield w-full"
                     :options="directives"
                   />
@@ -247,7 +250,6 @@
         this.alertDate = new Date();
         this.timezone = moment.tz.guess();
         this.alertType = "manual";
-        this.alertDescription = "Test Alert!";
         this.alertQueue = "default";
       },
       async loadInitialData() {
