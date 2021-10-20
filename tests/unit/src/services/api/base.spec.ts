@@ -9,9 +9,35 @@ import myNock from "@unit/services/api/nock";
 describe("BaseAPI calls", () => {
   const api = new BaseApi();
 
-  it("make a post request when createRequest is called", async () => {
+  it("will make a post and get request after a successful create when getAfterCreate is true and there is a 'content-location' header", async () => {
+    myNock
+      .post("/create")
+      .reply(200, "Create successful", {
+        "content-location": "http://test_app.com:1234/newItem",
+      })
+      .get("/newItem")
+      .reply(200, "Read successful");
+    const res = await api.createRequest("/create");
+    expect(res).toEqual("Read successful");
+  });
+
+  it("will make only a post request when getAfterCreate is true and there is NOT a 'content-location' header", async () => {
     myNock.post("/create").reply(200, "Create successful");
     const res = await api.createRequest("/create");
+    expect(res).toEqual("Create successful");
+  });
+
+  it("will make only a post request when getAfterCreate is false and there is a 'content-location' header", async () => {
+    myNock.post("/create").reply(200, "Create successful", {
+      "content-location": "http://test_app.com:1234/newItem",
+    });
+    const res = await api.createRequest("/create", {}, false);
+    expect(res).toEqual("Create successful");
+  });
+
+  it("will make only a post request when getAfterCreate is false and there is NOT a 'content-location' header", async () => {
+    myNock.post("/create").reply(200, "Create successful");
+    const res = await api.createRequest("/create", {}, false);
     expect(res).toEqual("Create successful");
   });
 
@@ -76,19 +102,50 @@ describe("BaseAPI calls", () => {
 describe("generic API calls", () => {
   const genericObject = new GenericEndpoint("/object/");
   const successMessage = "Request successful";
+  const secondSuccessMessage = "Request 2 successful";
   const failureMessage = "Request failed";
   const mockObject = {
     uuid: "1",
     name: "Test",
   };
 
-  it("will make a post request when create is called", async () => {
+  it("will make only a post request when create is called and return create results if getAfterCreate is false and there is NOT a content-location header", async () => {
+    myNock
+      .post("/object/", JSON.stringify(snakecaseKeys(mockObject)))
+      .reply(200, successMessage);
+
+    const res = await genericObject.create(mockObject, false);
+    expect(res).toEqual(successMessage);
+  });
+  it("will make only a post request when create is called and return create results if getAfterCreate is false and there is a content-location header", async () => {
+    myNock
+      .post("/object/", JSON.stringify(snakecaseKeys(mockObject)))
+      .reply(200, successMessage, {
+        "content-location": "http://test_app.com:1234/newItem",
+      });
+
+    const res = await genericObject.create(mockObject, false);
+    expect(res).toEqual(successMessage);
+  });
+  it("will make only a post request when create is called and return create results if getAfterCreate is true and there is NOT a content-location header", async () => {
     myNock
       .post("/object/", JSON.stringify(snakecaseKeys(mockObject)))
       .reply(200, successMessage);
 
     const res = await genericObject.create(mockObject);
     expect(res).toEqual(successMessage);
+  });
+  it("will make a post and get request when create is called and return GET results if getAfterCreate is true and there is a content-location header", async () => {
+    myNock
+      .post("/object/", JSON.stringify(snakecaseKeys(mockObject)))
+      .reply(200, successMessage, {
+        "content-location": "http://test_app.com:1234/newItem",
+      })
+      .get("/newItem")
+      .reply(200, secondSuccessMessage);
+
+    const res = await genericObject.create(mockObject);
+    expect(res).toEqual(secondSuccessMessage);
   });
   it("will make a get request to /object/{uuid} when getSingle is called", async () => {
     myNock.get("/object/1").reply(200, successMessage);
