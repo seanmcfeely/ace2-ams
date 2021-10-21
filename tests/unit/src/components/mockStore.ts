@@ -1,3 +1,6 @@
+// todo: delete this make AssignModal.spec.ts use the real store and nock instead.
+// Use AnalyzeAlertForm.spec.ts as an example
+
 import { createStore } from "vuex";
 import { CommitFunction } from "@/store";
 import alerts from "@/store/alerts";

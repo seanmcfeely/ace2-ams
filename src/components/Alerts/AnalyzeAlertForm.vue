@@ -188,8 +188,8 @@
   >
   <Message v-if="showContinueButton" severity="info"
     >Oh dear, it looks like some observables couldn't be created... The errors
-    below might help explain what went wrong. You can again try add the
-    observables on the next page!</Message
+    below might help explain what went wrong. You can try adding the observables
+    again on the next page!</Message
   >
   <Message
     v-for="(error, index) of errors"
