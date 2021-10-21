@@ -1,9 +1,9 @@
 <!-- AnalyzeAlert.vue -->
 
 <template>
-<div>
-  <AnalyzeAlertForm></AnalyzeAlertForm>
-</div>
+  <div>
+    <AnalyzeAlertForm></AnalyzeAlertForm>
+  </div>
 </template>
 
 <script>
