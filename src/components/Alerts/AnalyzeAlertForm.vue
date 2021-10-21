@@ -91,6 +91,14 @@
               <div class="field col-3 px-1">
                 <label for="observable-directives">Directives</label>
               </div>
+              <div class="field col-1">
+                <Button
+                  v-if="observablesListEmpty"
+                  icon="pi pi-plus"
+                  class="p-button-rounded inputfield"
+                  @click="addFormObservable"
+                />
+              </div>
             </div>
             <div
               v-for="(observable, index) in observables"
@@ -119,7 +127,13 @@
                   />
                 </div>
                 <div class="field col-3 px-1">
+                  <FileUpload
+                    v-if="observables[index].type == 'file'"
+                    mode="basic"
+                    class="inputfield w-full"
+                  ></FileUpload>
                   <InputText
+                    v-else
                     id="observable-value"
                     v-model="observables[index].value"
                     placeholder="Enter a value"
@@ -164,31 +178,48 @@
     <Button
       label="Analyze!"
       :loading="alertCreateLoading"
+      :disabled="showContinueButton"
       class="p-button-lg"
-      @click="createAlert()"
+      @click="submitAlertAndObservables"
     />
   </div>
-  <Message v-if="error" severity="error" @close="handleError">{{
-    error
-  }}</Message>
+  <Message v-if="addingObservables" severity="info"
+    >Alert created, now adding Observables...</Message
+  >
+  <Message v-if="showContinueButton" severity="info"
+    >Oh dear, it looks like some observables couldn't be created... The errors
+    below might help explain what went wrong. You can again try add the
+    observables on the next page!</Message
+  >
+  <Message
+    v-for="error of errors"
+    :key="error.content"
+    severity="error"
+    @close="handleError"
+    >{{ error.content }}</Message
+  >
+  <div class="pl-3">
+    <Button
+      v-if="showContinueButton"
+      label="On with it then..."
+      class="p-button-lg"
+      @click="routeToNewAlert"
+    />
+  </div>
 </template>
 
 <script>
-  import { mapGetters } from "vuex";
-
-  import Card from "primevue/card";
-  import Dropdown from "primevue/dropdown";
-
-  import Message from "primevue/message";
-
-  import MultiSelect from "primevue/multiselect";
-
-  import Calendar from "primevue/calendar";
-  import InputText from "primevue/inputtext";
+  import { mapActions, mapGetters } from "vuex";
 
   import Button from "primevue/button";
+  import Calendar from "primevue/calendar";
+  import Card from "primevue/card";
+  import Dropdown from "primevue/dropdown";
   import Fieldset from "primevue/fieldset";
-
+  import FileUpload from "primevue/fileupload";
+  import InputText from "primevue/inputtext";
+  import Message from "primevue/message";
+  import MultiSelect from "primevue/multiselect";
   import TabPanel from "primevue/tabpanel";
   import TabView from "primevue/tabview";
 
@@ -199,31 +230,37 @@
   export default {
     name: "AnalyzeAlertForm",
     components: {
+      Button,
       Calendar,
       Card,
       Dropdown,
-      Button,
       Fieldset,
+      FileUpload,
       InputText,
-      TabPanel,
-      TabView,
       Message,
       MultiSelect,
+      TabPanel,
+      TabView,
     },
     data() {
       return {
+        addingObservables: false,
         alertCreateLoading: false,
         alertDate: null,
         alertDescription: null,
-        alertType: null,
         alertQueue: null,
-        error: null,
+        alertType: null,
+        errors: [],
         observables: [],
+        showContinueButton: false,
         timezone: null,
         timezones: moment.tz.names(),
       };
     },
     computed: {
+      observablesListEmpty() {
+        return !this.observables.length;
+      },
       lastObservableIndex() {
         return this.observables.length - 1;
       },
@@ -236,46 +273,54 @@
       }),
     },
     created() {
-      this.init();
-      this.loadInitialData();
+      this.initData();
+      this.initExternalData();
     },
     methods: {
-      init() {
-        this.observables.push({
-          time: null,
-          type: "ipv4",
-          value: null,
-          directives: [],
-        });
+      ...mapActions({
+        createAlert: "alerts/createAlert",
+        getAllAlertQueue: "alertQueue/getAll",
+        getAllAlertType: "alertType/getAll",
+        getAllNodeDirective: "nodeDirective/getAll",
+        getAllObservableType: "observableType/getAll",
+      }),
+      initData() {
         this.alertDate = new Date();
-        this.timezone = moment.tz.guess();
         this.alertType = "manual";
         this.alertQueue = "default";
-      },
-      async loadInitialData() {
-        await this.$store.dispatch("alertQueue/getAll");
-        await this.$store.dispatch("alertType/getAll");
-        await this.$store.dispatch("nodeDirective/getAll");
-        await this.$store.dispatch("observableType/getAll");
-      },
-      addFormObservable() {
+        this.timezone = moment.tz.guess();
         this.observables.push({
           time: null,
-          type: "ipv4",
+          type: "file",
           value: null,
           directives: [],
         });
       },
-      deleteFormObservable(index) {
-        this.observables.splice(index, 1);
+      async initExternalData() {
+        await this.getAllAlertQueue();
+        await this.getAllAlertType();
+        await this.getAllNodeDirective();
+        await this.getAllObservableType();
       },
-      handleError() {
-        this.error = null;
+      async submitAlertAndObservables() {
+        this.alertCreateLoading = true;
+        await this.submitAlert();
+        this.alertCreateLoading = false;
+
+        if (this.errors.length) {
+          return;
+        }
+
+        this.addingObservables = true;
+        await this.submitObservables();
+        this.addingObservables = false;
+        if (this.errors.length) {
+          this.showContinueButton = true;
+        } else {
+          this.routeToNewAlert();
+        }
       },
-      isLastObservable(index) {
-        return index == this.lastObservableIndex;
-      },
-      async createAlert() {
+      async submitAlert() {
         const alert = {
           alertDescription: this.alertDescription,
           eventTime: this.alertDate,
@@ -283,20 +328,13 @@
           queue: this.alertQueue,
           type: this.alertType,
         };
-
-        this.alertCreateLoading = true;
         try {
-          await this.$store.dispatch("alerts/createAlert", alert);
-          await this.addObservables();
-          this.$router.push({ path: `/alert/${this.openAlert.uuid}` });
+          await this.createAlert(alert);
         } catch (error) {
-          this.error = `Could not create alert: ${error} ${JSON.stringify(
-            error.response.data.detail,
-          )}`;
-          this.alertCreateLoading = false;
+          this.addError(`alert ${alert.name}`, error);
         }
       },
-      async addObservables() {
+      async submitObservables() {
         for (const obs_index in this.observables) {
           const observable = {
             alertUuid: this.openAlert.uuid,
@@ -304,8 +342,40 @@
             type: this.observables[obs_index].type,
             value: this.observables[obs_index].value,
           };
-          await ObservableInstance.create(observable, false);
+
+          try {
+            await ObservableInstance.create(observable, false);
+          } catch (error) {
+            this.addError(`observable ${observable.value}`, error);
+          }
         }
+      },
+      addFormObservable() {
+        this.observables.push({
+          time: null,
+          type: "file",
+          value: null,
+          directives: [],
+        });
+      },
+      deleteFormObservable(index) {
+        this.observables.splice(index, 1);
+      },
+      isLastObservable(index) {
+        return index == this.lastObservableIndex;
+      },
+      routeToNewAlert() {
+        this.$router.push({ path: `/alert/${this.openAlert.uuid}` });
+      },
+      addError(object, error) {
+        this.errors.push({
+          content: `Could not create ${object}: ${error} ${JSON.stringify(
+            error.response.data,
+          )}`,
+        });
+      },
+      handleError() {
+        this.error = null;
       },
     },
   };
