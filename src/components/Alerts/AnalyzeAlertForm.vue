@@ -192,10 +192,10 @@
     observables on the next page!</Message
   >
   <Message
-    v-for="error of errors"
+    v-for="(error, index) of errors"
     :key="error.content"
     severity="error"
-    @close="handleError"
+    @close="handleError(index)"
     >{{ error.content }}</Message
   >
   <div class="pl-3">
@@ -288,13 +288,16 @@
         this.alertDate = new Date();
         this.alertType = "manual";
         this.alertQueue = "default";
+        this.errors = [];
         this.timezone = moment.tz.guess();
-        this.observables.push({
-          time: null,
-          type: "file",
-          value: null,
-          directives: [],
-        });
+        this.observables = [
+          {
+            time: null,
+            type: "file",
+            value: null,
+            directives: [],
+          },
+        ];
       },
       async initExternalData() {
         await this.getAllAlertQueue();
@@ -368,14 +371,16 @@
         this.$router.push({ path: `/alert/${this.openAlert.uuid}` });
       },
       addError(object, error) {
+        let responseError = null;
+        if (error.response) {
+          responseError = JSON.stringify(error.response.data);
+        }
         this.errors.push({
-          content: `Could not create ${object}: ${error} ${JSON.stringify(
-            error.response.data,
-          )}`,
+          content: `Could not create ${object}: ${error} ${responseError}`,
         });
       },
-      handleError() {
-        this.error = null;
+      handleError(index) {
+        this.errors.splice(index, 1);
       },
     },
   };
