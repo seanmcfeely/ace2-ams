@@ -1,4 +1,4 @@
-<!-- ManageAlerts.vue -->
+<!-- ViewAlert.vue -->
 
 <template>
   <pre>{{ prettyAlert }}</pre>
@@ -9,9 +9,6 @@
 
   export default {
     computed: {
-      lastObservableIndex() {
-        return this.observables.length - 1;
-      },
       ...mapGetters({
         openAlert: "alerts/openAlert",
       }),
@@ -20,8 +17,11 @@
       },
     },
     async created() {
-      console.log(this.openAlert);
-      console.log(this.$route.params);
+      this.$store.dispatch(
+        "selectedAlerts/unselectAll",
+        this.$route.params.alertID,
+      );
+      this.$store.dispatch("selectedAlerts/select", this.$route.params.alertID);
       await this.$store.dispatch(
         "alerts/openAlert",
         this.$route.params.alertID,
