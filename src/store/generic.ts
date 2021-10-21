@@ -41,7 +41,6 @@ export default function makeGenericModule(service: any = {}): {
         return await service
           .getAll()
           .then((items: any[]) => {
-            console.log(items);
             commit("addItems", items);
           })
           .catch((error: Error) => {
