@@ -338,6 +338,7 @@
         }
       },
       async submitObservables() {
+        let observables = [];
         for (const obs_index in this.observables) {
           const observable = {
             alertUuid: this.openAlert.uuid,
@@ -345,12 +346,13 @@
             type: this.observables[obs_index].type,
             value: this.observables[obs_index].value,
           };
+          observables.push(observable);
+        }
 
-          try {
-            await ObservableInstance.create(observable, false);
-          } catch (error) {
-            this.addError(`observable ${observable.value}`, error);
-          }
+        try {
+          await ObservableInstance.create(observables, false);
+        } catch (error) {
+          this.addError(`at least one observable`, error);
         }
       },
       addFormObservable() {
