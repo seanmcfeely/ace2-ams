@@ -132,14 +132,27 @@
                     mode="basic"
                     class="inputfield w-full"
                   ></FileUpload>
-                  <InputText
-                    v-else
-                    id="observable-value"
-                    v-model="observables[index].value"
-                    placeholder="Enter a value"
-                    class="inputfield w-full"
-                    type="text"
-                  ></InputText>
+                  <div v-else class="p-inputgroup">
+                    <InputText
+                      v-if="observables[index].singleAdd"
+                      id="observable-value"
+                      v-model="observables[index].value"
+                      placeholder="Enter a value"
+                      class="inputfield w-full"
+                      type="text"
+                    ></InputText>
+                    <Textarea
+                      v-else
+                      id="observable-value"
+                      v-model="observables[index].value"
+                      placeholder="Enter a comma or newline-delimited list of values"
+                      class="inputfield w-full"
+                    ></Textarea>
+                    <Button
+                      icon="pi pi-list"
+                      @click="toggleMultiObservable(index)"
+                    />
+                  </div>
                 </div>
                 <div class="field col-3 px-1">
                   <MultiSelect
@@ -160,6 +173,7 @@
                 <div class="field col-1">
                   <Button
                     v-if="isLastObservable(index)"
+                    label="Add"
                     icon="pi pi-plus"
                     class="p-button-rounded inputfield"
                     @click="addFormObservable"
@@ -222,6 +236,7 @@
   import MultiSelect from "primevue/multiselect";
   import TabPanel from "primevue/tabpanel";
   import TabView from "primevue/tabview";
+  import Textarea from "primevue/textarea";
 
   import moment from "moment-timezone";
 
@@ -241,6 +256,7 @@
       MultiSelect,
       TabPanel,
       TabView,
+      Textarea,
     },
     data() {
       return {
@@ -296,14 +312,7 @@
         this.alertQueue = "default";
         this.errors = [];
         this.timezone = moment.tz.guess();
-        this.observables = [
-          {
-            time: null,
-            type: "file",
-            value: null,
-            directives: [],
-          },
-        ];
+        this.addFormObservable();
       },
       async initExternalData() {
         await this.getAllAlertQueue();
@@ -370,10 +379,14 @@
           this.addError(`at least one observable`, error);
         }
       },
+      toggleMultiObservable(index) {
+        this.observables[index].singleAdd = !this.observables[index].singleAdd;
+      },
       addFormObservable() {
         this.observables.push({
           time: null,
           type: "file",
+          singleAdd: true,
           value: null,
           directives: [],
         });
