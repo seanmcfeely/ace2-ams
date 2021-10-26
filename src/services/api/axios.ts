@@ -24,31 +24,26 @@ instance.interceptors.response.use(
     }
 
     const originalRequest = error.config;
-    console.debug("error accessing: " + originalRequest.url);
+    console.debug("got 401 accessing: " + originalRequest.url);
 
-    // Redirect to the login page if the 401 came from one of the auth URLs
+    // Reject the promise if the 401 came from one of the auth URLs
     if (originalRequest.url.includes("/auth")) {
       return Promise.reject(error);
     }
 
-    // Try to refresh the tokens and replay the original request
+    // Try to refresh the tokens
     console.debug("trying to refresh tokens");
-    return axiosRefresh()
-      .then(() => {
-        return new Promise((resolve, reject) => {
-          instance(originalRequest)
-            .then((response) => {
-              resolve(response);
-            })
-            .catch((error) => {
-              reject(error);
-            });
-        });
-      })
-      .catch(() => {
-        console.debug("refresh token not present or expired");
-        return Promise.reject(error);
-      });
+    await axiosRefresh().catch((err) => {
+      console.debug("refresh token not present or expired");
+      return Promise.reject(err);
+    });
+
+    // Replay the original request
+    console.debug("replaying original request to: " + originalRequest.url);
+    return await instance(originalRequest).catch((err) => {
+      console.debug("replayed request to " + originalRequest.url + " failed");
+      return Promise.reject(err);
+    });
   },
 );
 
