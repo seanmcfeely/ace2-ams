@@ -258,6 +258,9 @@
       };
     },
     computed: {
+      adjustedAlertDate() {
+        return this.adjustForTimezone(this.alertDate, this.timezone);
+      },
       observablesListEmpty() {
         return !this.observables.length;
       },
@@ -284,6 +287,9 @@
         getAllNodeDirective: "nodeDirective/getAll",
         getAllObservableType: "observableType/getAll",
       }),
+      adjustForTimezone(datetime, timezone) {
+        return moment(datetime).tz(timezone).format();
+      },
       initData() {
         this.alertDate = new Date();
         this.alertType = "manual";
@@ -314,9 +320,12 @@
           return;
         }
 
-        this.addingObservables = true;
-        await this.submitObservables();
-        this.addingObservables = false;
+        if (this.observables.length) {
+          this.addingObservables = true;
+          await this.submitObservables();
+          this.addingObservables = false;
+        }
+
         if (this.errors.length) {
           this.showContinueButton = true;
         } else {
@@ -326,7 +335,7 @@
       async submitAlert() {
         const alert = {
           alertDescription: this.alertDescription,
-          eventTime: this.alertDate,
+          eventTime: this.adjustedAlertDate,
           name: this.alertDescription,
           queue: this.alertQueue,
           type: this.alertType,
@@ -346,6 +355,12 @@
             type: this.observables[obs_index].type,
             value: this.observables[obs_index].value,
           };
+          if (this.observables[obs_index].time) {
+            observable["time"] = this.adjustForTimezone(
+              this.observables[obs_index].time,
+              this.timezone,
+            );
+          }
           observables.push(observable);
         }
 
