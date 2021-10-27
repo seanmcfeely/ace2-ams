@@ -134,7 +134,7 @@
                   ></FileUpload>
                   <div v-else class="p-inputgroup">
                     <InputText
-                      v-if="observables[index].singleAdd"
+                      v-if="!observables[index].multiAdd"
                       id="observable-value"
                       v-model="observables[index].value"
                       placeholder="Enter a value"
@@ -189,12 +189,13 @@
     </TabPanel>
   </TabView>
   <div class="pl-3">
-    <Button
+    <SplitButton
       label="Analyze!"
       :loading="alertCreateLoading"
       :disabled="showContinueButton"
+      :model="splitButtonOptions"
       class="p-button-lg"
-      @click="submitAlertAndObservables"
+      @click="submitSingleAlert"
     />
   </div>
   <Message v-if="addingObservables" severity="info"
@@ -234,6 +235,7 @@
   import InputText from "primevue/inputtext";
   import Message from "primevue/message";
   import MultiSelect from "primevue/multiselect";
+  import SplitButton from "primevue/splitbutton";
   import TabPanel from "primevue/tabpanel";
   import TabView from "primevue/tabview";
   import Textarea from "primevue/textarea";
@@ -254,6 +256,7 @@
       InputText,
       Message,
       MultiSelect,
+      SplitButton,
       TabPanel,
       TabView,
       Textarea,
@@ -264,9 +267,17 @@
         alertCreateLoading: false,
         alertDate: null,
         alertDescription: null,
+        alertDescriptionAppendString: "",
         alertQueue: null,
         alertType: null,
         errors: [],
+        splitButtonOptions: [
+          {
+            label: "Create multiple alerts",
+            icon: "pi pi-copy",
+            command: this.submitMultipleAlerts,
+          },
+        ],
         observables: [],
         showContinueButton: false,
         timezone: null,
@@ -276,6 +287,9 @@
     computed: {
       adjustedAlertDate() {
         return this.adjustForTimezone(this.alertDate, this.timezone);
+      },
+      alertDescriptionFormatted() {
+        return `${this.alertDescription}${this.alertDescriptionAppendString}`;
       },
       observablesListEmpty() {
         return !this.observables.length;
@@ -308,6 +322,7 @@
       },
       initData() {
         this.alertDate = new Date();
+        this.alertDescription = "Manual Alert";
         this.alertType = "manual";
         this.alertQueue = "default";
         this.errors = [];
@@ -320,7 +335,8 @@
         await this.getAllNodeDirective();
         await this.getAllObservableType();
       },
-      async submitAlertAndObservables() {
+      // create a single alert that contains all observables currently in the form
+      async submitSingleAlert() {
         this.alertCreateLoading = true;
         await this.submitAlert();
         this.alertCreateLoading = false;
@@ -331,7 +347,9 @@
 
         if (this.observables.length) {
           this.addingObservables = true;
-          await this.submitObservables();
+          let observables = this.expandObservablesList();
+          observables = observables.map(this.generateSubmissionObservable);
+          await this.submitObservables(observables);
           this.addingObservables = false;
         }
 
@@ -341,11 +359,38 @@
           this.routeToNewAlert();
         }
       },
+      // create a single alert for each observable currently in the form
+      async submitMultipleAlerts() {
+        this.alertCreateLoading = true;
+
+        const observables = this.expandObservablesList();
+        for (const obs_index in observables) {
+          const current_observable = observables[obs_index];
+
+          // Update the alert name with observable value to easily from manage alerts page
+          this.alertDescriptionAppendString = ` ${current_observable.value}`;
+
+          await this.submitAlert();
+          if (this.errors.length) {
+            // If first alert can't be created, bail trying a bunch of times
+            return;
+          }
+
+          await this.submitObservables([
+            this.generateSubmissionObservable(current_observable), // Generate the submission object here so that it has correct alert/analysis UUIDs
+          ]);
+        }
+
+        this.alertCreateLoading = false;
+        // Routes you to latest alert
+        this.routeToNewAlert();
+      },
+      // Submit alert create object to API to create an alert
       async submitAlert() {
         const alert = {
-          alertDescription: this.alertDescription,
+          alertDescription: this.alertDescriptionFormatted,
           eventTime: this.adjustedAlertDate,
-          name: this.alertDescription,
+          name: this.alertDescriptionFormatted,
           queue: this.alertQueue,
           type: this.alertType,
         };
@@ -355,38 +400,75 @@
           this.addError(`alert ${alert.name}`, error);
         }
       },
-      async submitObservables() {
-        let observables = [];
-        for (const obs_index in this.observables) {
-          const observable = {
-            alertUuid: this.openAlert.uuid,
-            parentAnalysisUuid: this.openAlert.analysis.uuid,
-            type: this.observables[obs_index].type,
-            value: this.observables[obs_index].value,
-          };
-          if (this.observables[obs_index].time) {
-            observable["time"] = this.adjustForTimezone(
-              this.observables[obs_index].time,
-              this.timezone,
-            );
-          }
-          observables.push(observable);
-        }
-
+      // Submit a list of observables to API for latest alert
+      async submitObservables(observables) {
         try {
           await ObservableInstance.create(observables, false);
         } catch (error) {
-          this.addError(`at least one observable`, error);
+          this.addError("at least one observable", error);
         }
       },
+      // Generate a list of all observables (single observables plus expanded multi-observables)
+      expandObservablesList() {
+        let observables = [];
+        for (const obs_index in this.observables) {
+          let current_observable = this.observables[obs_index];
+          if (current_observable.multiAdd) {
+            const splitObservables =
+              this.splitMultiObservable(current_observable);
+            observables = [...observables, ...splitObservables];
+          } else {
+            observables.push(current_observable);
+          }
+        }
+        return observables;
+      },
+      // Given a multi-observable object, expand into a list of single observable objects for each sub-value
+      splitMultiObservable(multiObservable) {
+        // Determine split character -- can be newline or comma
+        let splitValues = [];
+        var containsNewline = /\r?\n/.exec(multiObservable.value);
+        if (containsNewline) {
+          splitValues = multiObservable.value.split(/\r?\n/);
+        } else {
+          splitValues = multiObservable.value.split(",");
+        }
+        // Split and return new list
+        const splitObservables = [];
+        for (const index in splitValues) {
+          const subObservable = {
+            type: multiObservable.type,
+            value: splitValues[index],
+            time: multiObservable.time,
+          };
+          splitObservables.push(subObservable);
+        }
+        return splitObservables;
+      },
+      // Given an observable object, return a formatted observable instance 'create' object
+      generateSubmissionObservable(observable) {
+        const submissionObservable = {
+          alertUuid: this.openAlert.uuid,
+          parentAnalysisUuid: this.openAlert.analysis.uuid,
+          type: observable.type,
+          value: observable.value,
+        };
+        if (observable.time) {
+          submissionObservable["time"] = this.adjustForTimezone(
+            observable.time,
+            this.timezone,
+          );
+        }
+        return submissionObservable;
+      },
       toggleMultiObservable(index) {
-        this.observables[index].singleAdd = !this.observables[index].singleAdd;
+        this.observables[index].multiAdd = !this.observables[index].multiAdd;
       },
       addFormObservable() {
         this.observables.push({
           time: null,
           type: "file",
-          singleAdd: true,
+          multiAdd: false,
           value: null,
           directives: [],
         });
