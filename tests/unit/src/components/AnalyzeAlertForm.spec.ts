@@ -28,9 +28,9 @@ describe("AnalyzeAlertForm.vue", () => {
   });
 
   const expectedAlertCreate = {
-    alertDescription: null,
-    eventTime: wrapper.vm.alertDate,
-    name: null,
+    alertDescription: "Manual Alert",
+    eventTime: moment(wrapper.vm.alertDate).tz(moment.tz.guess()).format(),
+    name: "Manual Alert",
     queue: "default",
     type: "manual",
   };
@@ -49,6 +49,11 @@ describe("AnalyzeAlertForm.vue", () => {
     value: "1.2.3.4",
   };
 
+  const expectedObservableCreateList = [
+    expectedObservableCreate,
+    expectedObservableCreate,
+  ];
+
   const mockObservable = {
     time: null,
     type: "ipv4",
@@ -57,9 +62,9 @@ describe("AnalyzeAlertForm.vue", () => {
   };
 
   const alertCreateErrorMessage =
-    'Could not create alert null: Error: Request failed with status code 404 "Create failed"';
+    'Could not create alert Manual Alert: Error: Request failed with status code 404 "Create failed"';
   const observableCreateErrorMessage =
-    'Could not create observable 1.2.3.4: Error: Request failed with status code 404 "Create failed"';
+    'Could not create at least one observable: Error: Request failed with status code 404 "Create failed"';
 
   beforeEach(async () => {
     myNock.persist().get("/alert/queue/").reply(200, ["default"]);
@@ -68,7 +73,9 @@ describe("AnalyzeAlertForm.vue", () => {
     myNock.persist().get("/observable/type/").reply(200, ["file", "ipv4"]);
     wrapper.vm.initData();
     await wrapper.vm.initExternalData();
-    expectedAlertCreate.eventTime = wrapper.vm.alertDate;
+    expectedAlertCreate.eventTime = moment(wrapper.vm.alertDate)
+      .tz(moment.tz.guess())
+      .format();
   });
   afterEach(async () => {
     nock.cleanAll();
@@ -96,7 +103,8 @@ describe("AnalyzeAlertForm.vue", () => {
     expect(wrapper.vm.addingObservables).toEqual(false);
     expect(wrapper.vm.alertCreateLoading).toEqual(false);
     expect(wrapper.vm.alertDate).toBeInstanceOf(Date);
-    expect(wrapper.vm.alertDescription).toBeNull();
+    expect(wrapper.vm.alertDescription).toEqual("Manual Alert");
+    expect(wrapper.vm.alertDescriptionAppendString).toEqual("");
     expect(wrapper.vm.alertQueue).toEqual("default");
     expect(wrapper.vm.alertType).toBe("manual");
     expect(wrapper.vm.errors).toStrictEqual([]);
@@ -104,8 +112,16 @@ describe("AnalyzeAlertForm.vue", () => {
       {
         time: null,
         type: "file",
+        multiAdd: false,
         value: null,
         directives: [],
+      },
+    ]);
+    expect(wrapper.vm.splitButtonOptions).toStrictEqual([
+      {
+        label: "Create multiple alerts",
+        icon: "pi pi-copy",
+        command: wrapper.vm.submitMultipleAlerts,
       },
     ]);
     expect(wrapper.vm.showContinueButton).toBe(false);
@@ -189,39 +205,35 @@ describe("AnalyzeAlertForm.vue", () => {
     const observableCreate = myNock
       .post(
         "/observable/instance/",
-        JSON.stringify(snakecaseKeys(expectedObservableCreate)),
+        JSON.stringify(snakecaseKeys(expectedObservableCreateList)),
       )
-      .twice()
       .reply(201, "Create successful");
     store.commit("alerts/SET_OPEN_ALERT", readAlertStub);
 
-    wrapper.setData({
-      observables: [mockObservable, mockObservable],
-    });
-
-    await wrapper.vm.submitObservables();
+    await wrapper.vm.submitObservables([
+      expectedObservableCreate,
+      expectedObservableCreate,
+    ]);
     expect(observableCreate.isDone()).toBe(true);
   });
   it("will add an error to errors when submitObservables is called and the API call fails", async () => {
     const observableCreateFail = myNock
       .post(
         "/observable/instance/",
-        JSON.stringify(snakecaseKeys(expectedObservableCreate)),
+        JSON.stringify(snakecaseKeys(expectedObservableCreateList)),
       )
-      .twice()
       .reply(404, "Create failed");
     store.commit("alerts/SET_OPEN_ALERT", readAlertStub);
 
-    wrapper.setData({
-      observables: [mockObservable, mockObservable],
-    });
-
-    await wrapper.vm.submitObservables();
+    await wrapper.vm.submitObservables([
+      expectedObservableCreate,
+      expectedObservableCreate,
+    ]);
     expect(observableCreateFail.isDone()).toBe(true);
-    expect(wrapper.vm.errors.length).toEqual(2);
+    expect(wrapper.vm.errors.length).toEqual(1);
     expect(wrapper.vm.errors[0].content).toEqual(observableCreateErrorMessage);
   });
-  it("will attempt to route the new alert page when submitAlertAndObservables is called and completes successfully", async () => {
+  it("will attempt to route the new alert page when submitSingleAlert is called and completes successfully", async () => {
     const alertCreate = myNock
       .post("/alert/", JSON.stringify(snakecaseKeys(expectedAlertCreate)))
       .reply(201, readAlertStub);
@@ -229,31 +241,30 @@ describe("AnalyzeAlertForm.vue", () => {
     const observableCreate = myNock
       .post(
         "/observable/instance/",
-        JSON.stringify(snakecaseKeys(expectedObservableCreate)),
+        JSON.stringify(snakecaseKeys(expectedObservableCreateList)),
       )
-      .twice()
       .reply(201, "Create successful");
 
     wrapper.setData({
       observables: [mockObservable, mockObservable],
     });
 
-    await wrapper.vm.submitAlertAndObservables();
+    await wrapper.vm.submitSingleAlert();
     expect(alertCreate.isDone()).toBe(true);
     expect(observableCreate.isDone()).toBe(true);
     expect(wrapper.vm.errors.length).toEqual(0);
   });
-  it("will display an error and not attempt to submit observables if submitAlertAndObservables is called and fails at submitAlert", async () => {
+  it("will display an error and not attempt to submit observables if submitSingleAlert is called and fails at submitAlert", async () => {
     const alertCreateFail = myNock
       .post("/alert/", JSON.stringify(snakecaseKeys(expectedAlertCreate)))
       .reply(404, "Create failed");
 
-    await wrapper.vm.submitAlertAndObservables();
+    await wrapper.vm.submitSingleAlert();
     expect(alertCreateFail.isDone()).toBe(true);
     expect(wrapper.vm.errors.length).toEqual(1);
     expect(wrapper.vm.errors[0].content).toEqual(alertCreateErrorMessage);
   });
-  it("will display error(s), the warning message, and continue button if submitAlertAndObservables is called and failures occur in submitObservables", async () => {
+  it("will display error(s), the warning message, and continue button if submitSingleAlert is called and failures occur in submitObservables", async () => {
     const alertCreate = myNock
       .post("/alert/", JSON.stringify(snakecaseKeys(expectedAlertCreate)))
       .reply(201, readAlertStub);
@@ -261,9 +272,8 @@ describe("AnalyzeAlertForm.vue", () => {
     const observableCreateFail = myNock
       .post(
         "/observable/instance/",
-        JSON.stringify(snakecaseKeys(expectedObservableCreate)),
+        JSON.stringify(snakecaseKeys(expectedObservableCreateList)),
       )
-      .twice()
       .reply(404, "Create failed");
     store.commit("alerts/SET_OPEN_ALERT", readAlertStub);
 
@@ -271,10 +281,10 @@ describe("AnalyzeAlertForm.vue", () => {
       observables: [mockObservable, mockObservable],
     });
 
-    await wrapper.vm.submitAlertAndObservables();
+    await wrapper.vm.submitSingleAlert();
     expect(alertCreate.isDone()).toBe(true);
     expect(observableCreateFail.isDone()).toBe(true);
-    expect(wrapper.vm.errors.length).toEqual(2);
+    expect(wrapper.vm.errors.length).toEqual(1);
     expect(wrapper.vm.errors[0].content).toEqual(observableCreateErrorMessage);
   });
 });
