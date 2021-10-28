@@ -381,6 +381,8 @@
           await this.submitObservables([
             this.generateSubmissionObservable(current_observable), // Generate the submission object here so that it has correct alert/analysis UUIDs
           ]);
+          // Ignore observable created errors
+          this.clearErrors();
         }
 
         this.alertCreateLoading = false;
@@ -492,6 +494,9 @@
         this.errors.push({
           content: `Could not create ${object}: ${error} ${responseError}`,
         });
+      },
+      clearErrors() {
+        this.errors = [];
       },
       handleError(index) {
         this.errors.splice(index, 1);
