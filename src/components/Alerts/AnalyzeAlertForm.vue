@@ -267,7 +267,7 @@
         alertCreateLoading: false,
         alertDate: null,
         alertDescription: null,
-        alertDescriptionAppendString: "",
+        alertDescriptionAppendString: null,
         alertQueue: null,
         alertType: null,
         errors: [],
@@ -317,16 +317,15 @@
         getAllNodeDirective: "nodeDirective/getAll",
         getAllObservableType: "observableType/getAll",
       }),
-      adjustForTimezone(datetime, timezone) {
-        return moment(datetime).tz(timezone).format();
-      },
       initData() {
         this.alertDate = new Date();
         this.alertDescription = "Manual Alert";
+        this.alertDescriptionAppendString = "";
         this.alertType = "manual";
         this.alertQueue = "default";
         this.errors = [];
         this.timezone = moment.tz.guess();
+        this.observables = [];
         this.addFormObservable();
       },
       async initExternalData() {
@@ -334,6 +333,9 @@
         await this.getAllAlertType();
         await this.getAllNodeDirective();
         await this.getAllObservableType();
+      },
+      adjustForTimezone(datetime, timezone) {
+        return moment(datetime).tz(timezone).format();
       },
       // create a single alert that contains all observables currently in the form
       async submitSingleAlert() {

@@ -56,8 +56,25 @@ describe("AnalyzeAlertForm.vue", () => {
 
   const mockObservable = {
     time: null,
+    multiAdd: false,
     type: "ipv4",
     value: "1.2.3.4",
+    directives: [],
+  };
+
+  const mockMultiObservableComma = {
+    time: null,
+    multiAdd: true,
+    type: "ipv4",
+    value: "0.0.0.0,4.3.2.1",
+    directives: [],
+  };
+
+  const mockMultiObservableNewline = {
+    time: null,
+    multiAdd: true,
+    type: "ipv4",
+    value: "0.0.0.0\n4.3.2.1",
     directives: [],
   };
 
@@ -134,6 +151,14 @@ describe("AnalyzeAlertForm.vue", () => {
     expect(wrapper.vm.observableTypes).toStrictEqual(["file", "ipv4"]);
     expect(wrapper.vm.directives).toStrictEqual([]);
   });
+  it("will correctly switch observable 'multiAdd' property when toggleMultiObservable is called", () => {
+    expect(wrapper.vm.observables.length).toEqual(1);
+    expect(wrapper.vm.observables[0].multiAdd).toBe(false);
+    wrapper.vm.toggleMultiObservable(0);
+    expect(wrapper.vm.observables[0].multiAdd).toBe(true);
+    wrapper.vm.toggleMultiObservable(0);
+    expect(wrapper.vm.observables[0].multiAdd).toBe(false);
+  });
   it("will add a default observable to observables when addFormObservable is called", () => {
     expect(wrapper.vm.observables.length).toEqual(1);
     wrapper.vm.addFormObservable();
@@ -146,6 +171,35 @@ describe("AnalyzeAlertForm.vue", () => {
     wrapper.vm.deleteFormObservable(1);
     expect(wrapper.vm.observables.length).toEqual(2);
     expect(wrapper.vm.observables.includes("2")).toBe(false);
+  });
+  it("will correctly compute adjustedAlertDate", () => {
+    let adjustedAlertDate = moment(wrapper.vm.alertDate)
+      .tz(moment.tz.guess())
+      .format();
+    expect(wrapper.vm.adjustedAlertDate).toEqual(adjustedAlertDate);
+    wrapper.setData({
+      timezone: "UTC",
+    });
+    adjustedAlertDate = moment(wrapper.vm.alertDate).tz("UTC").format();
+    expect(wrapper.vm.adjustedAlertDate).toEqual(adjustedAlertDate);
+  });
+  it("will correctly compute alertDescriptionFormatted", () => {
+    expect(wrapper.vm.alertDescriptionFormatted).toEqual("Manual Alert");
+    wrapper.setData({
+      alertDescriptionAppendString: " new_string",
+    });
+    expect(wrapper.vm.alertDescriptionFormatted).toEqual(
+      "Manual Alert new_string",
+    );
+  });
+  it("will correctly use the moment library to format a given string with a given timezone", () => {
+    const testDate = "2021-10-28T00:00:00.000Z";
+    const testTimezone = "EST";
+    const adjustedTimezone = wrapper.vm.adjustForTimezone(
+      testDate,
+      testTimezone,
+    );
+    expect(adjustedTimezone).toEqual("2021-10-27T19:00:00-05:00");
   });
   it("will correctly compute observablesListEmpty", () => {
     expect(wrapper.vm.observablesListEmpty).toBe(false);
@@ -182,6 +236,58 @@ describe("AnalyzeAlertForm.vue", () => {
     wrapper.vm.handleError(1);
     expect(wrapper.vm.errors.length).toEqual(2);
     expect(wrapper.vm.errors.includes("2")).toBe(false);
+  });
+  it("will correctly generate a submission observable from a form observable", () => {
+    const testObservableWithTime = {
+      ...mockObservable,
+      time: "2021-10-28T00:00:00.000Z",
+    };
+    wrapper.setData({
+      timezone: "UTC",
+      openAlert: readAlertStub,
+    });
+    const submissionObservableWithoutTime =
+      wrapper.vm.generateSubmissionObservable(mockObservable);
+    const submissionObservableWithTime =
+      wrapper.vm.generateSubmissionObservable(testObservableWithTime);
+    expect(submissionObservableWithoutTime).toEqual(expectedObservableCreate);
+    expect(submissionObservableWithTime).toEqual({
+      ...expectedObservableCreate,
+      time: "2021-10-28T00:00:00Z",
+    });
+  });
+  it("will split a 'multi' form observable into multiple single form observables", () => {
+    const splitMultiObservableComma = wrapper.vm.splitMultiObservable(
+      mockMultiObservableComma,
+    );
+    const splitMultiObservableNewline = wrapper.vm.splitMultiObservable(
+      mockMultiObservableNewline,
+    );
+    expect(splitMultiObservableComma.length).toEqual(2);
+    expect(splitMultiObservableComma[0].value).toEqual("0.0.0.0");
+    expect(splitMultiObservableComma[1].value).toEqual("4.3.2.1");
+
+    expect(splitMultiObservableNewline.length).toEqual(2);
+    expect(splitMultiObservableNewline[0].value).toEqual("0.0.0.0");
+    expect(splitMultiObservableNewline[1].value).toEqual("4.3.2.1");
+  });
+  it("will expand the multi observables in observables form list to return a list of all single observables", () => {
+    wrapper.setData({
+      observables: [mockMultiObservableComma, mockObservable],
+    });
+    const expandedObservables = wrapper.vm.expandObservablesList();
+    expect(expandedObservables.length).toEqual(3);
+    expect(expandedObservables[0]).toEqual({
+      time: null,
+      type: "ipv4",
+      value: "0.0.0.0",
+    });
+    expect(expandedObservables[1]).toEqual({
+      time: null,
+      type: "ipv4",
+      value: "4.3.2.1",
+    });
+    expect(expandedObservables[2]).toEqual(mockObservable);
   });
   it("will submit an alert to the backend using when submitAlert is called", async () => {
     const alertCreate = myNock
