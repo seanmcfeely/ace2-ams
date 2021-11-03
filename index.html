@@ -65,7 +65,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#analysis-correlation-engine-gui" class="md-skip">
+        <a href="#analysis-correlation-engine-alert-management-system" class="md-skip">
           Skip to content
         </a>
       
@@ -97,7 +97,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Analysis Correlation Engine GUI
+              Analysis Correlation Engine - Alert Management System
             
           </span>
         </div>
@@ -194,12 +194,12 @@
       
       
         <label class="md-nav__link md-nav__link--active" for="__toc">
-          Analysis Correlation Engine GUI
+          Analysis Correlation Engine - Alert Management System
           <span class="md-nav__icon md-icon"></span>
         </label>
       
       <a href="." class="md-nav__link md-nav__link--active">
-        Analysis Correlation Engine GUI
+        Analysis Correlation Engine - Alert Management System
       </a>
       
         
@@ -221,6 +221,13 @@
         <li class="md-nav__item">
   <a href="#quick-start" class="md-nav__link">
     Quick Start
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#philosophy" class="md-nav__link">
+    Philosophy
   </a>
   
 </li>
@@ -266,22 +273,36 @@
   
   
   
+    <li class="md-nav__item">
+      <a href="development/" class="md-nav__link">
+        ACE2 AMS Development Guide
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
     
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2_1" type="checkbox" id="__nav_2_1" >
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2_2" type="checkbox" id="__nav_2_2" >
       
       
       
       
-        <label class="md-nav__link" for="__nav_2_1">
+        <label class="md-nav__link" for="__nav_2_2">
           Backend
           <span class="md-nav__icon md-icon"></span>
         </label>
       
       <nav class="md-nav" aria-label="Backend" data-md-level="2">
-        <label class="md-nav__title" for="__nav_2_1">
+        <label class="md-nav__title" for="__nav_2_2">
           <span class="md-nav__icon md-icon"></span>
           Backend
         </label>
@@ -309,53 +330,6 @@
     <li class="md-nav__item">
       <a href="development/backend/environment_variables/" class="md-nav__link">
         Environment Variables
-      </a>
-    </li>
-  
-
-            
-          
-        </ul>
-      </nav>
-    </li>
-  
-
-            
-          
-            
-              
-  
-  
-  
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-      
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2_2" type="checkbox" id="__nav_2_2" >
-      
-      
-      
-      
-        <label class="md-nav__link" for="__nav_2_2">
-          Gui
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <nav class="md-nav" aria-label="Gui" data-md-level="2">
-        <label class="md-nav__title" for="__nav_2_2">
-          <span class="md-nav__icon md-icon"></span>
-          Gui
-        </label>
-        <ul class="md-nav__list" data-md-scrollfix>
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="development/gui/" class="md-nav__link">
-        ACE2 GUI Development Guide
       </a>
     </li>
   
@@ -409,6 +383,13 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#philosophy" class="md-nav__link">
+    Philosophy
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -422,10 +403,22 @@
               
                 
                 
-                <h1 id="analysis-correlation-engine-gui">Analysis Correlation Engine GUI<a class="headerlink" href="#analysis-correlation-engine-gui" title="Permanent link">&para;</a></h1>
-<p>If you're looking for the main ACE documentation, check out the <a href="https://ace-ecosystem.github.io/ace2-core/">ace2-core docs</a>.</p>
+                <h1 id="analysis-correlation-engine-alert-management-system">Analysis Correlation Engine - Alert Management System<a class="headerlink" href="#analysis-correlation-engine-alert-management-system" title="Permanent link">&para;</a></h1>
+<p>ACE2 is comprised of the <a href="https://ace-ecosystem.github.io/ace2-core/">Core</a> and the Alert Management System. The AMS provides a web interface for analysts to interact with the alerts.</p>
 <h2 id="quick-start">Quick Start<a class="headerlink" href="#quick-start" title="Permanent link">&para;</a></h2>
-<p>Coming soon...</p>
+<p>The AMS comes with a Docker-Compose file to quickly deploy the application in development mode, which includes hot-reloading for both the frontend and backend API:</p>
+<div class="codehilite"><pre><span></span><code>bin/reset-dev-container.sh
+</code></pre></div>
+
+<p>After the containers are built and running, you can access the components using the following URLs:</p>
+<ul>
+<li>Frontend: <a href="http://localhost:8080">http://localhost:8080</a></li>
+<li>Backend API Swagger documentation: <a href="http://localhost:7777/docs">http://localhost:7777/docs</a></li>
+<li>Backend API ReDoc documentation: <a href="http://localhost:7777/redoc">http://localhost:7777/redoc</a></li>
+</ul>
+<h2 id="philosophy">Philosophy<a class="headerlink" href="#philosophy" title="Permanent link">&para;</a></h2>
+<p>For a more in-depth understanding of the philosophy behind ACE, see the talk that John Davison gave on the development of the ACE tool set at BSides Cincinnati in 2015.</p>
+<p><a href="https://youtu.be/okMkF-NYCHk"><img alt="Automated Detection Strategies" src="http://img.youtube.com/vi/okMkF-NYCHk/0.jpg" /></a></p>
                 
               
               
@@ -446,13 +439,13 @@
       
       
         
-        <a href="development/backend/database/" class="md-footer__link md-footer__link--next" aria-label="Next: Database" rel="next">
+        <a href="development/" class="md-footer__link md-footer__link--next" aria-label="Next: ACE2 AMS Development Guide" rel="next">
           <div class="md-footer__title">
             <div class="md-ellipsis">
               <span class="md-footer__direction">
                 Next
               </span>
-              Database
+              ACE2 AMS Development Guide
             </div>
           </div>
           <div class="md-footer__button md-icon">

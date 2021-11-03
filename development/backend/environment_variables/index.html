@@ -185,7 +185,7 @@
   
     <li class="md-nav__item">
       <a href="../../.." class="md-nav__link">
-        Analysis Correlation Engine GUI
+        Analysis Correlation Engine - Alert Management System
       </a>
     </li>
   
@@ -225,6 +225,20 @@
               
   
   
+  
+    <li class="md-nav__item">
+      <a href="../../" class="md-nav__link">
+        ACE2 AMS Development Guide
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
     
   
   
@@ -232,18 +246,18 @@
     <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2_1" type="checkbox" id="__nav_2_1" checked>
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2_2" type="checkbox" id="__nav_2_2" checked>
       
       
       
       
-        <label class="md-nav__link" for="__nav_2_1">
+        <label class="md-nav__link" for="__nav_2_2">
           Backend
           <span class="md-nav__icon md-icon"></span>
         </label>
       
       <nav class="md-nav" aria-label="Backend" data-md-level="2">
-        <label class="md-nav__title" for="__nav_2_1">
+        <label class="md-nav__title" for="__nav_2_2">
           <span class="md-nav__icon md-icon"></span>
           Backend
         </label>
@@ -333,53 +347,6 @@
 
             
           
-            
-              
-  
-  
-  
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-      
-        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2_2" type="checkbox" id="__nav_2_2" >
-      
-      
-      
-      
-        <label class="md-nav__link" for="__nav_2_2">
-          Gui
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <nav class="md-nav" aria-label="Gui" data-md-level="2">
-        <label class="md-nav__title" for="__nav_2_2">
-          <span class="md-nav__icon md-icon"></span>
-          Gui
-        </label>
-        <ul class="md-nav__list" data-md-scrollfix>
-          
-            
-              
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../gui/" class="md-nav__link">
-        ACE2 GUI Development Guide
-      </a>
-    </li>
-  
-
-            
-          
-        </ul>
-      </nav>
-    </li>
-  
-
-            
-          
         </ul>
       </nav>
     </li>
@@ -449,7 +416,7 @@
 <li><strong>ACE_DEV</strong>: If set (to anything), the application will run in development-mode, which means that the Alembic database migrations will be applied and the database seeded with basic information automatically when the application starts.</li>
 <li><strong>COOKIES_SAMESITE</strong>: The <code>SameSite</code> value to use when sending cookies. The development environment uses <code>lax</code>. Defaults to <code>lax</code>.</li>
 <li><strong>COOKIES_SECURE</strong>: True/False whether or not you want to require HTTPS when sending cookies. The development environment uses <code>False</code>. Defaults to <code>True</code>.</li>
-<li><strong>CORS_ORIGINS</strong>: A comma-separated string of origins to allow with CORS. For example, your development environment should be set to something like <code>http://localhost:8080,http://localhost:8888</code> depending on which port the GUI is served from.</li>
+<li><strong>CORS_ORIGINS</strong>: A comma-separated string of origins to allow with CORS. For example, your development environment should be set to something like <code>http://localhost:8080</code> depending on which port the GUI is served from.</li>
 <li><strong>DATABASE_URL</strong>: The connection string used to connect to the PostgreSQL server. It should be in the form of <code>postgresql://user:password@hostname[:port]/dbname</code>.</li>
 <li><strong>JWT_ACCESS_EXPIRE_SECONDS</strong>: The number of seconds after which an access token will expire. The development environment uses <code>900</code> (15 minutes) by default.</li>
 <li><strong>JWT_ALGORITHM</strong>: Sets the algorithm to use for signing the tokens. The development environment uses <code>HS256</code> by default.</li>
@@ -496,21 +463,6 @@
           </div>
         </a>
       
-      
-        
-        <a href="../../gui/" class="md-footer__link md-footer__link--next" aria-label="Next: ACE2 GUI Development Guide" rel="next">
-          <div class="md-footer__title">
-            <div class="md-ellipsis">
-              <span class="md-footer__direction">
-                Next
-              </span>
-              ACE2 GUI Development Guide
-            </div>
-          </div>
-          <div class="md-footer__button md-icon">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4z"/></svg>
-          </div>
-        </a>
       
     </nav>
   
