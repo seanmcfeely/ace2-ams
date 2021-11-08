@@ -416,7 +416,6 @@
 <li><strong>ACE_DEV</strong>: If set (to anything), the application will run in development-mode, which means that the Alembic database migrations will be applied and the database seeded with basic information automatically when the application starts.</li>
 <li><strong>COOKIES_SAMESITE</strong>: The <code>SameSite</code> value to use when sending cookies. The development environment uses <code>lax</code>. Defaults to <code>lax</code>.</li>
 <li><strong>COOKIES_SECURE</strong>: True/False whether or not you want to require HTTPS when sending cookies. The development environment uses <code>False</code>. Defaults to <code>True</code>.</li>
-<li><strong>CORS_ORIGINS</strong>: A comma-separated string of origins to allow with CORS. For example, your development environment should be set to something like <code>http://localhost:8080</code> depending on which port the GUI is served from.</li>
 <li><strong>DATABASE_URL</strong>: The connection string used to connect to the PostgreSQL server. It should be in the form of <code>postgresql://user:password@hostname[:port]/dbname</code>.</li>
 <li><strong>JWT_ACCESS_EXPIRE_SECONDS</strong>: The number of seconds after which an access token will expire. The development environment uses <code>900</code> (15 minutes) by default.</li>
 <li><strong>JWT_ALGORITHM</strong>: Sets the algorithm to use for signing the tokens. The development environment uses <code>HS256</code> by default.</li>

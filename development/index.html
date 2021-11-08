@@ -289,6 +289,13 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#updating-your-hosts-file" class="md-nav__link">
+    Updating your hosts file
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#starting-the-application" class="md-nav__link">
     Starting the application
   </a>
@@ -520,6 +527,13 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#updating-your-hosts-file" class="md-nav__link">
+    Updating your hosts file
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#starting-the-application" class="md-nav__link">
     Starting the application
   </a>
@@ -652,6 +666,14 @@
 <p>Once you choose the <code>Reopen in Container</code> option, VSCode will work on building the environment. Once it is complete, you can open a terminal within VSCode to interact with the application:</p>
 <p><img alt="Terminal" src="terminal.png" /></p>
 <p>Any work done on the application should be done through the devcontainer. If you make a change to the devcontainer configuration (found in the <code>.devcontainer</code> directory), you can rebuild the devcontainer by clicking on <code>Dev Container: ACE2 AMS</code> in the lower-left corner of VSCode and then selecting the <code>Rebuild Container</code> option in the menu that opens.</p>
+<h2 id="updating-your-hosts-file">Updating your hosts file<a class="headerlink" href="#updating-your-hosts-file" title="Permanent link">&para;</a></h2>
+<p>Your local system will need an entry in the hosts file to properly work with the AMS development environment.</p>
+<p>For Mac/Linux, this file is located at <code>/etc/hosts</code>.</p>
+<p>In Windows, this file is located at <code>C:\Windows\System32\drivers\etc\hosts</code>. You will need to open Notepad or another text editor as an Administrator in order to edit the hosts file.</p>
+<p>Add the following entry to the file:</p>
+<div class="codehilite"><pre><span></span><code>127.0.0.1 ace2-ams
+</code></pre></div>
+
 <h2 id="starting-the-application">Starting the application<a class="headerlink" href="#starting-the-application" title="Permanent link">&para;</a></h2>
 <p>You can start the application using Docker containers so that it uses hot-reloading anytime you change a file:</p>
 <div class="codehilite"><pre><span></span><code>bin/reset-dev-container.sh
@@ -660,7 +682,7 @@
 <p>This script will generate random passwords for the database user and the secret key used for JWTs. If you need to access these, you can view them in the <code>$HOME/.ace2.env</code> file, which configures the environment variables that will be loaded into the database container.</p>
 <p>Once the both the frontend and backend development environments are built and started, you can access the components:</p>
 <ul>
-<li>Frontend: <a href="http://localhost:8080">http://localhost:8080</a></li>
+<li>Frontend: <a href="http://ace2-ams:8080">http://ace2-ams:8080</a></li>
 <li>Backend API Swagger documentation: <a href="http://localhost:7777/docs">http://localhost:7777/docs</a></li>
 <li>Backend API ReDoc documentation: <a href="http://localhost:7777/redoc">http://localhost:7777/redoc</a></li>
 </ul>

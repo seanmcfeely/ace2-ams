@@ -406,13 +406,20 @@
                 <h1 id="analysis-correlation-engine-alert-management-system">Analysis Correlation Engine - Alert Management System<a class="headerlink" href="#analysis-correlation-engine-alert-management-system" title="Permanent link">&para;</a></h1>
 <p>ACE2 is comprised of the <a href="https://ace-ecosystem.github.io/ace2-core/">Core</a> and the Alert Management System. The AMS provides a web interface for analysts to interact with the alerts.</p>
 <h2 id="quick-start">Quick Start<a class="headerlink" href="#quick-start" title="Permanent link">&para;</a></h2>
-<p>The AMS comes with a Docker-Compose file to quickly deploy the application in development mode, which includes hot-reloading for both the frontend and backend API:</p>
+<p>Your local system will need an entry in the hosts file to properly work with the AMS development environment.</p>
+<p>For Mac/Linux, this file is located at <code>/etc/hosts</code>.</p>
+<p>In Windows, this file is located at <code>C:\Windows\System32\drivers\etc\hosts</code>. You will need to open Notepad or another text editor as an Administrator in order to edit the hosts file.</p>
+<p>Add the following entry to the file:</p>
+<div class="codehilite"><pre><span></span><code>127.0.0.1 ace2-ams
+</code></pre></div>
+
+<p>With your host file updated, you can use the helper script to reset and build the local AMS development environment that includes hot-reloading for both the frontend and backend:</p>
 <div class="codehilite"><pre><span></span><code>bin/reset-dev-container.sh
 </code></pre></div>
 
 <p>After the containers are built and running, you can access the components using the following URLs:</p>
 <ul>
-<li>Frontend: <a href="http://localhost:8080">http://localhost:8080</a></li>
+<li>Frontend: <a href="http://ace2-ams:8080">http://ace2-ams:8080</a></li>
 <li>Backend API Swagger documentation: <a href="http://localhost:7777/docs">http://localhost:7777/docs</a></li>
 <li>Backend API ReDoc documentation: <a href="http://localhost:7777/redoc">http://localhost:7777/redoc</a></li>
 </ul>
