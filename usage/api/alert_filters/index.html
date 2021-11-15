@@ -1,0 +1,999 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Documentation for ACE 2.0 Alert Management System">
+      
+      
+      
+        <meta name="author" content="ACE Ecosystem">
+      
+      
+      <link rel="icon" href="../../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.2.3, mkdocs-material-7.3.6">
+    
+    
+      
+        <title>Alert Filters - ACE2 AMS</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.a57b2b03.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../assets/stylesheets/palette.3f5d1f46.min.css">
+        
+      
+    
+    
+    
+      
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700%7CRoboto+Mono&display=fallback">
+        <style>:root{--md-text-font-family:"Roboto";--md-code-font-family:"Roboto Mono"}</style>
+      
+    
+    
+    
+    
+      
+
+
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="" data-md-color-primary="none" data-md-color-accent="none">
+  
+    
+    <script>function __prefix(e){return new URL("../../..",location).pathname+"."+e}function __get(e,t=localStorage){return JSON.parse(t.getItem(__prefix(e)))}</script>
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#alert-filters" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../../.." title="ACE2 AMS" class="md-header__button md-logo" aria-label="ACE2 AMS" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            ACE2 AMS
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Alert Filters
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+      </label>
+      
+<div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" aria-label="Clear" tabindex="-1">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../.." title="ACE2 AMS" class="md-nav__button md-logo" aria-label="ACE2 AMS" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
+
+    </a>
+    ACE2 AMS
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../.." class="md-nav__link">
+        Analysis Correlation Engine - Alert Management System
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2" type="checkbox" id="__nav_2" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_2">
+          Development
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Development" data-md-level="1">
+        <label class="md-nav__title" for="__nav_2">
+          <span class="md-nav__icon md-icon"></span>
+          Development
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../development/" class="md-nav__link">
+        ACE2 AMS Development Guide
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2_2" type="checkbox" id="__nav_2_2" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_2_2">
+          Backend
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Backend" data-md-level="2">
+        <label class="md-nav__title" for="__nav_2_2">
+          <span class="md-nav__icon md-icon"></span>
+          Backend
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../development/backend/database/" class="md-nav__link">
+        Database
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../development/backend/environment_variables/" class="md-nav__link">
+        Environment Variables
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+    
+  
+  
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3" type="checkbox" id="__nav_3" checked>
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_3">
+          Usage
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Usage" data-md-level="1">
+        <label class="md-nav__title" for="__nav_3">
+          <span class="md-nav__icon md-icon"></span>
+          Usage
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../" class="md-nav__link">
+        ACE2 AMS Usage
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+    
+  
+  
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3_2" type="checkbox" id="__nav_3_2" checked>
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_3_2">
+          Api
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Api" data-md-level="2">
+        <label class="md-nav__title" for="__nav_3_2">
+          <span class="md-nav__icon md-icon"></span>
+          Api
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+    
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          Alert Filters
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        Alert Filters
+      </a>
+      
+        
+
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#disposition" class="md-nav__link">
+    Disposition
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#disposition-user" class="md-nav__link">
+    Disposition User
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#dispositioned-after" class="md-nav__link">
+    Dispositioned After
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#dispositioned-before" class="md-nav__link">
+    Dispositioned Before
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#event-uuid" class="md-nav__link">
+    Event UUID
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#event-time-after" class="md-nav__link">
+    Event Time After
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#event-time-before" class="md-nav__link">
+    Event Time Before
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#insert-time-after" class="md-nav__link">
+    Insert Time After
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#insert-time-before" class="md-nav__link">
+    Insert Time Before
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#name" class="md-nav__link">
+    Name
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#observable" class="md-nav__link">
+    Observable
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#observable-types" class="md-nav__link">
+    Observable Types
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#observable-value" class="md-nav__link">
+    Observable Value
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#owner" class="md-nav__link">
+    Owner
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#queue" class="md-nav__link">
+    Queue
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#tags" class="md-nav__link">
+    Tags
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#threat-actor" class="md-nav__link">
+    Threat Actor
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#threats" class="md-nav__link">
+    Threats
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#tool" class="md-nav__link">
+    Tool
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#tool-instance" class="md-nav__link">
+    Tool Instance
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#type" class="md-nav__link">
+    Type
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#combining-timestamp-filters" class="md-nav__link">
+    Combining timestamp filters
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#disposition" class="md-nav__link">
+    Disposition
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#disposition-user" class="md-nav__link">
+    Disposition User
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#dispositioned-after" class="md-nav__link">
+    Dispositioned After
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#dispositioned-before" class="md-nav__link">
+    Dispositioned Before
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#event-uuid" class="md-nav__link">
+    Event UUID
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#event-time-after" class="md-nav__link">
+    Event Time After
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#event-time-before" class="md-nav__link">
+    Event Time Before
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#insert-time-after" class="md-nav__link">
+    Insert Time After
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#insert-time-before" class="md-nav__link">
+    Insert Time Before
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#name" class="md-nav__link">
+    Name
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#observable" class="md-nav__link">
+    Observable
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#observable-types" class="md-nav__link">
+    Observable Types
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#observable-value" class="md-nav__link">
+    Observable Value
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#owner" class="md-nav__link">
+    Owner
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#queue" class="md-nav__link">
+    Queue
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#tags" class="md-nav__link">
+    Tags
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#threat-actor" class="md-nav__link">
+    Threat Actor
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#threats" class="md-nav__link">
+    Threats
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#tool" class="md-nav__link">
+    Tool
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#tool-instance" class="md-nav__link">
+    Tool Instance
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#type" class="md-nav__link">
+    Type
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#combining-timestamp-filters" class="md-nav__link">
+    Combining timestamp filters
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          <div class="md-content" data-md-component="content">
+            <article class="md-content__inner md-typeset">
+              
+                
+                
+                <h1 id="alert-filters">Alert Filters<a class="headerlink" href="#alert-filters" title="Permanent link">&para;</a></h1>
+<p>The API provides several ways to query for and filter alerts. Any of the filters can be combined with one another to produce complex queries.</p>
+<blockquote>
+<p><strong>NOTE:</strong> If you combine multiple filters or use one of the filters that allows you to specify a comma-separated list of items, they are all queried for using <code>AND</code> logic. There is currently no way to perform <code>OR</code> or <code>NOT</code> logic with the filters, although that is planned for the future.</p>
+</blockquote>
+<h2 id="disposition">Disposition<a class="headerlink" href="#disposition" title="Permanent link">&para;</a></h2>
+<p>To fetch all alerts that were assigned a disposition of <code>DELIVERY</code>:</p>
+<div class="codehilite"><pre><span></span><code>/api/alert/?disposition=DELIVERY
+</code></pre></div>
+
+<p>To fetch all alerts that have not yet been dispositioned:</p>
+<div class="codehilite"><pre><span></span><code>/api/alert/?disposition=none
+</code></pre></div>
+
+<h2 id="disposition-user">Disposition User<a class="headerlink" href="#disposition-user" title="Permanent link">&para;</a></h2>
+<p>To fetch all alerts that were dispositioned by the username <code>bob</code>:</p>
+<div class="codehilite"><pre><span></span><code>/api/alert/?disposition_user=bob
+</code></pre></div>
+
+<h2 id="dispositioned-after">Dispositioned After<a class="headerlink" href="#dispositioned-after" title="Permanent link">&para;</a></h2>
+<p>To fetch all alerts that were dispositioned after January 1, 2021:</p>
+<div class="codehilite"><pre><span></span><code>/api/alert/?dispositioned_after=2021-01-01+00:00:00.000000+00:00
+</code></pre></div>
+
+<blockquote>
+<p><strong>NOTE:</strong> All timestamps are stored in the database using UTC.</p>
+<p>You will also need to ensure that the timestamp that you pass in is properly url-encoded.</p>
+</blockquote>
+<h2 id="dispositioned-before">Dispositioned Before<a class="headerlink" href="#dispositioned-before" title="Permanent link">&para;</a></h2>
+<p>To fetch all alerts that were dispositioned before January 1, 2021:</p>
+<div class="codehilite"><pre><span></span><code>/api/alert/?dispositioned_before=2021-01-01+00:00:00.000000+00:00
+</code></pre></div>
+
+<blockquote>
+<p><strong>NOTE:</strong> All timestamps are stored in the database using UTC.</p>
+<p>You will also need to ensure that the timestamp that you pass in is properly url-encoded.</p>
+</blockquote>
+<h2 id="event-uuid">Event UUID<a class="headerlink" href="#event-uuid" title="Permanent link">&para;</a></h2>
+<p>To fetch all alerts that are associated with the event UUID <code>98dab2bf-2683-48e7-8193-183c3c5e4490</code>:</p>
+<div class="codehilite"><pre><span></span><code>/api/alert/?event_uuid=98dab2bf-2683-48e7-8193-183c3c5e4490
+</code></pre></div>
+
+<h2 id="event-time-after">Event Time After<a class="headerlink" href="#event-time-after" title="Permanent link">&para;</a></h2>
+<p>To fetch all alerts with the event_time after January 1, 2021:</p>
+<div class="codehilite"><pre><span></span><code>/api/alert/?event_time_after=2021-01-01+00:00:00.000000+00:00
+</code></pre></div>
+
+<blockquote>
+<p><strong>NOTE:</strong> All timestamps are stored in the database using UTC.</p>
+<p>You will also need to ensure that the timestamp that you pass in is properly url-encoded.</p>
+</blockquote>
+<h2 id="event-time-before">Event Time Before<a class="headerlink" href="#event-time-before" title="Permanent link">&para;</a></h2>
+<p>To fetch all alerts that were event_time before January 1, 2021:</p>
+<div class="codehilite"><pre><span></span><code>/api/alert/?event_time_before=2021-01-01+00:00:00.000000+00:00
+</code></pre></div>
+
+<blockquote>
+<p><strong>NOTE:</strong> All timestamps are stored in the database using UTC.</p>
+<p>You will also need to ensure that the timestamp that you pass in is properly url-encoded.</p>
+</blockquote>
+<h2 id="insert-time-after">Insert Time After<a class="headerlink" href="#insert-time-after" title="Permanent link">&para;</a></h2>
+<p>To fetch all alerts with the insert_time after January 1, 2021:</p>
+<div class="codehilite"><pre><span></span><code>/api/alert/?insert_time_after=2021-01-01+00:00:00.000000+00:00
+</code></pre></div>
+
+<blockquote>
+<p><strong>NOTE:</strong> All timestamps are stored in the database using UTC.</p>
+<p>You will also need to ensure that the timestamp that you pass in is properly url-encoded.</p>
+</blockquote>
+<h2 id="insert-time-before">Insert Time Before<a class="headerlink" href="#insert-time-before" title="Permanent link">&para;</a></h2>
+<p>To fetch all alerts that were insert_time before January 1, 2021:</p>
+<div class="codehilite"><pre><span></span><code>/api/alert/?insert_time_before=2021-01-01+00:00:00.000000+00:00
+</code></pre></div>
+
+<blockquote>
+<p><strong>NOTE:</strong> All timestamps are stored in the database using UTC.</p>
+<p>You will also need to ensure that the timestamp that you pass in is properly url-encoded.</p>
+</blockquote>
+<h2 id="name">Name<a class="headerlink" href="#name" title="Permanent link">&para;</a></h2>
+<p>To fetch all alerts with <code>asdf</code> in their name:</p>
+<div class="codehilite"><pre><span></span><code>/api/alert/?name=asdf
+</code></pre></div>
+
+<blockquote>
+<p><strong>NOTE:</strong> This performs a substring match.</p>
+</blockquote>
+<h2 id="observable">Observable<a class="headerlink" href="#observable" title="Permanent link">&para;</a></h2>
+<p>To fetch all alerts that contain a specific observable with the type of <code>fqdn</code> and value of <code>google.com</code>:</p>
+<div class="codehilite"><pre><span></span><code>/api/alert/?observable=fqdn|google.com
+</code></pre></div>
+
+<h2 id="observable-types">Observable Types<a class="headerlink" href="#observable-types" title="Permanent link">&para;</a></h2>
+<p>To fetch all alerts that contain observables with the types of <code>fqdn</code> and <code>ip</code>:</p>
+<div class="codehilite"><pre><span></span><code>/api/alert/?observable_types=fqdn,ip
+</code></pre></div>
+
+<h2 id="observable-value">Observable Value<a class="headerlink" href="#observable-value" title="Permanent link">&para;</a></h2>
+<p>To fetch all alerts that contain observables (regardless of their type) that have the value <code>google.com</code>:</p>
+<div class="codehilite"><pre><span></span><code>/api/alert/?observable_value=google.com
+</code></pre></div>
+
+<h2 id="owner">Owner<a class="headerlink" href="#owner" title="Permanent link">&para;</a></h2>
+<p>To fetch all alerts that are owned by the username <code>bob</code>:</p>
+<div class="codehilite"><pre><span></span><code>/api/alert/?owner=bob
+</code></pre></div>
+
+<h2 id="queue">Queue<a class="headerlink" href="#queue" title="Permanent link">&para;</a></h2>
+<p>To fetch all alerts that are inside of the alert queue <code>intel</code>:</p>
+<div class="codehilite"><pre><span></span><code>/api/alert/?queue=intel
+</code></pre></div>
+
+<h2 id="tags">Tags<a class="headerlink" href="#tags" title="Permanent link">&para;</a></h2>
+<p>To fetch all alerts that have the tags <code>email</code> and <code>malicious</code>:</p>
+<div class="codehilite"><pre><span></span><code>/api/alert/?tags=email,malicious
+</code></pre></div>
+
+<h2 id="threat-actor">Threat Actor<a class="headerlink" href="#threat-actor" title="Permanent link">&para;</a></h2>
+<p>To fetch all alerts that were assigned the threat actor <code>Bad Guy</code>:</p>
+<div class="codehilite"><pre><span></span><code>/api/alert/?threat_actor=Bad Guy
+</code></pre></div>
+
+<h2 id="threats">Threats<a class="headerlink" href="#threats" title="Permanent link">&para;</a></h2>
+<p>To fetch all alerts that were assigned the threats <code>emotet</code> and <code>zbot</code>:</p>
+<div class="codehilite"><pre><span></span><code>/api/alert/?threats=emotet,zbot
+</code></pre></div>
+
+<h2 id="tool">Tool<a class="headerlink" href="#tool" title="Permanent link">&para;</a></h2>
+<p>To fetch all alerts produced by the tool <code>Splunk</code>:</p>
+<div class="codehilite"><pre><span></span><code>/api/alert/?tool=Splunk
+</code></pre></div>
+
+<h2 id="tool-instance">Tool Instance<a class="headerlink" href="#tool-instance" title="Permanent link">&para;</a></h2>
+<p>To fetch all alerts produced by the tool instance <code>splunkserver1</code>:</p>
+<div class="codehilite"><pre><span></span><code>/api/alert/?tool_instance=splunkserver1
+</code></pre></div>
+
+<h2 id="type">Type<a class="headerlink" href="#type" title="Permanent link">&para;</a></h2>
+<p>To fetch all alerts of type <code>SMTP</code>:</p>
+<div class="codehilite"><pre><span></span><code>/api/alert/?type=SMTP
+</code></pre></div>
+
+<h2 id="combining-timestamp-filters">Combining timestamp filters<a class="headerlink" href="#combining-timestamp-filters" title="Permanent link">&para;</a></h2>
+<p>You can combine the various timestamp filters to get alerts from a single day. For example, to get alerts that were dispositioned during November 1, 2021:</p>
+<div class="codehilite"><pre><span></span><code>/api/alert/?dispositioned_after=2021-11-01+00:00:00.000000+00:00&amp;dispositioned_before=2021-11-02+00:00:00.000000+00:00
+</code></pre></div>
+
+<blockquote>
+<p><strong>NOTE:</strong> All timestamps are stored in the database using UTC.</p>
+<p>You will also need to ensure that the timestamp that you pass in is properly url-encoded.</p>
+</blockquote>
+                
+              
+              
+                
+
+
+              
+            </article>
+          </div>
+        </div>
+        
+      </main>
+      
+        
+<footer class="md-footer">
+  
+    <nav class="md-footer__inner md-grid" aria-label="Footer">
+      
+        
+        <a href="../../" class="md-footer__link md-footer__link--prev" aria-label="Previous: ACE2 AMS Usage" rel="prev">
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+          </div>
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              ACE2 AMS Usage
+            </div>
+          </div>
+        </a>
+      
+      
+    </nav>
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-footer-copyright">
+        
+        
+          Made with
+          <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+            Material for MkDocs
+          </a>
+        
+        
+      </div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    <script id="__config" type="application/json">{"base": "../../..", "features": [], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../../assets/javascripts/workers/search.fcfe8b6d.min.js", "version": null}</script>
+    
+    
+      <script src="../../../assets/javascripts/bundle.b1047164.min.js"></script>
+      
+    
+  </body>
+</html>
