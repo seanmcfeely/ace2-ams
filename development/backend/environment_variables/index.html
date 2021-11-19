@@ -508,7 +508,7 @@
 <h2 id="fastapi-backend-variables">FastAPI backend variables<a class="headerlink" href="#fastapi-backend-variables" title="Permanent link">&para;</a></h2>
 <p>These variables are used by the FastAPI backend application.</p>
 <ul>
-<li><strong>ACE_DEV</strong>: If set (to anything), the application will run in development-mode, which means that the Alembic database migrations will be applied and the database seeded with basic information automatically when the application starts.</li>
+<li><strong>ACE_DEV</strong>: If set (to anything), the application will run in development-mode, which means that the Alembic database migrations will be applied and the database seeded with basic information automatically when the application starts. This is enabled by default for the development environment.</li>
 <li><strong>COOKIES_SAMESITE</strong>: The <code>SameSite</code> value to use when sending cookies. The development environment uses <code>lax</code>. Defaults to <code>lax</code>.</li>
 <li><strong>COOKIES_SECURE</strong>: True/False whether or not you want to require HTTPS when sending cookies. The development environment uses <code>False</code>. Defaults to <code>True</code>.</li>
 <li><strong>DATABASE_URL</strong>: The connection string used to connect to the PostgreSQL server. It should be in the form of <code>postgresql://user:password@hostname[:port]/dbname</code>.</li>
@@ -516,6 +516,7 @@
 <li><strong>JWT_ALGORITHM</strong>: Sets the algorithm to use for signing the tokens. The development environment uses <code>HS256</code> by default.</li>
 <li><strong>JWT_REFRESH_EXPIRE_SECONDS</strong>: The number of seconds after which a refresh token will expire. The development environment uses <code>43200</code> (12 hours) by default.</li>
 <li><strong>JWT_SECRET</strong>: The secret key/password to use when signing and decoding tokens. The development environment generates <code>a random 32 character string</code>.</li>
+<li><strong>SQL_ECHO</strong>: If set (to anything), SQLAlchemy will be configured to echo all queries to the console. You can view the queries in the Docker logs for the <code>ace2-ams-api</code> container. This is enabled by default for the development environment.</li>
 </ul>
 <h2 id="postgresql-container-variables">PostgreSQL container variables<a class="headerlink" href="#postgresql-container-variables" title="Permanent link">&para;</a></h2>
 <p>These variables are used by the PostgreSQL server container to initialize the database.</p>
