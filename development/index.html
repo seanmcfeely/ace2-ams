@@ -826,26 +826,23 @@
 
 <h4 id="end-to-end-tests">End-to-end tests<a class="headerlink" href="#end-to-end-tests" title="Permanent link">&para;</a></h4>
 <p>You can execute the end-to-end tests by running:</p>
-<div class="codehilite"><pre><span></span><code>bin/test-frontend-e2e.sh
+<div class="codehilite"><pre><span></span><code>bin/test-e2e.sh
 </code></pre></div>
 
 <h5 id="test-runner">Test Runner<a class="headerlink" href="#test-runner" title="Permanent link">&para;</a></h5>
 <p>Cypress also comes with an amazing <a href="https://docs.cypress.io/guides/core-concepts/test-runner">Test Runner</a> that lets you see and interact with the tests in your local web browser. This can be helpful when writing end-to-end tests to ensure they are working properly as well as any debugging you might need to do.</p>
 <p>However, this will need to be performed on your local system ouside of the containers. To do this, you will need to have <a href="https://nodejs.org/en/download/current/">Node.js 16</a> installed.</p>
-<p><strong>Step 1:</strong> Install Node packages on your system (this only needs to be done one time):</p>
-<div class="codehilite"><pre><span></span><code>cd frontend/
-npm install
-npx cypress install
-cd ..
+<p><strong>Step 1:</strong> Install Cypress on your host system (this only needs to be done one time):</p>
+<div class="codehilite"><pre><span></span><code>npm install -g cypress@9.3.0
 </code></pre></div>
 
-<p><strong>Step 2:</strong> Run the application if it isn't already running:</p>
-<div class="codehilite"><pre><span></span><code>bin/reset-dev-container.sh
+<p><strong>Step 2:</strong> Prep the application to run the tests in interactive mode:</p>
+<div class="codehilite"><pre><span></span><code>bin/test-interactive-e2e.sh
 </code></pre></div>
 
-<p><strong>Step 3:</strong> Open the Test Runner:</p>
-<div class="codehilite"><pre><span></span><code>cd frontend/
-npx cypress open
+<p><strong>Step 3:</strong> Open the Test Runner on your host system:</p>
+<div class="codehilite"><pre><span></span><code>cd cypress/
+cypress open
 </code></pre></div>
 
 <p><img alt="Test Runner" src="test-runner.png" /></p>
