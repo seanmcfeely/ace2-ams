@@ -1,0 +1,1239 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Documentation for ACE 2.0 Alert Management System">
+      
+      
+        <meta name="author" content="ACE Ecosystem">
+      
+      
+      <link rel="icon" href="../../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.3.0, mkdocs-material-8.2.8">
+    
+    
+      
+        <title>Testing - ACE2 AMS</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.644de097.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../assets/stylesheets/palette.e6a45f82.min.css">
+        
+      
+    
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../../..",location),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="" data-md-color-primary="none" data-md-color-accent="none">
+  
+    
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#running-tests" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../../.." title="ACE2 AMS" class="md-header__button md-logo" aria-label="ACE2 AMS" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            ACE2 AMS
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Testing
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" aria-label="Clear" tabindex="-1">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../.." title="ACE2 AMS" class="md-nav__button md-logo" aria-label="ACE2 AMS" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
+
+    </a>
+    ACE2 AMS
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../.." class="md-nav__link">
+        Analysis Correlation Engine - Alert Management System
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+    
+  
+  
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2" type="checkbox" id="__nav_2" checked>
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_2">
+          Development
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Development" data-md-level="1">
+        <label class="md-nav__title" for="__nav_2">
+          <span class="md-nav__icon md-icon"></span>
+          Development
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../" class="md-nav__link">
+        Setup
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2_2" type="checkbox" id="__nav_2_2" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_2_2">
+          Backend
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Backend" data-md-level="2">
+        <label class="md-nav__title" for="__nav_2_2">
+          <span class="md-nav__icon md-icon"></span>
+          Backend
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../backend/database/" class="md-nav__link">
+        Database
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../backend/environment_variables/" class="md-nav__link">
+        Environment Variables
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../backend/insert_alerts/" class="md-nav__link">
+        Insert Alerts
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+    
+  
+  
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_2_3" type="checkbox" id="__nav_2_3" checked>
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_2_3">
+          Frontend
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Frontend" data-md-level="2">
+        <label class="md-nav__title" for="__nav_2_3">
+          <span class="md-nav__icon md-icon"></span>
+          Frontend
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+    
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          Testing
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        Testing
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#running-tests" class="md-nav__link">
+    Running Tests
+  </a>
+  
+    <nav class="md-nav" aria-label="Running Tests">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#unit-tests" class="md-nav__link">
+    Unit Tests
+  </a>
+  
+    <nav class="md-nav" aria-label="Unit Tests">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#what-to-test" class="md-nav__link">
+    What to test
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#testing-pinia-stores" class="md-nav__link">
+    Testing Pinia Stores
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#testing-services" class="md-nav__link">
+    Testing Services
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#testing-helpers" class="md-nav__link">
+    Testing Helpers
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#component-tests" class="md-nav__link">
+    Component Tests
+  </a>
+  
+    <nav class="md-nav" aria-label="Component Tests">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#what-how-to-test" class="md-nav__link">
+    What &amp; How to Test
+  </a>
+  
+    <nav class="md-nav" aria-label="What &amp; How to Test">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#basic-guidelines" class="md-nav__link">
+    Basic Guidelines
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#mocking" class="md-nav__link">
+    Mocking
+  </a>
+  
+    <nav class="md-nav" aria-label="Mocking">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#component-mounting-options" class="md-nav__link">
+    Component Mounting Options
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#mocking-test-data" class="md-nav__link">
+    Mocking Test Data
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#mocking-pinia" class="md-nav__link">
+    Mocking Pinia
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#mocking-api-calls" class="md-nav__link">
+    Mocking API Calls
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#testing-strategies" class="md-nav__link">
+    Testing Strategies
+  </a>
+  
+    <nav class="md-nav" aria-label="Testing Strategies">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#testing-links" class="md-nav__link">
+    Testing Links
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#testing-time-dependent-data" class="md-nav__link">
+    Testing Time-Dependent Data
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#testing-for-child-components" class="md-nav__link">
+    Testing for Child Components
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#testing-for-event-reaction-and-emitted" class="md-nav__link">
+    Testing for Event (reaction and emitted)
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#end-to-end-tests" class="md-nav__link">
+    End-to-End Tests
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3" type="checkbox" id="__nav_3" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_3">
+          Usage
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Usage" data-md-level="1">
+        <label class="md-nav__title" for="__nav_3">
+          <span class="md-nav__icon md-icon"></span>
+          Usage
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_3_1" type="checkbox" id="__nav_3_1" >
+      
+      
+      
+      
+        <label class="md-nav__link" for="__nav_3_1">
+          Api
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <nav class="md-nav" aria-label="Api" data-md-level="2">
+        <label class="md-nav__title" for="__nav_3_1">
+          <span class="md-nav__icon md-icon"></span>
+          Api
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../usage/api/alert_filters/" class="md-nav__link">
+        Alert Filters
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../usage/api/alert_sorting/" class="md-nav__link">
+        Alert Sorting
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#running-tests" class="md-nav__link">
+    Running Tests
+  </a>
+  
+    <nav class="md-nav" aria-label="Running Tests">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#unit-tests" class="md-nav__link">
+    Unit Tests
+  </a>
+  
+    <nav class="md-nav" aria-label="Unit Tests">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#what-to-test" class="md-nav__link">
+    What to test
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#testing-pinia-stores" class="md-nav__link">
+    Testing Pinia Stores
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#testing-services" class="md-nav__link">
+    Testing Services
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#testing-helpers" class="md-nav__link">
+    Testing Helpers
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#component-tests" class="md-nav__link">
+    Component Tests
+  </a>
+  
+    <nav class="md-nav" aria-label="Component Tests">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#what-how-to-test" class="md-nav__link">
+    What &amp; How to Test
+  </a>
+  
+    <nav class="md-nav" aria-label="What &amp; How to Test">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#basic-guidelines" class="md-nav__link">
+    Basic Guidelines
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#mocking" class="md-nav__link">
+    Mocking
+  </a>
+  
+    <nav class="md-nav" aria-label="Mocking">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#component-mounting-options" class="md-nav__link">
+    Component Mounting Options
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#mocking-test-data" class="md-nav__link">
+    Mocking Test Data
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#mocking-pinia" class="md-nav__link">
+    Mocking Pinia
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#mocking-api-calls" class="md-nav__link">
+    Mocking API Calls
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#testing-strategies" class="md-nav__link">
+    Testing Strategies
+  </a>
+  
+    <nav class="md-nav" aria-label="Testing Strategies">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#testing-links" class="md-nav__link">
+    Testing Links
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#testing-time-dependent-data" class="md-nav__link">
+    Testing Time-Dependent Data
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#testing-for-child-components" class="md-nav__link">
+    Testing for Child Components
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#testing-for-event-reaction-and-emitted" class="md-nav__link">
+    Testing for Event (reaction and emitted)
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#end-to-end-tests" class="md-nav__link">
+    End-to-End Tests
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          <div class="md-content" data-md-component="content">
+            <article class="md-content__inner md-typeset">
+              
+                
+
+
+  <h1>Testing</h1>
+
+<h2 id="running-tests">Running Tests<a class="headerlink" href="#running-tests" title="Permanent link">&para;</a></h2>
+<p>Please see the <a href="../../#frontend">Running Tests</a> section for further details on running tests.</p>
+<h3 id="unit-tests">Unit Tests<a class="headerlink" href="#unit-tests" title="Permanent link">&para;</a></h3>
+<h4 id="what-to-test">What to test<a class="headerlink" href="#what-to-test" title="Permanent link">&para;</a></h4>
+<p>Unit tests should be written for any TS/JS code:</p>
+<ul>
+<li>Pinia stores</li>
+<li>Services, such as API services</li>
+<li>Helper/validator functions</li>
+</ul>
+<h4 id="testing-pinia-stores">Testing Pinia Stores<a class="headerlink" href="#testing-pinia-stores" title="Permanent link">&para;</a></h4>
+<p>ToDO</p>
+<h4 id="testing-services">Testing Services<a class="headerlink" href="#testing-services" title="Permanent link">&para;</a></h4>
+<p>ToDo</p>
+<h4 id="testing-helpers">Testing Helpers<a class="headerlink" href="#testing-helpers" title="Permanent link">&para;</a></h4>
+<p>ToDo</p>
+<h3 id="component-tests">Component Tests<a class="headerlink" href="#component-tests" title="Permanent link">&para;</a></h3>
+<h4 id="what-how-to-test">What &amp; How to Test<a class="headerlink" href="#what-how-to-test" title="Permanent link">&para;</a></h4>
+<h5 id="basic-guidelines">Basic Guidelines<a class="headerlink" href="#basic-guidelines" title="Permanent link">&para;</a></h5>
+<p><em>Do:</em></p>
+<ul>
+<li>Create a respective test file for each Single-File Component<ul>
+<li><code>MyComponent.vue</code> &rarr; <code>MyComponent.spec.ts</code></li>
+</ul>
+</li>
+<li>Write test cases for each possible application state<ul>
+<li><em>Blank state</em> - when the component is freshly loaded</li>
+<li><em>Interactive state</em> - when elements of the component are interacted with, and the component's behavior in response</li>
+<li><em>Error state</em> - when things go wrong (invalid input, API errors, etc.)</li>
+</ul>
+</li>
+<li>Use a factory function to create a freshly mounted instance of the component under test in each test</li>
+<li>Write test cases for all (valid) prop-type combinations</li>
+<li>Write test cases for varying (valid) initial store states, if the component accesses any Pinia stores</li>
+<li>Think like a user when writing tests -- try to select elements by their visible text first</li>
+<li>Use the following precedence when choosing how to select an element (note: some PrimeVue elements may make this difficult, so this is just a guideline):<ul>
+<li><code>cy.contains("Desired Element Text")</code></li>
+<li><code>cy.get('[data-cy=desired-element-prop]')</code></li>
+<li><code>cy.get('[name=desired-element-name]')</code></li>
+<li><code>cy.get('#desired-element-id')</code></li>
+<li><code>cy.get('.desired-element-class) // Avoid as much as possible</code></li>
+<li><code>cy.get('button') // Avoid at all costs</code></li>
+</ul>
+</li>
+</ul>
+<p><em>Do Not:</em></p>
+<ul>
+<li>Test the internals of a component, e.g., any functions within the <setup> tags</li>
+<li>Test child component functionality/presentation where it can be avoided</li>
+<li>Test a component mounted with invalid props (this should not happen IRL)</li>
+<li>Write deterministic tests<ul>
+<li>Tests that rely on current date or time</li>
+<li>Tests that rely on API availability</li>
+<li>Tests that rely on any "random" value</li>
+</ul>
+</li>
+</ul>
+<h5 id="mocking">Mocking<a class="headerlink" href="#mocking" title="Permanent link">&para;</a></h5>
+<p>Because components pull in data from nearly every part of the application (Pinia stores, API services, configuration, helpers, 'external' data from backend, etc.), a lot of mocking and stubbing is required to make sure components are tested in isolation.</p>
+<p>Below are some quick explanations of how to mock or stub some of those pieces, as well as examples in existing tests.</p>
+<p>Cypress component test are built off of vue-test-utils in order to mount components. Examples and more detailed explanations of the below can be found <a href="https://github.com/cypress-io/cypress/tree/develop/npm/vue">here</a>.</p>
+<h6 id="component-mounting-options">Component Mounting Options<a class="headerlink" href="#component-mounting-options" title="Permanent link">&para;</a></h6>
+<p>Because the Cypress Component Test Runner is built off of vue-test-utils, any of the mounting options available through vue-test-utils will also be available to use in component tests.</p>
+<p>The most common in this project are the following:</p>
+<ul>
+<li>
+<p>global/directives</p>
+<ul>
+<li>Some components in Vue use 'directives,' which HTML attributes that tell the component to do something (focus, blur, appear on hover, etc.)</li>
+<li>Because directives are registered at the base App-level, we have to define them in this section of component mounting</li>
+<li>The most common directive currently in use is the 'ToolTip' -- watch out for strange errors from components that use this directive!</li>
+<li>Example: <div class="codehilite"><pre><span></span><code>mount(MyComponent, {
+      global: {
+        directives: { tooltip: Tooltip }
+      },
+    });
+</code></pre></div>
+
+</li>
+</ul>
+</li>
+<li>
+<p>global/plugins</p>
+<ul>
+<li>This is where we can register our various plugins such as PrimeVue, our router, and Pinia</li>
+<li>See <a href="#mocking-pinia">Mocking Pinia</a> below for more details on setting up mock Pinia data</li>
+<li>Examples:<div class="codehilite"><pre><span></span><code>  // Component does not use Pinia
+  mount(MyComponent, {
+    global: {
+      plugins: [
+        PrimeVue,
+        router,
+      ],
+    },
+  });
+
+  // Component uses Pinia, but doesn&#39;t require any special configuration
+  mount(MyComponent, {
+    global: {
+      plugins: [
+        PrimeVue,
+        createPinia(),
+        router,
+      ],
+    },
+  });
+
+  // Component uses Pinia, and will require special configuration
+  mount(MyComponent, {
+    global: {
+      plugins: [
+        PrimeVue,
+        createCustomCypressPinia(testingOptions),
+        router,
+      ],
+    },
+  });
+</code></pre></div>
+
+</li>
+</ul>
+</li>
+<li>
+<p>global/provide</p>
+<ul>
+<li>This is where any data that is injected in the component under test can be mocked out</li>
+<li><em>Note:</em> If the test is injecting some form of configuration, make sure to import the data from <code>testConfiguration</code></li>
+<li>Example: <div class="codehilite"><pre><span></span><code>mount(MyComponent, {
+      global: {
+        provide: {
+          exampleProvide: &quot;stubData&quot;,
+          exampleConfig: testConfiguration.exampleConfig,
+        },
+      },
+    });
+</code></pre></div>
+
+</li>
+</ul>
+</li>
+<li>
+<p>propsData</p>
+<ul>
+<li>This is where any data provided as props to the component under test can be mocked out</li>
+<li>This is the mounting option most likely to change from test to test</li>
+<li>Creating an interface for a given component's props can make it easier to confidently put together various props</li>
+<li>Example:<ul>
+<li>AlertTableCell.spec.ts<div class="codehilite"><pre><span></span><code>  interface myComponentProps {
+    name: string
+  }
+
+  const defaultProps: myComponentProps = {
+      name: &quot;TestName&quot;
+  }
+
+  mount(MyComponent, {
+    propsData: defaultProps
+  });
+</code></pre></div>
+
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p>slots</p>
+<ul>
+<li>This is where custom slot templates can be given to components with any number of slots</li>
+<li>Example: <div class="codehilite"><pre><span></span><code>mount(MyComponent, {
+  slots: {
+      header: &#39;&lt;h1&gt;HEADER&lt;/h1&gt;&#39;,
+      footer: &#39;&lt;div&gt;FOOTER&lt;/div&gt;&#39;,
+    },
+});
+</code></pre></div>
+
+</li>
+</ul>
+</li>
+</ul>
+<h6 id="mocking-test-data">Mocking Test Data<a class="headerlink" href="#mocking-test-data" title="Permanent link">&para;</a></h6>
+<p>Mocking data, either in the form of props, injected data, or data returned from API calls is crucial.</p>
+<p>Wherever possible use the mock object factories provided in the <code>mocks/**</code> directory. This will make sure that whatever mock data that is used aligns with its respective data model.</p>
+<p>For data that will not be commonly re-used and does not have associated factory functions, feel free to create one-off mocks in the given test file. See <code>SandboxAnalysis.spec.ts</code> for an example. </p>
+<h6 id="mocking-pinia">Mocking Pinia<a class="headerlink" href="#mocking-pinia" title="Permanent link">&para;</a></h6>
+<p><em>When to use CreatePinia()</em></p>
+<ul>
+<li>A component uses Pinia but actions/getters/state do not need to be mocked (i.e. don't rely on outside data)<ul>
+<li>Example: a component uses the ModalStore to open/close modals , in which you want to test that clicking a Modal's button will open the modal.</li>
+</ul>
+</li>
+</ul>
+<p><em>When to use CreateCustomCypressPinia()</em></p>
+<ul>
+<li>A component using pinia needs to have an initial state.<ul>
+<li>Example: TheAlertDetails pulls details from the open alert in the alertStore</li>
+</ul>
+</li>
+<li>A component using pinia needs to have pinia actions/getters stubbed out<ul>
+<li>Because of limitations between how <code>TestingPinia</code> and Cypress stubs and spies work, pinia actions/getters cannot be stubbed directly by name</li>
+<li>If <code>stubActions</code> is set to <code>true</code> (default) in <code>createCustomCypressPinia</code>, Cypress <strong>stubs</strong> will be used, which do NOT call functions being stubbed</li>
+<li>If <code>stubActions</code> is set to <code>false</code> in <code>createCustomCypressPinia</code>, Cypress <strong>spies</strong> will be used, which DO call functions being spied on</li>
+<li>
+<p>If you want to verify the callCount/arguments with which a pinia function was called, you can do so as below: </p>
+<div class="codehilite"><pre><span></span><code>mount(MyComponent, { global: {
+    plugins: [createCustomCypressPinia(), PrimeVue, router],
+  }
+});
+
+cy.get(&quot;@stub-1&quot;).should(&quot;have.been.calledWith&quot;, expectedArgs);
+</code></pre></div>
+
+<p>Stubs will be accessed like <code>stub-#</code>, the number being the order in which the method was called. <strong>Definitely not ideal</strong>, but again this is how it works based on a limitation with <code>testingPinia</code>.</p>
+</li>
+</ul>
+</li>
+</ul>
+<h6 id="mocking-api-calls">Mocking API Calls<a class="headerlink" href="#mocking-api-calls" title="Permanent link">&para;</a></h6>
+<ul>
+<li>Mock API calls by stubbing out the API service call rather than using nock or trying to respond dynamically to the request.</li>
+<li>
+<p>Example:</p>
+<div class="codehilite"><pre><span></span><code>// Example of failed API request
+cy.stub(Event, &quot;read&quot;)
+  .as(&quot;fetchEvent&quot;)  // Alias to access this request later
+  .rejects(new Error(&quot;Request failed with status code 404&quot;));
+
+// Example of successful API request
+cy.stub(Event, &quot;read&quot;)
+  .withArgs(&quot;uuid&quot;) // Specify expected arguments here
+  .as(&quot;fetchEvent&quot;)
+  .resolves(eventStub);
+</code></pre></div>
+
+</li>
+<li>
+<p>More detailed examples in following tests:</p>
+<ul>
+<li>AnalyzeAlertForm.spec.ts    </li>
+<li>EventAlertsTable.spec.ts    </li>
+</ul>
+</li>
+</ul>
+<h5 id="testing-strategies">Testing Strategies<a class="headerlink" href="#testing-strategies" title="Permanent link">&para;</a></h5>
+<p>Some things you might want to test might not be very intuitive using Cypress.</p>
+<h6 id="testing-links">Testing Links<a class="headerlink" href="#testing-links" title="Permanent link">&para;</a></h6>
+<p>If a component dynamically generates a link, you might want to test that said link was correctly generated and attached to the element.</p>
+<p>You can easily do this by doing the following, rather than clicking on the element and checking the resulting window location.</p>
+<div class="codehilite"><pre><span></span><code>    cy.contains(&quot;Click Me to Go To New Page!&quot;)
+      .invoke(&quot;attr&quot;, &quot;href&quot;)
+      .should(&quot;contain&quot;, &quot;/my/page&quot;); // check for the dynamically generated link here
+</code></pre></div>
+
+<h6 id="testing-time-dependent-data">Testing Time-Dependent Data<a class="headerlink" href="#testing-time-dependent-data" title="Permanent link">&para;</a></h6>
+<p>Component tests are set-up to automatically run in the Eastern/New_York timezone, no matter where the tests are actually being ran from. Make sure to consider that as some datetimes are reformatted to be in the browser's timezone.</p>
+<p>In some cases, the current time will be auto-filled into forms. In order to check that these values are set correctly, <code>cy.clock</code> can be used to mock the current time, so that this value will be the same whenever tests are ran.</p>
+<p>Example:</p>
+<div class="codehilite"><pre><span></span><code>// Using UTC for the test time will make it easier to convert where necessary
+const testTime = new Date(Date.UTC(2022, 2, 29, 12, 0, 0, 0)).getTime();
+
+describe(&quot;My Test Suite&quot;, () =&gt; {
+  it(&quot;My Test&quot;, () =&gt; {
+    cy.clock(testTime);
+    // Rest of test...
+  });
+});
+</code></pre></div>
+
+<h6 id="testing-for-child-components">Testing for Child Components<a class="headerlink" href="#testing-for-child-components" title="Permanent link">&para;</a></h6>
+<p>For the most part, you won't need to test for child components, however, in some cases you may want to access child components in order to verify that they were rendered. </p>
+<p>Example: <code>EmailAnalysis.vue</code>, is really just a container for its child components.</p>
+<p>Example of how to check for child components:</p>
+<div class="codehilite"><pre><span></span><code>import ChildComponent from &quot;@/components/ChildComponent.vue&quot;;
+import ParentComponent from &quot;@/components/ParentComponent.vue&quot;;
+mount(ParentComponent).then((wrapper) =&gt; {
+  expect(wrapper.getComponent(ChildComponent)).to.exist;
+});
+</code></pre></div>
+
+<h6 id="testing-for-event-reaction-and-emitted">Testing for Event (reaction and emitted)<a class="headerlink" href="#testing-for-event-reaction-and-emitted" title="Permanent link">&para;</a></h6>
+<p>TBU (once I get better examples :))</p>
+<h3 id="end-to-end-tests">End-to-End Tests<a class="headerlink" href="#end-to-end-tests" title="Permanent link">&para;</a></h3>
+<p>ToDo</p>
+
+              
+            </article>
+          </div>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    <nav class="md-footer__inner md-grid" aria-label="Footer">
+      
+        
+        <a href="../../backend/insert_alerts/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Insert Alerts" rel="prev">
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+          </div>
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              Insert Alerts
+            </div>
+          </div>
+        </a>
+      
+      
+        
+        <a href="../../../usage/api/alert_filters/" class="md-footer__link md-footer__link--next" aria-label="Next: Alert Filters" rel="next">
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              Alert Filters
+            </div>
+          </div>
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4z"/></svg>
+          </div>
+        </a>
+      
+    </nav>
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    <script id="__config" type="application/json">{"base": "../../..", "features": [], "search": "../../../assets/javascripts/workers/search.5e67fbfe.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version.title": "Select version"}}</script>
+    
+    
+      <script src="../../../assets/javascripts/bundle.c44cc438.min.js"></script>
+      
+    
+  </body>
+</html>
