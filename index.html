@@ -566,15 +566,17 @@
 <div class="codehilite"><pre><span></span><code>127.0.0.1 ace2-ams
 </code></pre></div>
 
-<p>With your host file updated, you can use the helper script to reset and build the local AMS development environment that includes hot-reloading for both the frontend and backend:</p>
+<p>With your host file updated, you can use the helper script to reset and build the local AMS development environment that includes hot-reloading for both the frontend and APIs:</p>
 <div class="codehilite"><pre><span></span><code>bin/reset-dev-container.sh
 </code></pre></div>
 
 <p>After the containers are built and running, you can access the components using the following URLs:</p>
 <ul>
 <li>Frontend: <a href="http://ace2-ams:8080">http://ace2-ams:8080</a></li>
-<li>Backend API Swagger documentation: <a href="http://localhost:7777/docs">http://localhost:7777/docs</a></li>
-<li>Backend API ReDoc documentation: <a href="http://localhost:7777/redoc">http://localhost:7777/redoc</a></li>
+<li>Database API Swagger documentation: <a href="http://localhost:8888/docs">http://localhost:8888/docs</a></li>
+<li>Database API ReDoc documentation: <a href="http://localhost:8888/redoc">http://localhost:8888/redoc</a></li>
+<li>GUI API Swagger documentation: <a href="http://localhost:7777/docs">http://localhost:7777/docs</a></li>
+<li>GUI API ReDoc documentation: <a href="http://localhost:7777/redoc">http://localhost:7777/redoc</a></li>
 </ul>
 <h2 id="philosophy">Philosophy<a class="headerlink" href="#philosophy" title="Permanent link">&para;</a></h2>
 <p>For a more in-depth understanding of the philosophy behind ACE, see the talk that John Davison gave on the development of the ACE tool set at BSides Cincinnati in 2015.</p>

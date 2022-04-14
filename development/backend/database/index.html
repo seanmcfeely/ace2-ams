@@ -602,7 +602,7 @@
 
 <h1 id="database">Database<a class="headerlink" href="#database" title="Permanent link">&para;</a></h1>
 <h2 id="schema-definitions">Schema definitions<a class="headerlink" href="#schema-definitions" title="Permanent link">&para;</a></h2>
-<p>The database tables used by the FastAPI backend are all defined using SQLAlchemy. The table models are stored in <code>backend/app/db/models.py</code>.</p>
+<p>The database tables used by the database API are all defined using SQLAlchemy. The table models are stored in <code>db_api/app/db/models.py</code>.</p>
 <h2 id="alembic">Alembic<a class="headerlink" href="#alembic" title="Permanent link">&para;</a></h2>
 <h3 id="creating-revisions">Creating revisions<a class="headerlink" href="#creating-revisions" title="Permanent link">&para;</a></h3>
 <p>The models are applied to the database using <a href="https://alembic.sqlalchemy.org/en/latest/">Alembic</a>. Whenever you make any changes to the database models, you will need to generate a new Alembic "revision". You can use the <code>bin/db-revision.sh</code> script to help create a new revision after you've made some changes to the database models:</p>
@@ -610,12 +610,12 @@
 </code></pre></div>
 
 <p>This script uses Alembic's "autogenerate" feature to create what it thinks is the correct database migration script for the changes you made.</p>
-<p>Autogenerate is <a href="https://alembic.sqlalchemy.org/en/latest/autogenerate.html#what-does-autogenerate-detect-and-what-does-it-not-detect">not always perfect</a>, so you should <strong>always</strong> verify the migration script it creates before committing it to the repo (and applying it in production) to make sure what will be applied to the database is correct. </p>
-<p>The migration scripts can be found in <code>backend/db/migrations/versions/</code>. An example migration script for creating the "tag" database table is shown below:</p>
+<p>Autogenerate is <a href="https://alembic.sqlalchemy.org/en/latest/autogenerate.html#what-does-autogenerate-detect-and-what-does-it-not-detect">not always perfect</a>, so you should <strong>always</strong> verify the migration script it creates before committing it to the repo (and applying it in production) to make sure what will be applied to the database is correct.</p>
+<p>The migration scripts can be found in <code>db_api/db/migrations/versions/</code>. An example migration script for creating the "tag" database table is shown below:</p>
 <div class="codehilite"><pre><span></span><code><span class="sd">&quot;&quot;&quot;Initial revision</span>
 
 <span class="sd">Revision ID: 03fe4895893f</span>
-<span class="sd">Revises: </span>
+<span class="sd">Revises:</span>
 <span class="sd">Create Date: 2021-04-16 21:08:29.237142</span>
 <span class="sd">&quot;&quot;&quot;</span>
 

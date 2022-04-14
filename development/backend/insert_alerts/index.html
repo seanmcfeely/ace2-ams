@@ -578,21 +578,21 @@
 <p>There is a script at <code>bin/insert-alerts.sh</code> that allows you to insert alerts into the database that you then view in the GUI.</p>
 <h2 id="basic-usage">Basic usage<a class="headerlink" href="#basic-usage" title="Permanent link">&para;</a></h2>
 <p>To insert a single alert into the database:</p>
-<div class="codehilite"><pre><span></span><code>bin/insert-alerts.sh backend/app/tests/alerts/alert.json
+<div class="codehilite"><pre><span></span><code>bin/insert-alerts.sh db_api/app/tests/alerts/alert.json
 </code></pre></div>
 
 <p>You must pass a path to a JSON file that represents the structure of an alert's analysis and observable instance objects. There are already some example JSON files available:</p>
-<div class="codehilite"><pre><span></span><code>backend/app/tests/alerts/large.json
-backend/app/tests/alerts/small.json
+<div class="codehilite"><pre><span></span><code>backdb_apiend/app/tests/alerts/large.json
+db_api/app/tests/alerts/small.json
 </code></pre></div>
 
 <h2 id="adding-multiple-alerts">Adding multiple alerts<a class="headerlink" href="#adding-multiple-alerts" title="Permanent link">&para;</a></h2>
 <p>You can use the script to add multiple alerts using the same JSON file. This will add 10 separate alerts to the database:</p>
-<div class="codehilite"><pre><span></span><code>bin/insert-alerts.sh backend/app/tests/alerts/small.json 10
+<div class="codehilite"><pre><span></span><code>bin/insert-alerts.sh db_api/app/tests/alerts/small.json 10
 </code></pre></div>
 
 <h2 id="using-a-dynamic-alert-template">Using a dynamic alert template<a class="headerlink" href="#using-a-dynamic-alert-template" title="Permanent link">&para;</a></h2>
-<p>You can also use an alert template where certain tokens inside of the JSON file get replaced with dynamic/random data. An example alert template is available at <code>backend/app/tests/alerts/small_template.json</code>.</p>
+<p>You can also use an alert template where certain tokens inside of the JSON file get replaced with dynamic/random data. An example alert template is available at <code>db_api/app/tests/alerts/small_template.json</code>.</p>
 <p>This template uses the following tokens that get replaced with random data using Faker:</p>
 <ul>
 <li><code>&lt;ALERT_NAME&gt;</code> - A random name for the alert</li>
@@ -602,7 +602,7 @@ backend/app/tests/alerts/small.json
 <li><code>&lt;TAG&gt;</code> - A random word used for a tag</li>
 </ul>
 <p>Using the dynamic template is the same command. To add 10 dynamic alerts to the database:</p>
-<div class="codehilite"><pre><span></span><code>bin/insert-alerts.sh backend/app/tests/alerts/small_template.json 10
+<div class="codehilite"><pre><span></span><code>bin/insert-alerts.sh db_api/app/tests/alerts/small_template.json 10
 </code></pre></div>
 
               
