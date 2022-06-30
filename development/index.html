@@ -307,6 +307,13 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#vscode-extensions" class="md-nav__link">
+    VSCode extensions
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#managing-npm-packages" class="md-nav__link">
     Managing NPM packages
   </a>
@@ -720,6 +727,13 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#vscode-extensions" class="md-nav__link">
+    VSCode extensions
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#managing-npm-packages" class="md-nav__link">
     Managing NPM packages
   </a>
@@ -879,6 +893,20 @@
 <li>GUI API Swagger documentation: <a href="http://ace2-ams:7777/docs">http://ace2-ams:7777/docs</a></li>
 <li>GUI API ReDoc documentation: <a href="http://ace2-ams:7777/redoc">http://ace2-ams:7777/redoc</a></li>
 </ul>
+<h2 id="vscode-extensions">VSCode extensions<a class="headerlink" href="#vscode-extensions" title="Permanent link">&para;</a></h2>
+<p>If you use VSCode, the following extensions are useful for working with the project:</p>
+<ul>
+<li>ESLint</li>
+<li>Prettier - Code formatter</li>
+<li>Pylance</li>
+<li>Python</li>
+<li>Vue Language Features (Volar)</li>
+</ul>
+<p>Once you install Volar, you will want to enable its "takeover" mode. To do that, you need to disable VSCode's built-in TypeScript extension:</p>
+<ol>
+<li>In the extensions panel, search for <code>@builtin typescript</code>.</li>
+<li>Right-click on the <code>TypeScript and JavaScript Language Features</code> extension and select <code>Disable (Workspace)</code>. This will allow Volar to provide TypeScript support as well as proper support for working with Vue's single file components.</li>
+</ol>
 <h2 id="managing-npm-packages">Managing NPM packages<a class="headerlink" href="#managing-npm-packages" title="Permanent link">&para;</a></h2>
 <p>You should not directly edit the dependencies or devDependencies inside of <code>package.json</code> or anything in <code>package-lock.json</code>. <strong>Any changes to packages should be performed via the <code>npm</code> command</strong>:</p>
 <h3 id="install-new-dependency-package">Install new dependency package<a class="headerlink" href="#install-new-dependency-package" title="Permanent link">&para;</a></h3>
