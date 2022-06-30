@@ -268,9 +268,22 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#using-wsl2" class="md-nav__link">
-    Using WSL2
+  <a href="#windows" class="md-nav__link">
+    Windows
   </a>
+  
+    <nav class="md-nav" aria-label="Windows">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#using-wsl2-optional" class="md-nav__link">
+    Using WSL2 (Optional)
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
         
@@ -668,9 +681,22 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#using-wsl2" class="md-nav__link">
-    Using WSL2
+  <a href="#windows" class="md-nav__link">
+    Windows
   </a>
+  
+    <nav class="md-nav" aria-label="Windows">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#using-wsl2-optional" class="md-nav__link">
+    Using WSL2 (Optional)
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
         
@@ -817,11 +843,22 @@
 
 <h1 id="setup">Setup<a class="headerlink" href="#setup" title="Permanent link">&para;</a></h1>
 <h2 id="initial-setup">Initial setup<a class="headerlink" href="#initial-setup" title="Permanent link">&para;</a></h2>
-<p>This project has VSCode devcontainer support to ensure that anyone working on the project does so in a consistent environment as well as follows the same formatting/styling guidelines.</p>
-<h3 id="using-wsl2">Using WSL2<a class="headerlink" href="#using-wsl2" title="Permanent link">&para;</a></h3>
-<p>TODO (instructions on how we set up our WSL2 environments for local development)</p>
+<p>This project requires the use of Docker, Python (3.9.x), and Node.js (16.x). Install those as normal for your operating system. However, if you are on Windows, see the Windows section below.</p>
+<h3 id="windows">Windows<a class="headerlink" href="#windows" title="Permanent link">&para;</a></h3>
+<p>If you want to run the Cypress component or end-to-end tests using the graphical test runner (instead of just from the command line), you will need to either:</p>
+<ul>
+<li>Ensure you have Node.js 16.x installed within Windows.</li>
+</ul>
+<p>OR</p>
+<ul>
+<li>If you are using WSL2 (see below), install an X-server in Windows so that when you run <code>npx cypress open</code> within WSL2 it is able to connect to the X-server to display the Cypress GUI. To do this, you can follow the instructions as described in <a href="https://stackoverflow.com/a/61110604">this Stack Overflow answer</a>.</li>
+</ul>
+<h4 id="using-wsl2-optional">Using WSL2 (Optional)<a class="headerlink" href="#using-wsl2-optional" title="Permanent link">&para;</a></h4>
+<p>If you have access to WSL2, a better development experience (to not have to deal with Docker Desktop's performance issues) in Windows is to set up WSL2 with Ubuntu.</p>
+<p>Then within Ubuntu, you would install Docker, Python, and Node.js and do all of your work from there.</p>
+<p>VSCode can also be configured using the <code>Remote - WSL</code> extension to connect to a folder within your WSL2 instance.</p>
 <h2 id="updating-your-hosts-file">Updating your hosts file<a class="headerlink" href="#updating-your-hosts-file" title="Permanent link">&para;</a></h2>
-<p>Your local system will need an entry in the hosts file to properly work with the AMS development environment.</p>
+<p>Until we figure out a better way to deal with this, your local system will need an entry in the hosts file to properly work with the AMS development environment. This is because of the combination of how the Docker containers interact with one another, CORS, and the fact that the dev environment does not use HTTPS, which carries implications for the HttpOnly cookies that are used with the frontend's authentication.</p>
 <p>For Mac/Linux, this file is located at <code>/etc/hosts</code>.</p>
 <p>In Windows, this file is located at <code>C:\Windows\System32\drivers\etc\hosts</code>. You will need to open Notepad or another text editor as an Administrator in order to edit the hosts file.</p>
 <p>Add the following entry to the file:</p>
@@ -837,10 +874,10 @@
 <p>Once the both the frontend and API development environments are built and started, you can access the components:</p>
 <ul>
 <li>Frontend: <a href="http://ace2-ams:8080">http://ace2-ams:8080</a></li>
-<li>Database API Swagger documentation: <a href="http://localhost:8888/docs">http://localhost:8888/docs</a></li>
-<li>Database API ReDoc documentation: <a href="http://localhost:8888/redoc">http://localhost:8888/redoc</a></li>
-<li>GUI API Swagger documentation: <a href="http://localhost:7777/docs">http://localhost:7777/docs</a></li>
-<li>GUI API ReDoc documentation: <a href="http://localhost:7777/redoc">http://localhost:7777/redoc</a></li>
+<li>Database API Swagger documentation: <a href="http://ace2-ams:8888/docs">http://ace2-ams:8888/docs</a></li>
+<li>Database API ReDoc documentation: <a href="http://ace2-ams:8888/redoc">http://ace2-ams:8888/redoc</a></li>
+<li>GUI API Swagger documentation: <a href="http://ace2-ams:7777/docs">http://ace2-ams:7777/docs</a></li>
+<li>GUI API ReDoc documentation: <a href="http://ace2-ams:7777/redoc">http://ace2-ams:7777/redoc</a></li>
 </ul>
 <h2 id="managing-npm-packages">Managing NPM packages<a class="headerlink" href="#managing-npm-packages" title="Permanent link">&para;</a></h2>
 <p>You should not directly edit the dependencies or devDependencies inside of <code>package.json</code> or anything in <code>package-lock.json</code>. <strong>Any changes to packages should be performed via the <code>npm</code> command</strong>:</p>
@@ -897,19 +934,19 @@
 
 <h5 id="test-runner">Test Runner<a class="headerlink" href="#test-runner" title="Permanent link">&para;</a></h5>
 <p>Cypress also comes with an amazing <a href="https://docs.cypress.io/guides/core-concepts/test-runner">Test Runner</a> that lets you see and interact with the tests in your local web browser. This can be helpful when writing component and end-to-end tests to ensure they are working properly as well as any debugging you might need to do.</p>
-<p>However, this will need to be performed on your local system ouside of the containers. To do this, you will need to have <a href="https://nodejs.org/en/download/current/">Node.js 16</a> installed.</p>
-<p><strong>Step 1:</strong> Install Cypress on your host system (this only needs to be done one time):</p>
-<div class="codehilite"><pre><span></span><code>npm install -g cypress@10.0.2
-</code></pre></div>
-
-<p><strong>Step 2:</strong> Prep the application to run the tests in interactive mode:</p>
+<p>However, this will need to be performed on your local system ouside of the containers (see the <a href="./#windows">Windows</a> setup section in case you are using WSL2). To do this, you will need to have <a href="https://nodejs.org/en/download/current/">Node.js 16</a> installed.</p>
+<p><strong>Step 1:</strong> Prep the application to run the tests in interactive mode (this tells the containers to use the test database):</p>
 <div class="codehilite"><pre><span></span><code>bin/test-interactive-e2e.sh
 </code></pre></div>
 
+<p><strong>Step 2:</strong> Install the Node.js packages on your host system (this only needs to be done one time or when <code>package.json</code> is updated):</p>
+<div class="codehilite"><pre><span></span><code>cd frontend/
+npm install
+</code></pre></div>
+
 <p><strong>Step 3:</strong> Open the Test Runner on your host system:</p>
-<div class="codehilite"><pre><span></span><code>cd cypress/
-cypress open // End-to-End tests
-cypress open-ct // Component tests
+<div class="codehilite"><pre><span></span><code>cd frontend/
+npx cypress open
 </code></pre></div>
 
 <p><img alt="Test Runner" src="gui/test-runner.png" /></p>
