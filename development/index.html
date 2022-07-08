@@ -300,6 +300,13 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#building-behind-a-proxy" class="md-nav__link">
+    Building behind a proxy
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#starting-the-application" class="md-nav__link">
     Starting the application
   </a>
@@ -720,6 +727,13 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#building-behind-a-proxy" class="md-nav__link">
+    Building behind a proxy
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#starting-the-application" class="md-nav__link">
     Starting the application
   </a>
@@ -877,6 +891,19 @@
 <p>In Windows, this file is located at <code>C:\Windows\System32\drivers\etc\hosts</code>. You will need to open Notepad or another text editor as an Administrator in order to edit the hosts file.</p>
 <p>Add the following entry to the file:</p>
 <div class="codehilite"><pre><span></span><code>127.0.0.1 ace2-ams
+</code></pre></div>
+
+<h2 id="building-behind-a-proxy">Building behind a proxy<a class="headerlink" href="#building-behind-a-proxy" title="Permanent link">&para;</a></h2>
+<p>If you are in an environment where a proxy is enforced then you will need to create a file in the root project directory called <code>.env</code> with the following contents.</p>
+<div class="codehilite"><pre><span></span><code>http_proxy=http://your.proxy:port
+https_proxy=http://your.proxy:port
+</code></pre></div>
+
+<p>If your proxy breaks SSL (if you are getting some kind of an SSL error) then you will also need to ignore SSL warnings.</p>
+<div class="codehilite"><pre><span></span><code>http_proxy=http://your.proxy:port
+https_proxy=http://your.proxy:port
+pip_install_options=--trusted-host pypi.org --trusted-host files.pythonhosted.org
+npm_strict_ssl=false
 </code></pre></div>
 
 <h2 id="starting-the-application">Starting the application<a class="headerlink" href="#starting-the-application" title="Permanent link">&para;</a></h2>
