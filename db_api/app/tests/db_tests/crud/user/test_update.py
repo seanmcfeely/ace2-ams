@@ -1,7 +1,7 @@
 import pytest
 
 from api_models.user import UserUpdate
-from core.auth import verify_password
+from common.auth import verify_password
 from db import crud
 from tests import factory
 

@@ -223,6 +223,11 @@ UPDATED_TIME = NOW + timedelta(days=1)
 @pytest.mark.parametrize(
     "key,initial_value,updated_value",
     [
+        ("analysis_mode_alert", "initial_mode", "updated_mode"),
+        ("analysis_mode_current", "initial_mode", "updated_mode"),
+        ("analysis_mode_detect", "initial_mode", "updated_mode"),
+        ("analysis_mode_event", "initial_mode", "updated_mode"),
+        ("analysis_mode_response", "initial_mode", "updated_mode"),
         ("description", None, "test"),
         ("description", "test", None),
         ("event_time", NOW, UPDATED_TIME),
@@ -230,11 +235,15 @@ UPDATED_TIME = NOW + timedelta(days=1)
         ("instructions", "test", None),
     ],
 )
-def test_update(db, key, initial_value, updated_value):
+def test_update(db, key: str, initial_value, updated_value):
     submission = factory.submission.create(db=db, history_username="analyst")
     initial_submission_version = submission.version
 
     # Set the initial value on the submission
+    if key.startswith("analysis_mode"):
+        initial_value = factory.analysis_mode.create_or_read(value=initial_value, db=db)
+        factory.analysis_mode.create_or_read(value=updated_value, db=db)
+
     setattr(submission, key, initial_value)
     assert getattr(submission, key) == initial_value
 
@@ -252,7 +261,9 @@ def test_update(db, key, initial_value, updated_value):
     assert submission.history[1].snapshot["name"] == "Test Alert"
 
     old_value = initial_value
-    if key.endswith("_time"):
+    if key.startswith("analysis_mode"):
+        old_value = initial_value.value
+    elif key.endswith("_time"):
         old_value = initial_value.isoformat()
 
     new_value = updated_value

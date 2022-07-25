@@ -3,7 +3,7 @@ import uuid
 
 from fastapi import status
 
-from core.auth import verify_password
+from common.auth import verify_password
 from tests import factory
 
 

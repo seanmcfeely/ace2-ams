@@ -13,6 +13,10 @@ from tests import factory
 def test_create(db):
     # Create the various objects to link to the submission
     analysis_module_type = factory.analysis_module_type.create_or_read(value="module", db=db)
+    factory.analysis_mode.create_or_read(value="default_alert", db=db)
+    factory.analysis_mode.create_or_read(value="default_detect", db=db)
+    factory.analysis_mode.create_or_read(value="default_event", db=db)
+    factory.analysis_mode.create_or_read(value="default_response", db=db)
     factory.metadata_tag.create_or_read(value="tag", db=db)
     factory.metadata_tag.create_or_read(value="o_analysis_tag", db=db)
     factory.metadata_tag.create_or_read(value="o_tag", db=db)
@@ -28,6 +32,10 @@ def test_create(db):
     submission = crud.submission.create_or_read(
         model=SubmissionCreate(
             alert=True,
+            analysis_mode_alert="default_alert",
+            analysis_mode_detect="default_detect",
+            analysis_mode_event="default_event",
+            analysis_mode_response="default_response",
             description="description",
             details=json.dumps({"foo": "bar"}),
             event_time=now,
@@ -67,6 +75,11 @@ def test_create(db):
 
     assert submission.alert is True
     assert len(submission.analyses) == 2
+    assert submission.analysis_mode_alert.value == "default_alert"
+    assert submission.analysis_mode_current.value == "default_alert"
+    assert submission.analysis_mode_detect.value == "default_detect"
+    assert submission.analysis_mode_event.value == "default_event"
+    assert submission.analysis_mode_response.value == "default_response"
     assert any(a.analysis_module_type_uuid is None for a in submission.analyses)
     assert any(a.analysis_module_type_uuid == analysis_module_type.uuid for a in submission.analyses)
     assert len(submission.child_detection_points) == 1
@@ -94,6 +107,10 @@ def test_create(db):
 
 
 def test_create_duplicate_uuid(db):
+    factory.analysis_mode.create_or_read(value="default_alert", db=db)
+    factory.analysis_mode.create_or_read(value="default_detect", db=db)
+    factory.analysis_mode.create_or_read(value="default_event", db=db)
+    factory.analysis_mode.create_or_read(value="default_response", db=db)
     factory.queue.create_or_read(value="queue", db=db)
     factory.submission_type.create_or_read(value="type", db=db)
 

@@ -19,6 +19,10 @@ def create(
     db: Session,
     alert: bool = False,
     alert_queue: str = "external",
+    analysis_mode_alert: str = "default_alert",
+    analysis_mode_detect: str = "default_detect",
+    analysis_mode_event: str = "default_event",
+    analysis_mode_response: str = "default_response",
     submission_type: str = "test_type",
     submission_uuid: Optional[Union[str, UUID]] = None,
     disposition: Optional[str] = None,
@@ -53,6 +57,12 @@ def create(
     # Create the alert queue
     factory.queue.create_or_read(value=alert_queue, db=db)
 
+    # Create the analysis modes
+    factory.analysis_mode.create_or_read(value=analysis_mode_alert, db=db)
+    factory.analysis_mode.create_or_read(value=analysis_mode_detect, db=db)
+    factory.analysis_mode.create_or_read(value=analysis_mode_event, db=db)
+    factory.analysis_mode.create_or_read(value=analysis_mode_response, db=db)
+
     # Create the submission type
     factory.submission_type.create_or_read(value=submission_type, db=db)
 
@@ -75,6 +85,10 @@ def create(
     submission = crud.submission.create_or_read(
         model=SubmissionCreate(
             alert=alert,
+            analysis_mode_alert=analysis_mode_alert,
+            analysis_mode_detect=analysis_mode_detect,
+            analysis_mode_event=analysis_mode_event,
+            analysis_mode_response=analysis_mode_response,
             event_time=event_time,
             insert_time=insert_time,
             history_username=history_username,

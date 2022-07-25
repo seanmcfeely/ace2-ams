@@ -24,6 +24,12 @@ def apply_migrations():
 
     session_db = next(get_db())
 
+    # Add the default analysis modes since they are required to create a submission.
+    factory.analysis_mode.create_or_read(value="default_alert", db=session_db)
+    factory.analysis_mode.create_or_read(value="default_detect", db=session_db)
+    factory.analysis_mode.create_or_read(value="default_event", db=session_db)
+    factory.analysis_mode.create_or_read(value="default_response", db=session_db)
+
     # Add the default analysis statuses since they are required to create an analysis.
     factory.analysis_status.create_or_read(value="complete", db=session_db)
     factory.analysis_status.create_or_read(value="running", db=session_db)
