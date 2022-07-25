@@ -4,7 +4,7 @@ import logging
 from logging.config import fileConfig
 from sqlalchemy import engine_from_config, pool
 
-from core.config import get_settings, is_in_testing_mode
+from common.config import get_settings, is_in_testing_mode
 
 # Load the database schemas so that Alembic knows what it needs to create/update
 from db import schemas

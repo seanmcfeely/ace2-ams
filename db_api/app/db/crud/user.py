@@ -7,7 +7,7 @@ from uuid import UUID
 from api_models.auth import Auth, ValidateRefreshToken
 
 from api_models.user import UserCreate, UserUpdate
-from core.auth import hash_password, verify_password
+from common.auth import hash_password, verify_password
 from db import crud
 from db.schemas.user import User, UserHistory
 from exceptions.db import ReusedToken, UserIsDisabled, ValueNotFoundInDatabase
