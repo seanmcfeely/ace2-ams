@@ -4,7 +4,7 @@ from api_models.summaries import URLDomainSummary
 from sqlalchemy import and_, func, not_, or_, select
 from sqlalchemy.orm import Session
 from sqlalchemy.sql.selectable import Select
-from typing import Optional, Union
+from typing import Optional, Tuple, Union
 from uuid import UUID, uuid4
 
 from api_models.analysis import AnalysisSubmissionTreeRead
@@ -20,6 +20,7 @@ from api_models.submission import (
     SubmissionTreeRead,
     SubmissionUpdate,
 )
+from common.config import get_settings
 from db import crud
 from db.schemas.alert_disposition import AlertDisposition
 from db.schemas.analysis import Analysis
@@ -776,6 +777,21 @@ def create_or_read(model: SubmissionCreate, db: Session) -> Submission:
 
     # Set the various submission properties
     obj.alert = model.alert
+
+    analysis_mode_alert = model.analysis_mode_alert or get_settings().default_analysis_mode_alert
+    obj.analysis_mode_alert = crud.analysis_mode.read_by_value(value=analysis_mode_alert, db=db)
+
+    analysis_mode_detect = model.analysis_mode_detect or get_settings().default_analysis_mode_detect
+    obj.analysis_mode_detect = crud.analysis_mode.read_by_value(value=analysis_mode_detect, db=db)
+
+    analysis_mode_event = model.analysis_mode_event or get_settings().default_analysis_mode_event
+    obj.analysis_mode_event = crud.analysis_mode.read_by_value(value=analysis_mode_event, db=db)
+
+    analysis_mode_response = model.analysis_mode_response or get_settings().default_analysis_mode_response
+    obj.analysis_mode_response = crud.analysis_mode.read_by_value(value=analysis_mode_response, db=db)
+
+    obj.analysis_mode_current = obj.analysis_mode_alert if model.alert else obj.analysis_mode_detect
+
     obj.description = model.description
     obj.event_time = model.event_time
     obj.insert_time = model.insert_time
@@ -1085,24 +1101,25 @@ def read_tree(uuid: UUID, db: Session) -> SubmissionTreeRead:
     # or one of its children is part of a critical path.
     #
     # Adapted from: https://www.geeksforgeeks.org/iterative-postorder-traversal-of-n-ary-tree/
-    def _is_critical_path(o):
+    def _is_critical_path(o: Union[AnalysisSubmissionTreeRead, ObservableSubmissionTreeRead]):
         contains_critical_points = bool(
-            current[0].object_type == "observable" and o[0].analysis_metadata.critical_points
+            isinstance(o, ObservableSubmissionTreeRead) and o.analysis_metadata.critical_points
         )
         if contains_critical_points:
             return True
 
-        child_uuids = [child.uuid for child in o[0].children]
-        children_on_critical_path = any(uuid in critical_point_path_uuids for uuid in child_uuids)
-        return children_on_critical_path
+        child_uuids = [child.uuid for child in o.children]
+        return any(uuid in critical_point_path_uuids for uuid in child_uuids)
 
     critical_point_path_uuids: set[UUID] = set()
     current_root_index = 0
-    stack = []
-    root = analysis_instances[db_submission.root_analysis_uuid]
+    stack: list[Tuple[Union[AnalysisSubmissionTreeRead, ObservableSubmissionTreeRead], int]] = []
+    root: Optional[Union[AnalysisSubmissionTreeRead, ObservableSubmissionTreeRead]] = analysis_instances[
+        db_submission.root_analysis_uuid
+    ]
 
-    while root != None or len(stack) > 0:
-        if root != None:
+    while root or len(stack) > 0:
+        if root:
             stack.append((root, current_root_index))
             current_root_index = 0
 
@@ -1113,7 +1130,7 @@ def read_tree(uuid: UUID, db: Session) -> SubmissionTreeRead:
             continue
 
         current = stack.pop()
-        if _is_critical_path(current):
+        if _is_critical_path(current[0]):
             critical_point_path_uuids.add(current[0].uuid)
             current[0].critical_path = True
         else:
@@ -1123,7 +1140,7 @@ def read_tree(uuid: UUID, db: Session) -> SubmissionTreeRead:
             current = stack[-1]
             stack.pop()
 
-            if _is_critical_path(current):
+            if _is_critical_path(current[0]):
                 critical_point_path_uuids.add(current[0].uuid)
                 current[0].critical_path = True
             else:
@@ -1165,6 +1182,66 @@ def update(model: SubmissionUpdate, db: Session):
 
     # Update the current version
     submission.version = uuid4()
+
+    if "analysis_mode_alert" in update_data:
+        diffs.append(
+            crud.history.create_diff(
+                field="analysis_mode_alert",
+                old=submission.analysis_mode_alert.value,
+                new=update_data["analysis_mode_alert"],
+            )
+        )
+        submission.analysis_mode_alert = crud.analysis_mode.read_by_value(
+            value=update_data["analysis_mode_alert"], db=db
+        )
+
+    if "analysis_mode_current" in update_data:
+        diffs.append(
+            crud.history.create_diff(
+                field="analysis_mode_current",
+                old=submission.analysis_mode_current.value,
+                new=update_data["analysis_mode_current"],
+            )
+        )
+        submission.analysis_mode_current = crud.analysis_mode.read_by_value(
+            value=update_data["analysis_mode_current"], db=db
+        )
+
+    if "analysis_mode_detect" in update_data:
+        diffs.append(
+            crud.history.create_diff(
+                field="analysis_mode_detect",
+                old=submission.analysis_mode_detect.value,
+                new=update_data["analysis_mode_detect"],
+            )
+        )
+        submission.analysis_mode_detect = crud.analysis_mode.read_by_value(
+            value=update_data["analysis_mode_detect"], db=db
+        )
+
+    if "analysis_mode_event" in update_data:
+        diffs.append(
+            crud.history.create_diff(
+                field="analysis_mode_event",
+                old=submission.analysis_mode_event.value,
+                new=update_data["analysis_mode_event"],
+            )
+        )
+        submission.analysis_mode_event = crud.analysis_mode.read_by_value(
+            value=update_data["analysis_mode_event"], db=db
+        )
+
+    if "analysis_mode_response" in update_data:
+        diffs.append(
+            crud.history.create_diff(
+                field="analysis_mode_response",
+                old=submission.analysis_mode_response.value,
+                new=update_data["analysis_mode_response"],
+            )
+        )
+        submission.analysis_mode_response = crud.analysis_mode.read_by_value(
+            value=update_data["analysis_mode_response"], db=db
+        )
 
     if "description" in update_data:
         diffs.append(
