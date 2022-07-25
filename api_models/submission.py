@@ -6,6 +6,7 @@ from uuid import uuid4
 from api_models import type_str, validators
 from api_models.alert_disposition import AlertDispositionRead
 from api_models.analysis import RootAnalysisSubmissionTreeRead
+from api_models.analysis_mode import AnalysisModeRead
 from api_models.analysis_status import AnalysisStatusRead
 from api_models.event import EventRead
 from api_models.metadata_detection_point import MetadataDetectionPointRead
@@ -68,6 +69,22 @@ class SubmissionBase(BaseModel):
 
 
 class SubmissionCreate(SubmissionBase):
+    analysis_mode_alert: Optional[type_str] = Field(
+        description="The analysis mode to use if the submission turns into an alert"
+    )
+
+    analysis_mode_detect: Optional[type_str] = Field(
+        description="The analysis mode to initially use to determine if the submission should be an alert"
+    )
+
+    analysis_mode_event: Optional[type_str] = Field(
+        description="The analysis mode to use if the submission is added to an event"
+    )
+
+    analysis_mode_response: Optional[type_str] = Field(
+        description="The analysis mode to use if response tasks are needed for the submission"
+    )
+
     details: Optional[Json] = Field(description="A JSON representation of the root analysis details")
 
     history_username: Optional[type_str] = Field(
@@ -92,6 +109,24 @@ class SubmissionCreate(SubmissionBase):
 
 
 class SubmissionRead(SubmissionBase):
+    analysis_mode_alert: AnalysisModeRead = Field(
+        description="The analysis mode to use if the submission turns into an alert"
+    )
+
+    analysis_mode_current: AnalysisModeRead = Field(description="The current analysis mode used by the submission")
+
+    analysis_mode_detect: AnalysisModeRead = Field(
+        description="The analysis mode to initially use to determine if the submission should be an alert"
+    )
+
+    analysis_mode_event: AnalysisModeRead = Field(
+        description="The analysis mode to use if the submission is added to an event"
+    )
+
+    analysis_mode_response: AnalysisModeRead = Field(
+        description="The analysis mode to use if response tasks are needed for the submission"
+    )
+
     child_analysis_tags: list[MetadataTagRead] = Field(
         description="A list of tags added to observables by analysis modules", default_factory=list
     )
@@ -146,7 +181,71 @@ class SubmissionRead(SubmissionBase):
         orm_mode = True
 
 
+class SubmissionHistorySnapshot(SubmissionBase):
+    analysis_mode_current: AnalysisModeRead = Field(description="The current analysis mode used by the submission")
+
+    comments: list[SubmissionCommentRead] = Field(
+        description="A list of comments added to the submission", default_factory=list
+    )
+
+    disposition: Optional[AlertDispositionRead] = Field(description="The disposition assigned to this submission")
+
+    disposition_time: Optional[datetime] = Field(description="The time this submission was most recently dispositioned")
+
+    disposition_user: Optional[UserRead] = Field(description="The user who most recently dispositioned this submission")
+
+    event_uuid: Optional[UUID4] = Field(description="The UUID of the event containing this submission")
+
+    name: type_str = Field(description="""The name of the submission""")
+
+    # Set a static string value so code displaying the tree structure knows which type of object this is.
+    object_type: str = "submission"
+
+    owner: Optional[UserRead] = Field(description="The user who has taken ownership of this submission")
+
+    ownership_time: Optional[datetime] = Field(
+        description="The time an analyst most recently took ownership of this submission"
+    )
+
+    queue: QueueRead = Field(description="The queue containing this submission")
+
+    status: AnalysisStatusRead = Field(description="The overall status of the submission based on its analyses")
+
+    tags: list[MetadataTagRead] = Field(description="A list of tags added to the submission", default_factory=list)
+
+    tool: Optional[SubmissionToolRead] = Field(description="The tool that created this submission")
+
+    tool_instance: Optional[SubmissionToolInstanceRead] = Field(
+        description="The instance of the tool that created this submission"
+    )
+
+    type: SubmissionTypeRead = Field(description="The type of this submission")
+
+    uuid: UUID4 = Field(description="The UUID of the submission")
+
+    class Config:
+        orm_mode = True
+
+
 class SubmissionUpdate(SubmissionBase):
+    analysis_mode_alert: Optional[type_str] = Field(
+        description="The analysis mode to use if the submission turns into an alert"
+    )
+
+    analysis_mode_current: Optional[type_str] = Field(description="The current analysis mode used by the submission")
+
+    analysis_mode_detect: Optional[type_str] = Field(
+        description="The analysis mode to initially use to determine if the submission should be an alert"
+    )
+
+    analysis_mode_event: Optional[type_str] = Field(
+        description="The analysis mode to use if the submission is added to an event"
+    )
+
+    analysis_mode_response: Optional[type_str] = Field(
+        description="The analysis mode to use if response tasks are needed for the submission"
+    )
+
     disposition: Optional[type_str] = Field(description="The disposition assigned to this submission")
 
     event_uuid: Optional[UUID4] = Field(description="The UUID of the event containing this submission")
@@ -168,7 +267,15 @@ class SubmissionUpdate(SubmissionBase):
         the version must match when updating.""",
     )
 
-    _prevent_none: classmethod = validators.prevent_none("queue", "tags")
+    _prevent_none: classmethod = validators.prevent_none(
+        "analysis_mode_alert",
+        "analysis_mode_current",
+        "analysis_mode_detect",
+        "analysis_mode_event",
+        "analysis_mode_response",
+        "queue",
+        "tags",
+    )
 
 
 class SubmissionTreeRead(SubmissionRead):
