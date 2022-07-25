@@ -7,9 +7,10 @@ from sqlalchemy.ext.associationproxy import association_proxy
 from sqlalchemy.orm import relationship
 from typing import Optional
 
-from api_models.submission import SubmissionRead, SubmissionTreeRead
+from api_models.submission import SubmissionHistorySnapshot, SubmissionRead, SubmissionTreeRead
 from db.database import Base
 from db.schemas.analysis import Analysis
+from db.schemas.analysis_mode import AnalysisMode
 from db.schemas.analysis_status import AnalysisStatus
 from db.schemas.helpers import utcnow
 from db.schemas.history import HasHistory, HistoryMixin
@@ -119,6 +120,35 @@ class Submission(Base, HasHistory):
 
     comments = relationship("SubmissionComment", lazy="selectin", viewonly=True)
 
+    # The analysis mode to use if the submission turns into an alert
+    analysis_mode_alert_uuid = Column(UUID(as_uuid=True), ForeignKey("analysis_mode.uuid"), nullable=False, index=True)
+
+    analysis_mode_alert: AnalysisMode = relationship("AnalysisMode", foreign_keys=[analysis_mode_alert_uuid])
+
+    # The submission's current analysis mode
+    analysis_mode_current_uuid = Column(
+        UUID(as_uuid=True), ForeignKey("analysis_mode.uuid"), nullable=False, index=True
+    )
+
+    analysis_mode_current: AnalysisMode = relationship("AnalysisMode", foreign_keys=[analysis_mode_current_uuid])
+
+    # The analysis mode to initially use when determining if the submission should be an alert
+    analysis_mode_detect_uuid = Column(UUID(as_uuid=True), ForeignKey("analysis_mode.uuid"), nullable=False, index=True)
+
+    analysis_mode_detect: AnalysisMode = relationship("AnalysisMode", foreign_keys=[analysis_mode_detect_uuid])
+
+    # The analysis mode to use if the submission is added to an event
+    analysis_mode_event_uuid = Column(UUID(as_uuid=True), ForeignKey("analysis_mode.uuid"), nullable=False, index=True)
+
+    analysis_mode_event: AnalysisMode = relationship("AnalysisMode", foreign_keys=[analysis_mode_event_uuid])
+
+    # The submission mode to use if response tasks are needed for the submission
+    analysis_mode_response_uuid = Column(
+        UUID(as_uuid=True), ForeignKey("analysis_mode.uuid"), nullable=False, index=True
+    )
+
+    analysis_mode_response: AnalysisMode = relationship("AnalysisMode", foreign_keys=[analysis_mode_response_uuid])
+
     description = Column(String)
 
     disposition = relationship("AlertDisposition", lazy="selectin")
@@ -223,17 +253,7 @@ class Submission(Base, HasHistory):
 
     @property
     def history_snapshot(self):
-        return json.loads(
-            SubmissionRead(
-                **self.to_dict(
-                    extra_ignore_keys=[
-                        "child_analysis_tags",
-                        "child_detection_points",
-                        "child_tags",
-                    ]
-                )
-            ).json()
-        )
+        return json.loads(SubmissionHistorySnapshot(**self.to_dict()).json())
 
     @property
     def disposition_time_earliest(self) -> Optional[datetime]:

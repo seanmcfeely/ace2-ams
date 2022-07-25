@@ -2,6 +2,8 @@ from db.schemas.alert_disposition import AlertDisposition
 from db.schemas.analysis import Analysis
 from db.schemas.analysis_child_observable_mapping import analysis_child_observable_mapping
 from db.schemas.analysis_metadata import AnalysisMetadata
+from db.schemas.analysis_mode import AnalysisMode
+from db.schemas.analysis_mode_analysis_module_type_mapping import analysis_mode_analysis_module_type_mapping
 from db.schemas.analysis_module_type import AnalysisModuleType
 from db.schemas.analysis_module_type_directive_mapping import analysis_module_type_directive_mapping
 from db.schemas.analysis_module_type_observable_type_mapping import analysis_module_type_observable_type_mapping
