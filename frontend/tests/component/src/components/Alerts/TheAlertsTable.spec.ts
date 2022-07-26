@@ -66,6 +66,7 @@ describe("TheAlertsTable", () => {
       "Name",
       "Owner",
       "Disposition",
+      "Status",
     ];
     const defaultColumnValues = [
       "",
@@ -74,6 +75,7 @@ describe("TheAlertsTable", () => {
       "Test Alert",
       "None",
       "OPEN",
+      "complete",
     ];
 
     factory({

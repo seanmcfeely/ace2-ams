@@ -88,6 +88,7 @@
   const alertDetailKeys: { value: keyof alertSummary; label: string }[] = [
     { value: "insertTime", label: "Insert Time (UTC)" },
     { value: "eventTime", label: "Event Time (UTC)" },
+    { value: "status", label: "Status" },
     { value: "tool", label: "Tool" },
     { value: "toolInstance", label: "Tool Instance" },
     { value: "type", label: "Type" },

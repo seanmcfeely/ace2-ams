@@ -49,13 +49,14 @@ describe("TheAlertSummary", () => {
 
     cy.contains("Test Alert").should("be.visible");
     cy.get("button .pi-link").should("be.visible");
-    cy.get("tr").should("have.length", 11);
+    cy.get("tr").should("have.length", 12);
     cy.contains("Insert Time")
       .siblings()
       .should("have.text", "2/24/2022, 12:00:00 AM UTC");
     cy.contains("Event Time")
       .siblings()
       .should("have.text", "2/24/2022, 12:00:00 AM UTC");
+    cy.contains("Status").siblings().should("have.text", "complete");
     cy.contains("Tool").siblings().should("have.text", "testAlertTool");
     cy.contains("Tool Instance")
       .siblings()
@@ -86,7 +87,7 @@ describe("TheAlertSummary", () => {
     });
 
     // Should still have all the same rows
-    cy.get("tr").should("have.length", 11);
+    cy.get("tr").should("have.length", 12);
     // Check these specific fields
     cy.contains("Disposition")
       .siblings()
@@ -107,7 +108,7 @@ describe("TheAlertSummary", () => {
       requestReload: false,
     });
 
-    cy.get("tr").should("have.length", 12);
+    cy.get("tr").should("have.length", 13);
     cy.contains("Instructions")
       .siblings()
       .should("have.text", "alert instructions example");
