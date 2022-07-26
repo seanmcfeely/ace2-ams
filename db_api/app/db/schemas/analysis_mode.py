@@ -4,6 +4,7 @@ from sqlalchemy.orm import relationship
 
 from db.database import Base
 from db.schemas.analysis_mode_analysis_module_type_mapping import analysis_mode_analysis_module_type_mapping
+from db.schemas.analysis_module_type import AnalysisModuleType
 
 
 class AnalysisMode(Base):
@@ -11,7 +12,7 @@ class AnalysisMode(Base):
 
     uuid = Column(UUID(as_uuid=True), primary_key=True, server_default=func.gen_random_uuid())
 
-    analysis_module_types = relationship(
+    analysis_module_types: list[AnalysisModuleType] = relationship(
         "AnalysisModuleType", secondary=analysis_mode_analysis_module_type_mapping, uselist=True
     )
 

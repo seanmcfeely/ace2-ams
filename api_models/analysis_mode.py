@@ -40,4 +40,4 @@ class AnalysisModeUpdate(AnalysisModeBase):
 
     value: Optional[type_str] = Field(description="The value of the analysis mode")
 
-    _prevent_none: classmethod = validators.prevent_none("value")
+    _prevent_none: classmethod = validators.prevent_none("analysis_module_types", "value")

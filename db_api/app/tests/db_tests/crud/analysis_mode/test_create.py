@@ -1,10 +1,22 @@
 from api_models.analysis_mode import AnalysisModeCreate
 from db import crud
+from tests import factory
 
 
 def test_create(db):
-    obj = crud.analysis_mode.create_or_read(model=AnalysisModeCreate(value="test value"), db=db)
+    # Create some analysis module types. Only the latest version ones will be used.
+    factory.analysis_module_type.create_or_read(value="module1", version="1.0.0", db=db)
+    factory.analysis_module_type.create_or_read(value="module1", version="2.0.0", db=db)
+    factory.analysis_module_type.create_or_read(value="module2", version="1.0.0", db=db)
+    factory.analysis_module_type.create_or_read(value="module2", version="2.0.0", db=db)
 
+    obj = crud.analysis_mode.create_or_read(
+        model=AnalysisModeCreate(value="test value", analysis_module_types=["module1", "module2"]), db=db
+    )
+
+    assert len(obj.analysis_module_types) == 2
+    assert any(m.value == "module1" and m.version == "2.0.0" for m in obj.analysis_module_types)
+    assert any(m.value == "module2" and m.version == "2.0.0" for m in obj.analysis_module_types)
     assert obj.description is None
     assert obj.value == "test value"
 
