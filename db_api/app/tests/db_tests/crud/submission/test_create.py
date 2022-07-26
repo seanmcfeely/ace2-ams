@@ -33,6 +33,7 @@ def test_create(db):
         model=SubmissionCreate(
             alert=True,
             analysis_mode_alert="default_alert",
+            analysis_mode_current="event",
             analysis_mode_detect="default_detect",
             analysis_mode_event="default_event",
             analysis_mode_response="default_response",
@@ -76,7 +77,7 @@ def test_create(db):
     assert submission.alert is True
     assert len(submission.analyses) == 2
     assert submission.analysis_mode_alert.value == "default_alert"
-    assert submission.analysis_mode_current.value == "default_alert"
+    assert submission.analysis_mode_current.value == "default_event"
     assert submission.analysis_mode_detect.value == "default_detect"
     assert submission.analysis_mode_event.value == "default_event"
     assert submission.analysis_mode_response.value == "default_response"

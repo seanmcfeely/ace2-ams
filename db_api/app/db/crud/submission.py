@@ -790,7 +790,15 @@ def create_or_read(model: SubmissionCreate, db: Session) -> Submission:
     analysis_mode_response = model.analysis_mode_response or get_settings().default_analysis_mode_response
     obj.analysis_mode_response = crud.analysis_mode.read_by_value(value=analysis_mode_response, db=db)
 
-    obj.analysis_mode_current = obj.analysis_mode_alert if model.alert else obj.analysis_mode_detect
+    # Set the current analysis mode for the submission
+    # The value for analysis_mode_current must be one of: alert, detect, event, or response
+    analysis_modes = {
+        "alert": obj.analysis_mode_alert,
+        "detect": obj.analysis_mode_detect,
+        "event": obj.analysis_mode_event,
+        "response": obj.analysis_mode_response,
+    }
+    obj.analysis_mode_current = analysis_modes[model.analysis_mode_current]
 
     obj.description = model.description
     obj.event_time = model.event_time
@@ -1200,18 +1208,6 @@ def update(model: SubmissionUpdate, db: Session):
             value=update_data["analysis_mode_alert"], db=db
         )
 
-    if "analysis_mode_current" in update_data:
-        diffs.append(
-            crud.history.create_diff(
-                field="analysis_mode_current",
-                old=submission.analysis_mode_current.value,
-                new=update_data["analysis_mode_current"],
-            )
-        )
-        submission.analysis_mode_current = crud.analysis_mode.read_by_value(
-            value=update_data["analysis_mode_current"], db=db
-        )
-
     if "analysis_mode_detect" in update_data:
         diffs.append(
             crud.history.create_diff(
@@ -1247,6 +1243,27 @@ def update(model: SubmissionUpdate, db: Session):
         submission.analysis_mode_response = crud.analysis_mode.read_by_value(
             value=update_data["analysis_mode_response"], db=db
         )
+
+    # This is done after all the other analysis mode updates in case one of them is updated along with the current mode.
+    # That way the current mode will point to the updated mode instead of the old mode.
+    #
+    # The value for analysis_mode_current must be one of: alert, detect, event, or response
+    if "analysis_mode_current" in update_data:
+        analysis_modes = {
+            "alert": submission.analysis_mode_alert,
+            "detect": submission.analysis_mode_detect,
+            "event": submission.analysis_mode_event,
+            "response": submission.analysis_mode_response,
+        }
+
+        diffs.append(
+            crud.history.create_diff(
+                field="analysis_mode_current",
+                old=submission.analysis_mode_current.value,
+                new=analysis_modes[update_data["analysis_mode_current"]].value,
+            )
+        )
+        submission.analysis_mode_current = analysis_modes[update_data["analysis_mode_current"]]
 
     if "description" in update_data:
         diffs.append(

@@ -2,7 +2,7 @@ import json
 
 from datetime import datetime
 from sqlalchemy.orm import Session
-from typing import Optional, Union
+from typing import Literal, Optional, Union
 from uuid import UUID, uuid4
 
 from api_models.analysis import AnalysisCreateInObservable
@@ -20,6 +20,7 @@ def create(
     alert: bool = False,
     alert_queue: str = "external",
     analysis_mode_alert: str = "default_alert",
+    analysis_mode_current: Literal["alert", "detect", "event", "response"] = "detect",
     analysis_mode_detect: str = "default_detect",
     analysis_mode_event: str = "default_event",
     analysis_mode_response: str = "default_response",
@@ -86,6 +87,7 @@ def create(
         model=SubmissionCreate(
             alert=alert,
             analysis_mode_alert=analysis_mode_alert,
+            analysis_mode_current=analysis_mode_current,
             analysis_mode_detect=analysis_mode_detect,
             analysis_mode_event=analysis_mode_event,
             analysis_mode_response=analysis_mode_response,

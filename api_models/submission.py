@@ -1,6 +1,6 @@
 from datetime import datetime
 from pydantic import BaseModel, Field, Json, UUID4
-from typing import Optional
+from typing import Literal, Optional
 from uuid import uuid4
 
 from api_models import type_str, validators
@@ -71,6 +71,10 @@ class SubmissionBase(BaseModel):
 class SubmissionCreate(SubmissionBase):
     analysis_mode_alert: Optional[type_str] = Field(
         description="The analysis mode to use if the submission turns into an alert"
+    )
+
+    analysis_mode_current: Literal["alert", "detect", "event", "response"] = Field(
+        default="detect", description="The current analysis mode used by the submission"
     )
 
     analysis_mode_detect: Optional[type_str] = Field(
@@ -232,7 +236,9 @@ class SubmissionUpdate(SubmissionBase):
         description="The analysis mode to use if the submission turns into an alert"
     )
 
-    analysis_mode_current: Optional[type_str] = Field(description="The current analysis mode used by the submission")
+    analysis_mode_current: Optional[Literal["alert", "detect", "event", "response"]] = Field(
+        description="The current analysis mode used by the submission"
+    )
 
     analysis_mode_detect: Optional[type_str] = Field(
         description="The analysis mode to initially use to determine if the submission should be an alert"

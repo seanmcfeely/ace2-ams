@@ -216,6 +216,26 @@ def test_update_valid_list_fields(db, key, value_lists, helper_create_func):
             assert len(submission.history[1].snapshot[key]) == len(set(value_list))
 
 
+def test_update_analysis_mode_current(db):
+    submission = factory.submission.create(db=db)
+
+    # Update it to alert mode
+    crud.submission.update(model=SubmissionUpdate(uuid=submission.uuid, analysis_mode_current="alert"), db=db)
+    assert submission.analysis_mode_current_uuid == submission.analysis_mode_alert_uuid
+
+    # Update it to detect mode
+    crud.submission.update(model=SubmissionUpdate(uuid=submission.uuid, analysis_mode_current="detect"), db=db)
+    assert submission.analysis_mode_current_uuid == submission.analysis_mode_detect_uuid
+
+    # Update it to alert mode
+    crud.submission.update(model=SubmissionUpdate(uuid=submission.uuid, analysis_mode_current="event"), db=db)
+    assert submission.analysis_mode_current_uuid == submission.analysis_mode_event_uuid
+
+    # Update it to alert mode
+    crud.submission.update(model=SubmissionUpdate(uuid=submission.uuid, analysis_mode_current="response"), db=db)
+    assert submission.analysis_mode_current_uuid == submission.analysis_mode_response_uuid
+
+
 NOW = crud.helpers.utcnow()
 UPDATED_TIME = NOW + timedelta(days=1)
 
@@ -224,7 +244,6 @@ UPDATED_TIME = NOW + timedelta(days=1)
     "key,initial_value,updated_value",
     [
         ("analysis_mode_alert", "initial_mode", "updated_mode"),
-        ("analysis_mode_current", "initial_mode", "updated_mode"),
         ("analysis_mode_detect", "initial_mode", "updated_mode"),
         ("analysis_mode_event", "initial_mode", "updated_mode"),
         ("analysis_mode_response", "initial_mode", "updated_mode"),
