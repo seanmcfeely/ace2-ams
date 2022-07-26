@@ -1154,7 +1154,7 @@ def read_tree(uuid: UUID, db: Session) -> SubmissionTreeRead:
 
 def read_summary_url_domain(uuid: UUID, db: Session) -> URLDomainSummary:
     # Verify the submission exists
-    read_by_uuid(uuid=uuid, db=db)
+    crud.helpers.exists(uuid=uuid, db_table=Submission, db=db)
 
     observables = read_observables(uuids=[uuid], db=db)
     urls = [observable for observable in observables if observable.type.value == "url"]

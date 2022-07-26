@@ -47,6 +47,13 @@ def delete(uuid: UUID, db_table: DeclarativeMeta, db: Session) -> bool:
     return False
 
 
+def exists(uuid: UUID, db_table: DeclarativeMeta, db: Session):
+    """Returns True/False if the UUID exists in the given table."""
+
+    if not db.execute(select(db_table.uuid).where(db_table.uuid == uuid)).scalar():
+        raise UuidNotFoundInDatabase(f"UUID {uuid} was not found in the {db_table.__tablename__} table.")
+
+
 def read_by_uuid(db_table: DeclarativeMeta, uuid: UUID, db: Session, undefer_column: str = None) -> Any:
     """Returns the object with the specific UUID from the given database table."""
 
