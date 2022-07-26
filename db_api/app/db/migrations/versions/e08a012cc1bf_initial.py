@@ -1,8 +1,8 @@
 """Initial
 
-Revision ID: 70aa910570ec
+Revision ID: e08a012cc1bf
 Revises: 
-Create Date: 2022-07-20 17:52:33.712684
+Create Date: 2022-07-25 14:49:31.968707
 """
 
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 from sqlalchemy.dialects import postgresql
 
 # revision identifiers, used by Alembic
-revision = '70aa910570ec'
+revision = 'e08a012cc1bf'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -26,6 +26,13 @@ def upgrade() -> None:
     sa.UniqueConstraint('rank')
     )
     op.create_index(op.f('ix_alert_disposition_value'), 'alert_disposition', ['value'], unique=True)
+    op.create_table('analysis_mode',
+    sa.Column('uuid', postgresql.UUID(as_uuid=True), server_default=sa.text('gen_random_uuid()'), nullable=False),
+    sa.Column('description', sa.String(), nullable=True),
+    sa.Column('value', sa.String(), nullable=False),
+    sa.PrimaryKeyConstraint('uuid')
+    )
+    op.create_index(op.f('ix_analysis_mode_value'), 'analysis_mode', ['value'], unique=True)
     op.create_table('analysis_module_type',
     sa.Column('uuid', postgresql.UUID(as_uuid=True), server_default=sa.text('gen_random_uuid()'), nullable=False),
     sa.Column('cache_seconds', sa.Integer(), nullable=False),
@@ -185,6 +192,15 @@ def upgrade() -> None:
     sa.PrimaryKeyConstraint('uuid')
     )
     op.create_index(op.f('ix_user_role_value'), 'user_role', ['value'], unique=True)
+    op.create_table('analysis_mode_analysis_module_type_mapping',
+    sa.Column('analysis_mode_uuid', postgresql.UUID(as_uuid=True), nullable=False),
+    sa.Column('analysis_module_type_uuid', postgresql.UUID(as_uuid=True), nullable=False),
+    sa.ForeignKeyConstraint(['analysis_mode_uuid'], ['analysis_mode.uuid'], ondelete='CASCADE'),
+    sa.ForeignKeyConstraint(['analysis_module_type_uuid'], ['analysis_module_type.uuid'], ),
+    sa.PrimaryKeyConstraint('analysis_mode_uuid', 'analysis_module_type_uuid')
+    )
+    op.create_index(op.f('ix_analysis_mode_analysis_module_type_mapping_analysis_module_type_uuid'), 'analysis_mode_analysis_module_type_mapping', ['analysis_module_type_uuid'], unique=False)
+    op.create_index(op.f('ix_analysis_mode_analysis_module_type_mapping_analysis_mode_uuid'), 'analysis_mode_analysis_module_type_mapping', ['analysis_mode_uuid'], unique=False)
     op.create_table('analysis_module_type_observable_type_mapping',
     sa.Column('analysis_module_type_uuid', postgresql.UUID(as_uuid=True), nullable=False),
     sa.Column('observable_type_uuid', postgresql.UUID(as_uuid=True), nullable=False),
@@ -638,6 +654,11 @@ def upgrade() -> None:
     op.create_table('submission',
     sa.Column('uuid', postgresql.UUID(as_uuid=True), server_default=sa.text('gen_random_uuid()'), nullable=False),
     sa.Column('alert', sa.Boolean(), nullable=False),
+    sa.Column('analysis_mode_alert_uuid', postgresql.UUID(as_uuid=True), nullable=False),
+    sa.Column('analysis_mode_current_uuid', postgresql.UUID(as_uuid=True), nullable=False),
+    sa.Column('analysis_mode_detect_uuid', postgresql.UUID(as_uuid=True), nullable=False),
+    sa.Column('analysis_mode_event_uuid', postgresql.UUID(as_uuid=True), nullable=False),
+    sa.Column('analysis_mode_response_uuid', postgresql.UUID(as_uuid=True), nullable=False),
     sa.Column('description', sa.String(), nullable=True),
     sa.Column('disposition_uuid', postgresql.UUID(as_uuid=True), nullable=True),
     sa.Column('disposition_time', sa.DateTime(timezone=True), nullable=True),
@@ -655,6 +676,11 @@ def upgrade() -> None:
     sa.Column('tool_instance_uuid', postgresql.UUID(as_uuid=True), nullable=True),
     sa.Column('type_uuid', postgresql.UUID(as_uuid=True), nullable=False),
     sa.Column('version', postgresql.UUID(as_uuid=True), server_default=sa.text('gen_random_uuid()'), nullable=False),
+    sa.ForeignKeyConstraint(['analysis_mode_alert_uuid'], ['analysis_mode.uuid'], ),
+    sa.ForeignKeyConstraint(['analysis_mode_current_uuid'], ['analysis_mode.uuid'], ),
+    sa.ForeignKeyConstraint(['analysis_mode_detect_uuid'], ['analysis_mode.uuid'], ),
+    sa.ForeignKeyConstraint(['analysis_mode_event_uuid'], ['analysis_mode.uuid'], ),
+    sa.ForeignKeyConstraint(['analysis_mode_response_uuid'], ['analysis_mode.uuid'], ),
     sa.ForeignKeyConstraint(['disposition_user_uuid'], ['user.uuid'], ),
     sa.ForeignKeyConstraint(['disposition_uuid'], ['alert_disposition.uuid'], ),
     sa.ForeignKeyConstraint(['event_uuid'], ['event.uuid'], ),
@@ -667,6 +693,11 @@ def upgrade() -> None:
     sa.PrimaryKeyConstraint('uuid')
     )
     op.create_index(op.f('ix_submission_alert'), 'submission', ['alert'], unique=False)
+    op.create_index(op.f('ix_submission_analysis_mode_alert_uuid'), 'submission', ['analysis_mode_alert_uuid'], unique=False)
+    op.create_index(op.f('ix_submission_analysis_mode_current_uuid'), 'submission', ['analysis_mode_current_uuid'], unique=False)
+    op.create_index(op.f('ix_submission_analysis_mode_detect_uuid'), 'submission', ['analysis_mode_detect_uuid'], unique=False)
+    op.create_index(op.f('ix_submission_analysis_mode_event_uuid'), 'submission', ['analysis_mode_event_uuid'], unique=False)
+    op.create_index(op.f('ix_submission_analysis_mode_response_uuid'), 'submission', ['analysis_mode_response_uuid'], unique=False)
     op.create_index(op.f('ix_submission_disposition_time'), 'submission', ['disposition_time'], unique=False)
     op.create_index(op.f('ix_submission_disposition_user_uuid'), 'submission', ['disposition_user_uuid'], unique=False)
     op.create_index(op.f('ix_submission_disposition_uuid'), 'submission', ['disposition_uuid'], unique=False)
@@ -757,6 +788,11 @@ def downgrade() -> None:
     op.drop_index(op.f('ix_submission_disposition_uuid'), table_name='submission')
     op.drop_index(op.f('ix_submission_disposition_user_uuid'), table_name='submission')
     op.drop_index(op.f('ix_submission_disposition_time'), table_name='submission')
+    op.drop_index(op.f('ix_submission_analysis_mode_response_uuid'), table_name='submission')
+    op.drop_index(op.f('ix_submission_analysis_mode_event_uuid'), table_name='submission')
+    op.drop_index(op.f('ix_submission_analysis_mode_detect_uuid'), table_name='submission')
+    op.drop_index(op.f('ix_submission_analysis_mode_current_uuid'), table_name='submission')
+    op.drop_index(op.f('ix_submission_analysis_mode_alert_uuid'), table_name='submission')
     op.drop_index(op.f('ix_submission_alert'), table_name='submission')
     op.drop_table('submission')
     op.drop_index(op.f('ix_event_vector_mapping_vector_uuid'), table_name='event_vector_mapping')
@@ -880,6 +916,9 @@ def downgrade() -> None:
     op.drop_index(op.f('ix_analysis_module_type_observable_type_mapping_observable_type_uuid'), table_name='analysis_module_type_observable_type_mapping')
     op.drop_index(op.f('ix_analysis_module_type_observable_type_mapping_analysis_module_type_uuid'), table_name='analysis_module_type_observable_type_mapping')
     op.drop_table('analysis_module_type_observable_type_mapping')
+    op.drop_index(op.f('ix_analysis_mode_analysis_module_type_mapping_analysis_mode_uuid'), table_name='analysis_mode_analysis_module_type_mapping')
+    op.drop_index(op.f('ix_analysis_mode_analysis_module_type_mapping_analysis_module_type_uuid'), table_name='analysis_mode_analysis_module_type_mapping')
+    op.drop_table('analysis_mode_analysis_module_type_mapping')
     op.drop_index(op.f('ix_user_role_value'), table_name='user_role')
     op.drop_table('user_role')
     op.drop_index(op.f('ix_threat_type_value'), table_name='threat_type')
@@ -926,6 +965,8 @@ def downgrade() -> None:
     op.drop_index(op.f('ix_analysis_module_type_value'), table_name='analysis_module_type')
     op.drop_index('amt_value_trgm', table_name='analysis_module_type', postgresql_ops={'value': 'gin_trgm_ops'}, postgresql_using='gin')
     op.drop_table('analysis_module_type')
+    op.drop_index(op.f('ix_analysis_mode_value'), table_name='analysis_mode')
+    op.drop_table('analysis_mode')
     op.drop_index(op.f('ix_alert_disposition_value'), table_name='alert_disposition')
     op.drop_table('alert_disposition')
     # ### end Alembic commands ###

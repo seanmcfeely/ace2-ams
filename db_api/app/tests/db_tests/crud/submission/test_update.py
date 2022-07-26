@@ -216,6 +216,26 @@ def test_update_valid_list_fields(db, key, value_lists, helper_create_func):
             assert len(submission.history[1].snapshot[key]) == len(set(value_list))
 
 
+def test_update_analysis_mode_current(db):
+    submission = factory.submission.create(db=db)
+
+    # Update it to alert mode
+    crud.submission.update(model=SubmissionUpdate(uuid=submission.uuid, analysis_mode_current="alert"), db=db)
+    assert submission.analysis_mode_current_uuid == submission.analysis_mode_alert_uuid
+
+    # Update it to detect mode
+    crud.submission.update(model=SubmissionUpdate(uuid=submission.uuid, analysis_mode_current="detect"), db=db)
+    assert submission.analysis_mode_current_uuid == submission.analysis_mode_detect_uuid
+
+    # Update it to alert mode
+    crud.submission.update(model=SubmissionUpdate(uuid=submission.uuid, analysis_mode_current="event"), db=db)
+    assert submission.analysis_mode_current_uuid == submission.analysis_mode_event_uuid
+
+    # Update it to alert mode
+    crud.submission.update(model=SubmissionUpdate(uuid=submission.uuid, analysis_mode_current="response"), db=db)
+    assert submission.analysis_mode_current_uuid == submission.analysis_mode_response_uuid
+
+
 NOW = crud.helpers.utcnow()
 UPDATED_TIME = NOW + timedelta(days=1)
 
@@ -223,6 +243,10 @@ UPDATED_TIME = NOW + timedelta(days=1)
 @pytest.mark.parametrize(
     "key,initial_value,updated_value",
     [
+        ("analysis_mode_alert", "initial_mode", "updated_mode"),
+        ("analysis_mode_detect", "initial_mode", "updated_mode"),
+        ("analysis_mode_event", "initial_mode", "updated_mode"),
+        ("analysis_mode_response", "initial_mode", "updated_mode"),
         ("description", None, "test"),
         ("description", "test", None),
         ("event_time", NOW, UPDATED_TIME),
@@ -230,11 +254,15 @@ UPDATED_TIME = NOW + timedelta(days=1)
         ("instructions", "test", None),
     ],
 )
-def test_update(db, key, initial_value, updated_value):
+def test_update(db, key: str, initial_value, updated_value):
     submission = factory.submission.create(db=db, history_username="analyst")
     initial_submission_version = submission.version
 
     # Set the initial value on the submission
+    if key.startswith("analysis_mode"):
+        initial_value = factory.analysis_mode.create_or_read(value=initial_value, db=db)
+        factory.analysis_mode.create_or_read(value=updated_value, db=db)
+
     setattr(submission, key, initial_value)
     assert getattr(submission, key) == initial_value
 
@@ -252,7 +280,9 @@ def test_update(db, key, initial_value, updated_value):
     assert submission.history[1].snapshot["name"] == "Test Alert"
 
     old_value = initial_value
-    if key.endswith("_time"):
+    if key.startswith("analysis_mode"):
+        old_value = initial_value.value
+    elif key.endswith("_time"):
         old_value = initial_value.isoformat()
 
     new_value = updated_value

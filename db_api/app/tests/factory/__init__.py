@@ -1,5 +1,6 @@
 from tests.factory import alert_disposition
 from tests.factory import analysis
+from tests.factory import analysis_mode
 from tests.factory import analysis_module_type
 from tests.factory import analysis_status
 from tests.factory import analysis_summary_detail

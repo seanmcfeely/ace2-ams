@@ -14,6 +14,10 @@ class Settings(BaseSettings):
 
     database_url: PostgresDsn
     database_test_url: PostgresDsn
+    default_analysis_mode_alert: str = "default_alert"
+    default_analysis_mode_detect: str = "default_detect"
+    default_analysis_mode_event: str = "default_event"
+    default_analysis_mode_response: str = "default_response"
 
 
 def get_settings():

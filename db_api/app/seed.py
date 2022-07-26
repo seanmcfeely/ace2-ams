@@ -6,10 +6,11 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 from sqlalchemy.orm.decl_api import DeclarativeMeta
 
-from core.auth import hash_password
-from core.config import is_in_testing_mode
+from common.auth import hash_password
+from common.config import is_in_testing_mode
 from db.database import get_db
 from db.schemas.alert_disposition import AlertDisposition
+from db.schemas.analysis_mode import AnalysisMode
 from db.schemas.analysis_status import AnalysisStatus
 from db.schemas.event_prevention_tool import EventPreventionTool
 from db.schemas.event_remediation import EventRemediation
@@ -89,6 +90,11 @@ def seed(db: Session):
             rank = (index + 1) * 10
             db.add(AlertDisposition(rank=rank, value=value))
             print(f"Adding alert disposition: {rank}:{value}")
+
+    if "analysis_mode" in data:
+        for value in data["analysis_mode"]:
+            db.add(AnalysisMode(value=value))
+            print(f"Adding analysis mode: {value}")
 
     if "analysis_status" in data:
         for value in data["analysis_status"]:

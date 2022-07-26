@@ -56,16 +56,26 @@ def read_by_uuid(uuid: UUID, db: Session) -> AnalysisModuleType:
     return crud.helpers.read_by_uuid(db_table=AnalysisModuleType, uuid=uuid, db=db)
 
 
-def read_by_value_latest_version(value: str, db: Session) -> AnalysisModuleType:
-    return (
-        db.execute(
-            select(AnalysisModuleType)
-            .where(AnalysisModuleType.value == value)
-            .order_by(AnalysisModuleType.version.desc())
-        )
-        .scalars()
-        .first()
-    )
+def read_by_values_latest_version(values: list[str], db: Session) -> list[AnalysisModuleType]:
+    if not values:
+        return []
+
+    # Get all of the analysis module types with the given values, sorting them by their values then versions
+    analysis_module_types: list[AnalysisModuleType] = db.execute(
+        select(AnalysisModuleType)
+        .where(AnalysisModuleType.value.in_(values))
+        .order_by(AnalysisModuleType.value.asc(), AnalysisModuleType.version.desc())
+    ).scalars()
+
+    # Loop through all the analysis module types and only return the latest version of each
+    results: list[AnalysisModuleType] = []
+    unique_analysis_module_type_values: set[str] = set()
+    for analysis_module_type in analysis_module_types:
+        if analysis_module_type.value not in unique_analysis_module_type_values:
+            unique_analysis_module_type_values.add(analysis_module_type.value)
+            results.append(analysis_module_type)
+
+    return results
 
 
 def read_by_value_version(value: str, version: str, db: Session) -> AnalysisModuleType:

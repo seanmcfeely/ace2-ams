@@ -11,7 +11,7 @@ from passlib.hash import bcrypt_sha256
 from typing import Dict, Mapping, Optional
 
 from api import db_api
-from core.config import get_settings
+from common.config import get_settings
 
 
 # This class is copy/pasted from fastapi.security.OAuth2PasswordBearer with slight modifications

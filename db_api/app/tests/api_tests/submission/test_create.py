@@ -16,6 +16,14 @@ from tests.api_tests.helpers import INVALID_LIST_STRING_VALUES, VALID_LIST_STRIN
 @pytest.mark.parametrize(
     "key,value",
     [
+        ("analysis_mode_alert", 123),
+        ("analysis_mode_alert", ""),
+        ("analysis_mode_detect", 123),
+        ("analysis_mode_detect", ""),
+        ("analysis_mode_event", 123),
+        ("analysis_mode_event", ""),
+        ("analysis_mode_response", 123),
+        ("analysis_mode_response", ""),
         ("description", 123),
         ("description", ""),
         ("event_time", None),

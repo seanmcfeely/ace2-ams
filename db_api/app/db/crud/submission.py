@@ -4,7 +4,7 @@ from api_models.summaries import URLDomainSummary
 from sqlalchemy import and_, func, not_, or_, select
 from sqlalchemy.orm import Session
 from sqlalchemy.sql.selectable import Select
-from typing import Optional, Union
+from typing import Optional, Tuple, Union
 from uuid import UUID, uuid4
 
 from api_models.analysis import AnalysisSubmissionTreeRead
@@ -20,6 +20,7 @@ from api_models.submission import (
     SubmissionTreeRead,
     SubmissionUpdate,
 )
+from common.config import get_settings
 from db import crud
 from db.schemas.alert_disposition import AlertDisposition
 from db.schemas.analysis import Analysis
@@ -776,6 +777,29 @@ def create_or_read(model: SubmissionCreate, db: Session) -> Submission:
 
     # Set the various submission properties
     obj.alert = model.alert
+
+    analysis_mode_alert = model.analysis_mode_alert or get_settings().default_analysis_mode_alert
+    obj.analysis_mode_alert = crud.analysis_mode.read_by_value(value=analysis_mode_alert, db=db)
+
+    analysis_mode_detect = model.analysis_mode_detect or get_settings().default_analysis_mode_detect
+    obj.analysis_mode_detect = crud.analysis_mode.read_by_value(value=analysis_mode_detect, db=db)
+
+    analysis_mode_event = model.analysis_mode_event or get_settings().default_analysis_mode_event
+    obj.analysis_mode_event = crud.analysis_mode.read_by_value(value=analysis_mode_event, db=db)
+
+    analysis_mode_response = model.analysis_mode_response or get_settings().default_analysis_mode_response
+    obj.analysis_mode_response = crud.analysis_mode.read_by_value(value=analysis_mode_response, db=db)
+
+    # Set the current analysis mode for the submission
+    # The value for analysis_mode_current must be one of: alert, detect, event, or response
+    analysis_modes = {
+        "alert": obj.analysis_mode_alert,
+        "detect": obj.analysis_mode_detect,
+        "event": obj.analysis_mode_event,
+        "response": obj.analysis_mode_response,
+    }
+    obj.analysis_mode_current = analysis_modes[model.analysis_mode_current]
+
     obj.description = model.description
     obj.event_time = model.event_time
     obj.insert_time = model.insert_time
@@ -910,26 +934,18 @@ def read_all_history(uuid: UUID, db: Session) -> list[SubmissionHistory]:
 
 
 def read_by_uuid(uuid: UUID, db: Session) -> Submission:
-    submission: Submission = crud.helpers.read_by_uuid(db_table=Submission, uuid=uuid, db=db)
-
-    # Build the matching events information and add it to the Submission object
-    _build_matching_submission_events(s=submission)
-
-    # Set the number_of_observables property on the Submission database object. This is not done automatically
-    # by the Submission SQLAlchemy class because the child_observables relationship is lazy-loaded.
-    submission.number_of_observables = len(submission.child_observables)
-
-    # Associate metadata and other alert-specific information with the observable database objects
-    for db_observable in submission.child_observables:
-        _associate_metadata_with_observable(analysis_uuids=submission.analysis_uuids, o=db_observable)
-        _build_disposition_history(o=db_observable)
-        _build_matching_observable_events(o=db_observable)
-
-    return submission
+    return crud.helpers.read_by_uuid(db_table=Submission, uuid=uuid, db=db)
 
 
-def read_observables(uuids: list[UUID], db: Session) -> list[Observable]:
+def read_observables(uuids: list[UUID], db: Session, observable_types: list[str] = None) -> list[Observable]:
     """Returns a list of the unique observables contained within the given submission UUIDs."""
+
+    if observable_types is None:
+        observable_types = []
+
+    # Verify the submissions exist
+    for uuid in uuids:
+        crud.helpers.exists(uuid=uuid, db_table=Submission, db=db)
 
     # Get a list of all the observables contained within the given submission UUIDs
     query = (
@@ -946,8 +962,12 @@ def read_observables(uuids: list[UUID], db: Session) -> list[Observable]:
             ),
         )
         .join(ObservableType, onclause=ObservableType.uuid == Observable.type_uuid)
-        .order_by(ObservableType.value.asc(), Observable.value.asc())
     )
+
+    if observable_types:
+        query = query.where(ObservableType.value.in_(observable_types))
+
+    query = query.order_by(ObservableType.value.asc(), Observable.value.asc())
     observables: list[Observable] = db.execute(query).unique().scalars().all()
 
     # Associate the analysis metadata with the observables
@@ -1008,6 +1028,19 @@ def read_tree(uuid: UUID, db: Session) -> SubmissionTreeRead:
 
     # Read the submission from the database
     db_submission = read_by_uuid(uuid=uuid, db=db)
+
+    # Build the matching events information and add it to the Submission object
+    _build_matching_submission_events(s=db_submission)
+
+    # Set the number_of_observables property on the Submission database object. This is not done automatically
+    # by the Submission SQLAlchemy class because the child_observables relationship is lazy-loaded.
+    db_submission.number_of_observables = len(db_submission.child_observables)
+
+    # Associate metadata and other alert-specific information with the observable database objects
+    for db_observable in db_submission.child_observables:
+        _associate_metadata_with_observable(analysis_uuids=db_submission.analysis_uuids, o=db_observable)
+        _build_disposition_history(o=db_observable)
+        _build_matching_observable_events(o=db_observable)
 
     # Build lookup dictionaries of the analyses that are used to more efficiently build the nested tree structure.
     db_analyses_by_uuid: dict[UUID, Analysis] = {a.uuid: a for a in db_submission.analyses}
@@ -1085,24 +1118,25 @@ def read_tree(uuid: UUID, db: Session) -> SubmissionTreeRead:
     # or one of its children is part of a critical path.
     #
     # Adapted from: https://www.geeksforgeeks.org/iterative-postorder-traversal-of-n-ary-tree/
-    def _is_critical_path(o):
+    def _is_critical_path(o: Union[AnalysisSubmissionTreeRead, ObservableSubmissionTreeRead]):
         contains_critical_points = bool(
-            current[0].object_type == "observable" and o[0].analysis_metadata.critical_points
+            isinstance(o, ObservableSubmissionTreeRead) and o.analysis_metadata.critical_points
         )
         if contains_critical_points:
             return True
 
-        child_uuids = [child.uuid for child in o[0].children]
-        children_on_critical_path = any(uuid in critical_point_path_uuids for uuid in child_uuids)
-        return children_on_critical_path
+        child_uuids = [child.uuid for child in o.children]
+        return any(uuid in critical_point_path_uuids for uuid in child_uuids)
 
     critical_point_path_uuids: set[UUID] = set()
     current_root_index = 0
-    stack = []
-    root = analysis_instances[db_submission.root_analysis_uuid]
+    stack: list[Tuple[Union[AnalysisSubmissionTreeRead, ObservableSubmissionTreeRead], int]] = []
+    root: Optional[Union[AnalysisSubmissionTreeRead, ObservableSubmissionTreeRead]] = analysis_instances[
+        db_submission.root_analysis_uuid
+    ]
 
-    while root != None or len(stack) > 0:
-        if root != None:
+    while root or len(stack) > 0:
+        if root:
             stack.append((root, current_root_index))
             current_root_index = 0
 
@@ -1113,7 +1147,7 @@ def read_tree(uuid: UUID, db: Session) -> SubmissionTreeRead:
             continue
 
         current = stack.pop()
-        if _is_critical_path(current):
+        if _is_critical_path(current[0]):
             critical_point_path_uuids.add(current[0].uuid)
             current[0].critical_path = True
         else:
@@ -1123,7 +1157,7 @@ def read_tree(uuid: UUID, db: Session) -> SubmissionTreeRead:
             current = stack[-1]
             stack.pop()
 
-            if _is_critical_path(current):
+            if _is_critical_path(current[0]):
                 critical_point_path_uuids.add(current[0].uuid)
                 current[0].critical_path = True
             else:
@@ -1138,13 +1172,9 @@ def read_tree(uuid: UUID, db: Session) -> SubmissionTreeRead:
 
 
 def read_summary_url_domain(uuid: UUID, db: Session) -> URLDomainSummary:
-    # Verify the submission exists
-    read_by_uuid(uuid=uuid, db=db)
-
-    observables = read_observables(uuids=[uuid], db=db)
-    urls = [observable for observable in observables if observable.type.value == "url"]
-
-    return crud.helpers.read_summary_url_domain(url_observables=urls)
+    return crud.helpers.read_summary_url_domain(
+        url_observables=read_observables(uuids=[uuid], observable_types=["url"], db=db)
+    )
 
 
 def update(model: SubmissionUpdate, db: Session):
@@ -1165,6 +1195,75 @@ def update(model: SubmissionUpdate, db: Session):
 
     # Update the current version
     submission.version = uuid4()
+
+    if "analysis_mode_alert" in update_data:
+        diffs.append(
+            crud.history.create_diff(
+                field="analysis_mode_alert",
+                old=submission.analysis_mode_alert.value,
+                new=update_data["analysis_mode_alert"],
+            )
+        )
+        submission.analysis_mode_alert = crud.analysis_mode.read_by_value(
+            value=update_data["analysis_mode_alert"], db=db
+        )
+
+    if "analysis_mode_detect" in update_data:
+        diffs.append(
+            crud.history.create_diff(
+                field="analysis_mode_detect",
+                old=submission.analysis_mode_detect.value,
+                new=update_data["analysis_mode_detect"],
+            )
+        )
+        submission.analysis_mode_detect = crud.analysis_mode.read_by_value(
+            value=update_data["analysis_mode_detect"], db=db
+        )
+
+    if "analysis_mode_event" in update_data:
+        diffs.append(
+            crud.history.create_diff(
+                field="analysis_mode_event",
+                old=submission.analysis_mode_event.value,
+                new=update_data["analysis_mode_event"],
+            )
+        )
+        submission.analysis_mode_event = crud.analysis_mode.read_by_value(
+            value=update_data["analysis_mode_event"], db=db
+        )
+
+    if "analysis_mode_response" in update_data:
+        diffs.append(
+            crud.history.create_diff(
+                field="analysis_mode_response",
+                old=submission.analysis_mode_response.value,
+                new=update_data["analysis_mode_response"],
+            )
+        )
+        submission.analysis_mode_response = crud.analysis_mode.read_by_value(
+            value=update_data["analysis_mode_response"], db=db
+        )
+
+    # This is done after all the other analysis mode updates in case one of them is updated along with the current mode.
+    # That way the current mode will point to the updated mode instead of the old mode.
+    #
+    # The value for analysis_mode_current must be one of: alert, detect, event, or response
+    if "analysis_mode_current" in update_data:
+        analysis_modes = {
+            "alert": submission.analysis_mode_alert,
+            "detect": submission.analysis_mode_detect,
+            "event": submission.analysis_mode_event,
+            "response": submission.analysis_mode_response,
+        }
+
+        diffs.append(
+            crud.history.create_diff(
+                field="analysis_mode_current",
+                old=submission.analysis_mode_current.value,
+                new=analysis_modes[update_data["analysis_mode_current"]].value,
+            )
+        )
+        submission.analysis_mode_current = analysis_modes[update_data["analysis_mode_current"]]
 
     if "description" in update_data:
         diffs.append(

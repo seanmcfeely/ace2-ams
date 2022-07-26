@@ -1,6 +1,6 @@
 import pytest
 
-from core.auth import hash_password, verify_password
+from common.auth import hash_password, verify_password
 
 
 @pytest.mark.parametrize(

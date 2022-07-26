@@ -4,13 +4,13 @@ from fastapi.security import OAuth2PasswordRequestForm
 from api import db_api
 from api.routes import helpers
 from api_models.user import UserRead
-from core.auth import (
+from common.auth import (
     create_access_token,
     create_refresh_token,
     refresh_token,
     validate_refresh_token,
 )
-from core.config import get_settings
+from common.config import get_settings
 
 
 router = APIRouter(

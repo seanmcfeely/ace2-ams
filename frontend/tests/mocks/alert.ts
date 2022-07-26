@@ -7,6 +7,7 @@ import {
 } from "@/models/alert";
 import { rootAnalysisTreeReadFactory } from "./analysis";
 import { genericObjectReadFactory } from "./genericObject";
+import { analysisModeReadFactory } from "./analysisMode";
 
 export const alertCreateFactory = ({
   name = "",
@@ -24,6 +25,11 @@ export const alertCreateFactory = ({
 });
 
 export const alertTreeReadFactory = ({
+  analysisModeAlert = analysisModeReadFactory({ value: "modeAlert" }),
+  analysisModeCurrent = analysisModeReadFactory({ value: "modeAlert" }),
+  analysisModeDetect = analysisModeReadFactory({ value: "modeDetect" }),
+  analysisModeEvent = analysisModeReadFactory({ value: "modeEvent" }),
+  analysisModeResponse = analysisModeReadFactory({ value: "modeResponse" }),
   childAnalysisTags = [],
   childDetectionPoints = [],
   childTags = [],
@@ -55,6 +61,11 @@ export const alertTreeReadFactory = ({
   version = "testAlertVersion",
 }: Partial<alertTreeRead> = {}): alertTreeRead => ({
   alert: true,
+  analysisModeAlert: analysisModeAlert,
+  analysisModeCurrent: analysisModeCurrent,
+  analysisModeDetect: analysisModeDetect,
+  analysisModeEvent: analysisModeEvent,
+  analysisModeResponse: analysisModeResponse,
   childAnalysisTags: childAnalysisTags,
   childDetectionPoints: childDetectionPoints,
   childTags: childTags,
@@ -87,6 +98,11 @@ export const alertTreeReadFactory = ({
 });
 
 export const alertReadFactory = ({
+  analysisModeAlert = analysisModeReadFactory({ value: "modeAlert" }),
+  analysisModeCurrent = analysisModeReadFactory({ value: "modeAlert" }),
+  analysisModeDetect = analysisModeReadFactory({ value: "modeDetect" }),
+  analysisModeEvent = analysisModeReadFactory({ value: "modeEvent" }),
+  analysisModeResponse = analysisModeReadFactory({ value: "modeResponse" }),
   childAnalysisTags = [],
   childDetectionPoints = [],
   childTags = [],
@@ -115,6 +131,11 @@ export const alertReadFactory = ({
   version = "testAlertVersion",
 }: Partial<alertRead> = {}): alertRead => ({
   alert: true,
+  analysisModeAlert: analysisModeAlert,
+  analysisModeCurrent: analysisModeCurrent,
+  analysisModeDetect: analysisModeDetect,
+  analysisModeEvent: analysisModeEvent,
+  analysisModeResponse: analysisModeResponse,
   childAnalysisTags: childAnalysisTags,
   childDetectionPoints: childDetectionPoints,
   childTags: childTags,

@@ -5,7 +5,7 @@ from typing import Optional, Union
 from api_models import type_str
 from api_models.event import EventRead
 from api_models.observable import ObservableRead
-from api_models.submission import SubmissionRead
+from api_models.submission import SubmissionHistorySnapshot
 from api_models.user import UserRead
 
 
@@ -65,7 +65,7 @@ class ObservableHistoryRead(HistoryBase):
 class SubmissionHistoryRead(HistoryBase):
     """Represents a submission history entry."""
 
-    snapshot: SubmissionRead = Field(
+    snapshot: SubmissionHistorySnapshot = Field(
         description="A JSON representation of the submission after the action was performed"
     )
 
