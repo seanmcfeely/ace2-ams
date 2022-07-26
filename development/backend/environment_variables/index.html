@@ -584,6 +584,10 @@
 <li><strong>ACE_DEV</strong>: If set (to anything), the application will run in development-mode, which means that the Alembic database migrations will be applied and the database seeded with basic information automatically when the application starts. This is enabled by default for the development environment.</li>
 <li><strong>DATABASE_URL</strong>: The connection string used to connect to the PostgreSQL server. It should be in the form of <code>postgresql://user:password@hostname[:port]/dbname</code>.</li>
 <li><strong>DATABASE_TEST_URL</strong>: The connection string used to connect to the test PostgreSQL server. It should be in the form of <code>postgresql://user:password@hostname[:port]/dbname</code>.</li>
+<li><strong>DEFAULT_ANALYSIS_MODE_ALERT</strong>: The alert analysis mode to use if one is not given when creating a submission.</li>
+<li><strong>DEFAULT_ANALYSIS_MODE_DETECT</strong>: The detect analysis mode to use if one is not given when creating a submission.</li>
+<li><strong>DEFAULT_ANALYSIS_MODE_EVENT</strong>: The event analysis mode to use if one is not given when creating a submission.</li>
+<li><strong>DEFAULT_ANALYSIS_MODE_RESPONSE</strong>: The response analysis mode to use if one is not given when creating a submission.</li>
 <li><strong>SQL_ECHO</strong>: If set (to anything), SQLAlchemy will be configured to echo all queries to the console. You can view the queries in the Docker logs for the <code>ace2-ams-api</code> container. This is enabled by default for the development environment.</li>
 <li><strong>TESTING</strong>: If set to "yes", this instructs the API to utilize the test database (such as when running the unit tests).</li>
 </ul>
