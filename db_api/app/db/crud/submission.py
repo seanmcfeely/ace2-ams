@@ -929,8 +929,15 @@ def read_by_uuid(uuid: UUID, db: Session) -> Submission:
     return crud.helpers.read_by_uuid(db_table=Submission, uuid=uuid, db=db)
 
 
-def read_observables(uuids: list[UUID], db: Session) -> list[Observable]:
+def read_observables(uuids: list[UUID], db: Session, observable_types: list[str] = None) -> list[Observable]:
     """Returns a list of the unique observables contained within the given submission UUIDs."""
+
+    if observable_types is None:
+        observable_types = []
+
+    # Verify the submissions exist
+    for uuid in uuids:
+        crud.helpers.exists(uuid=uuid, db_table=Submission, db=db)
 
     # Get a list of all the observables contained within the given submission UUIDs
     query = (
@@ -947,8 +954,12 @@ def read_observables(uuids: list[UUID], db: Session) -> list[Observable]:
             ),
         )
         .join(ObservableType, onclause=ObservableType.uuid == Observable.type_uuid)
-        .order_by(ObservableType.value.asc(), Observable.value.asc())
     )
+
+    if observable_types:
+        query = query.where(ObservableType.value.in_(observable_types))
+
+    query = query.order_by(ObservableType.value.asc(), Observable.value.asc())
     observables: list[Observable] = db.execute(query).unique().scalars().all()
 
     # Associate the analysis metadata with the observables
@@ -1153,13 +1164,9 @@ def read_tree(uuid: UUID, db: Session) -> SubmissionTreeRead:
 
 
 def read_summary_url_domain(uuid: UUID, db: Session) -> URLDomainSummary:
-    # Verify the submission exists
-    crud.helpers.exists(uuid=uuid, db_table=Submission, db=db)
-
-    observables = read_observables(uuids=[uuid], db=db)
-    urls = [observable for observable in observables if observable.type.value == "url"]
-
-    return crud.helpers.read_summary_url_domain(url_observables=urls)
+    return crud.helpers.read_summary_url_domain(
+        url_observables=read_observables(uuids=[uuid], observable_types=["url"], db=db)
+    )
 
 
 def update(model: SubmissionUpdate, db: Session):
