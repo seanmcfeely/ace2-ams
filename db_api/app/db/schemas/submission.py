@@ -233,7 +233,7 @@ class Submission(Base, HasHistory):
     def convert_to_pydantic(self, root_analysis) -> SubmissionTreeRead:
         return SubmissionTreeRead(root_analysis=root_analysis, **self.to_dict())
 
-    def to_dict(self, extra_ignore_keys: Optional[list[str]] = None):
+    def to_dict(self):
         ignore_keys = [
             "analyses",
             "analysis_statuses",
@@ -245,9 +245,6 @@ class Submission(Base, HasHistory):
             "root_analysis",
             "to_dict",
         ]
-
-        if extra_ignore_keys:
-            ignore_keys += extra_ignore_keys
 
         return {key: getattr(self, key) for key in self.__class__.__dict__ if key not in ignore_keys}
 
