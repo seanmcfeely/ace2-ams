@@ -805,6 +805,7 @@ describe("groupItemsByQueue", () => {
 describe("parseAlertSummary", () => {
   it("correctly generates an alert summary given an alertRead object", () => {
     const alertA = alertReadFactory({
+      status: genericObjectReadFactory({ value: "running" }),
       tool: null,
       toolInstance: null,
     });
@@ -821,11 +822,13 @@ describe("parseAlertSummary", () => {
       insertTime: "2020-01-01T00:00:00.000Z",
       owner: userReadFactory(),
       ownershipTime: "2020-01-01T00:00:00.000Z",
+      status: genericObjectReadFactory({ value: "running" }),
       tool: genericObjectReadFactory({ value: "Test Tool" }),
       toolInstance: genericObjectReadFactory({ value: "Test Tool Instance" }),
     });
 
     const expectedA = alertSummaryFactory({
+      status: "running",
       tool: "None",
       toolInstance: "None",
     });
@@ -842,6 +845,7 @@ describe("parseAlertSummary", () => {
       owner: "Test Analyst",
       ownerWithTime: "Test Analyst @ 1/1/2020, 12:00:00 AM UTC",
       ownershipTime: "1/1/2020, 12:00:00 AM UTC",
+      status: "running",
       tool: "Test Tool",
       toolInstance: "Test Tool Instance",
     });
