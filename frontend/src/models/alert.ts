@@ -96,6 +96,7 @@ export interface alertSummary {
   ownershipTime: string | null;
   ownerWithTime: string;
   queue: string;
+  status: string;
   tags: metadataTagRead[];
   tool: string;
   toolInstance: string;
