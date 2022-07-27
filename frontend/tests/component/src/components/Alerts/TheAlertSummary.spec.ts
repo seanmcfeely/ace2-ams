@@ -56,7 +56,7 @@ describe("TheAlertSummary", () => {
     cy.contains("Event Time")
       .siblings()
       .should("have.text", "2/24/2022, 12:00:00 AM UTC");
-    cy.contains("Status").siblings().should("have.text", "complete");
+    cy.contains("Status").siblings().should("have.text", "running");
     cy.contains("Tool").siblings().should("have.text", "testAlertTool");
     cy.contains("Tool Instance")
       .siblings()

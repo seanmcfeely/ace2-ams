@@ -75,7 +75,7 @@ describe("TheAlertsTable", () => {
       "Test Alert",
       "None",
       "OPEN",
-      "complete",
+      "running",
     ];
 
     factory({
