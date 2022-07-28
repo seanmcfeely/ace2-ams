@@ -60,10 +60,11 @@ describe("UtcDatePicker", () => {
       .type("{enter}");
     cy.findByDisplayValue("03/02/2022 18:00:00").should("be.visible");
     cy.get("body").then(() => {
-      expect(Cypress.vueWrapper.emitted("update:modelValue")).to.have.length;
-      expect(
-        Cypress.vueWrapper.emitted("update:modelValue")[0][0],
-      ).to.deep.equal(new Date(2022, 2, 2, 13, 0, 0, 0));
+      const emitted = Cypress.vueWrapper.emitted(
+        "update:modelValue",
+      ) as Date[][];
+      expect(emitted).to.have.length;
+      expect(emitted[0][0]).to.deep.equal(new Date(2022, 2, 2, 13, 0, 0, 0));
     });
   });
   it("correctly updates date prop when a new date is selected through calendar", () => {
@@ -79,10 +80,11 @@ describe("UtcDatePicker", () => {
     cy.findByDisplayValue("03/02/2022 18:01:01").should("be.visible");
     cy.get('[name="save-date"]').click();
     cy.get("body").then(() => {
-      expect(Cypress.vueWrapper.emitted("update:modelValue")).to.have.length;
-      expect(
-        Cypress.vueWrapper.emitted("update:modelValue")[0][0],
-      ).to.deep.equal(new Date(2022, 2, 2, 13, 1, 1, 0));
+      const emitted = Cypress.vueWrapper.emitted(
+        "update:modelValue",
+      ) as Date[][];
+      expect(emitted).to.have.length;
+      expect(emitted[0][0]).to.deep.equal(new Date(2022, 2, 2, 13, 1, 1, 0));
     });
   });
   it("correctly updates when prop is changed", () => {
