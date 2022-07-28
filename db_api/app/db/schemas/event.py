@@ -10,6 +10,7 @@ from typing import Optional
 from api_models.alert_disposition import AlertDispositionRead
 from api_models.event import EventRead
 from db.database import Base
+from db.schemas.analysis_module_type import AnalysisModuleType
 from db.schemas.event_prevention_tool_mapping import event_prevention_tool_mapping
 from db.schemas.event_remediation_mapping import event_remediation_mapping
 from db.schemas.event_tag_mapping import event_tag_mapping
@@ -36,12 +37,25 @@ class Event(Base, HasHistory):
     alert_time = Column(DateTime(timezone=True), index=True)
 
     alerts: list[Submission] = relationship(
-        "Submission", primaryjoin="Submission.event_uuid == Event.uuid", lazy="selectin", viewonly=True
+        "Submission", primaryjoin="Submission.event_uuid == Event.uuid", viewonly=True
     )
 
     alert_uuids = association_proxy("alerts", "uuid")
 
-    comments = relationship("EventComment", lazy="selectin", viewonly=True)
+    analysis_module_types: list[AnalysisModuleType] = relationship(
+        "AnalysisModuleType",
+        secondary="join(AnalysisModuleType, Analysis, AnalysisModuleType.uuid == Analysis.analysis_module_type_uuid)."
+        "join(submission_analysis_mapping, submission_analysis_mapping.c.analysis_uuid == Analysis.uuid)."
+        "join(Submission, Submission.uuid == submission_analysis_mapping.c.submission_uuid)",
+        primaryjoin="Event.uuid == Submission.event_uuid",
+        order_by="asc(AnalysisModuleType.value)",
+        uselist=True,
+        viewonly=True,
+    )
+
+    analysis_types: list[str] = association_proxy("analysis_module_types", "value")
+
+    comments = relationship("EventComment", viewonly=True)
 
     # There isn't currently a way to automatically calculate this time
     contain_time = Column(DateTime(timezone=True), index=True)
@@ -63,49 +77,84 @@ class Event(Base, HasHistory):
 
     owner_uuid = Column(UUID(as_uuid=True), ForeignKey("user.uuid"), nullable=True)
 
-    owner = relationship("User", foreign_keys=[owner_uuid], lazy="selectin")
+    owner = relationship("User", foreign_keys=[owner_uuid])
 
     ownership_time = Column(DateTime(timezone=True), index=True)
 
-    prevention_tools = relationship("EventPreventionTool", secondary=event_prevention_tool_mapping, lazy="selectin")
+    prevention_tools = relationship("EventPreventionTool", secondary=event_prevention_tool_mapping)
 
-    queue = relationship("Queue", lazy="selectin")
+    queue = relationship("Queue")
 
     queue_uuid = Column(UUID(as_uuid=True), ForeignKey("queue.uuid"), nullable=False, index=True)
 
     # There isn't currently a way to automatically calculate this time
     remediation_time = Column(DateTime(timezone=True), index=True)
 
-    remediations = relationship("EventRemediation", secondary=event_remediation_mapping, lazy="selectin")
+    remediations = relationship("EventRemediation", secondary=event_remediation_mapping)
 
-    severity = relationship("EventSeverity", lazy="selectin")
+    severity = relationship("EventSeverity")
 
     severity_uuid = Column(UUID(as_uuid=True), ForeignKey("event_severity.uuid"))
 
-    source = relationship("EventSource", lazy="selectin")
+    source = relationship("EventSource")
 
     source_uuid = Column(UUID(as_uuid=True), ForeignKey("event_source.uuid"))
 
-    status = relationship("EventStatus", lazy="selectin")
+    status = relationship("EventStatus")
 
     status_uuid = Column(UUID(as_uuid=True), ForeignKey("event_status.uuid"), nullable=False)
 
-    tags: list[MetadataTag] = relationship("MetadataTag", secondary=event_tag_mapping, lazy="selectin")
+    tags: list[MetadataTag] = relationship("MetadataTag", secondary=event_tag_mapping)
 
-    threat_actors = relationship("ThreatActor", secondary=event_threat_actor_mapping, lazy="selectin")
+    threat_actors = relationship("ThreatActor", secondary=event_threat_actor_mapping)
 
-    threats = relationship("Threat", secondary=event_threat_mapping, lazy="selectin")
+    threats = relationship("Threat", secondary=event_threat_mapping)
 
-    type = relationship("EventType", lazy="selectin")
+    type = relationship("EventType")
 
     type_uuid = Column(UUID(as_uuid=True), ForeignKey("event_type.uuid"))
 
-    vectors = relationship("EventVector", secondary=event_vector_mapping, lazy="selectin")
+    vectors = relationship("EventVector", secondary=event_vector_mapping)
 
     version = Column(UUID(as_uuid=True), server_default=func.gen_random_uuid(), nullable=False)
 
     def convert_to_pydantic(self) -> EventRead:
-        return EventRead(**self.__dict__)
+        return EventRead(**self.to_dict())
+
+    def to_dict(self):
+        return {
+            "alert_time": self.alert_time,
+            "alert_uuids": self.alert_uuids,
+            "all_tags": self.all_tags,
+            "analysis_types": self.analysis_types,
+            "auto_alert_time": self.auto_alert_time,
+            "auto_disposition_time": self.auto_disposition_time,
+            "auto_event_time": self.auto_event_time,
+            "auto_ownership_time": self.auto_ownership_time,
+            "comments": self.comments,
+            "contain_time": self.contain_time,
+            "created_time": self.created_time,
+            "disposition": self.disposition,
+            "disposition_time": self.disposition_time,
+            "event_time": self.event_time,
+            "name": self.name,
+            "owner": self.owner,
+            "ownership_time": self.ownership_time,
+            "prevention_tools": self.prevention_tools,
+            "queue": self.queue,
+            "remediation_time": self.remediation_time,
+            "remediations": self.remediations,
+            "severity": self.severity,
+            "source": self.source,
+            "status": self.status,
+            "tags": self.tags,
+            "threat_actors": self.threat_actors,
+            "threats": self.threats,
+            "type": self.type,
+            "uuid": self.uuid,
+            "vectors": self.vectors,
+            "version": self.version,
+        }
 
     @property
     def history_snapshot(self):
