@@ -22,13 +22,12 @@
             <div class="formgrid grid">
               <div class="field col-4">
                 <label for="alert-date">Alert Datetime (UTC)</label>
-                <Calendar
+                <br />
+                <UtcDatePicker
                   v-model="alertDate"
-                  :show-time="true"
-                  :show-seconds="true"
                   data-cy="alert-date"
                   class="inputfield w-16rem"
-                />
+                ></UtcDatePicker>
               </div>
             </div>
             <div class="formgrid grid">
@@ -113,7 +112,6 @@
   import { alertCreate } from "@/models/alert";
   import { observableCreateInAlert } from "@/models/observable";
 
-  import Calendar from "primevue/calendar";
   import Button from "primevue/button";
   import Card from "primevue/card";
   import Dropdown from "primevue/dropdown";
@@ -124,6 +122,7 @@
   import TabView from "primevue/tabview";
 
   import NewObservableForm from "@/components/Observables/NewObservableForm.vue";
+  import UtcDatePicker from "@/components/UserInterface/UtcDatePicker.vue";
 
   import { useAlertStore } from "@/stores/alert";
   import { useQueueStore } from "@/stores/queue";
