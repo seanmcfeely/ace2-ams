@@ -80,6 +80,12 @@
       sortable: true,
       default: false,
     },
+    {
+      field: "status",
+      header: "Status",
+      sortable: true,
+      default: true,
+    },
     { field: "queue", header: "Queue", sortable: true, default: false },
     { field: "type", header: "Type", sortable: true, default: false },
   ];
