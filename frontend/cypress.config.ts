@@ -11,6 +11,11 @@ export default defineConfig({
     specPattern: "tests/e2e/specs/**/*.spec.js",
     supportFile: "tests/e2e/support/index-e2e.js",
     baseUrl: "http://ace2-ams:8080",
+    execTimeout: 90000,
+    pageLoadTimeout: 90000,
+    requestTimeout: 10000,
+    responseTimeout: 90000,
+    taskTimeout: 90000,
   },
   component: {
     specPattern: "tests/component/src/**/*.spec.ts",

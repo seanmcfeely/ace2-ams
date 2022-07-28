@@ -37,7 +37,7 @@ describe("TheAlertsTable.vue", () => {
     // Test that all of the selected columns are there
     cy.get(".p-multiselect-label").should(
       "have.text",
-      "Dispositioned Time (UTC), Insert Time (UTC), Event Time (UTC), Name, Owner, Disposition, Dispositioned By, Queue, Type",
+      "Dispositioned Time (UTC), Insert Time (UTC), Event Time (UTC), Name, Owner, Disposition, Dispositioned By, Status, Queue, Type",
     );
     // Close the column multiselect
     cy.get(".p-multiselect-close").click();
@@ -49,7 +49,7 @@ describe("TheAlertsTable.vue", () => {
     // Test that it's gone back to the normal columns
     cy.get(".p-multiselect-label").should(
       "have.text",
-      "Event Time (UTC), Name, Owner, Disposition",
+      "Event Time (UTC), Name, Owner, Disposition, Status",
     );
   });
 
