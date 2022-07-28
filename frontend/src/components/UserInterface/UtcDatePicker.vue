@@ -1,29 +1,30 @@
 <template>
-  <InputText
-    id="test"
-    v-model="displayUtcString"
-    :placeholder="placeholder"
-    :class="inputClass"
-    @focus="toggle"
-    @input="updateDateFromInput"
-    @keydown.esc="updateModelValue"
-    @keydown.enter="updateModelValue"
-  />
-  <OverlayPanel ref="op" :style="overlayStyle">
-    <Calendar
-      v-model="calendarDate"
-      :inline="true"
-      :show-time="true"
-      :show-seconds="true"
-      @date-select="updateDateFromCalendar"
+  <div>
+    <InputText
+      v-model="displayUtcString"
+      :placeholder="placeholder"
+      :class="inputClass"
+      @focus="toggle"
+      @input="updateDateFromInput"
+      @keydown.esc="updateModelValue"
+      @keydown.enter="updateModelValue"
     />
-    <Button
-      name="save-date"
-      icon="pi pi-check"
-      style="margin-left: 23rem; margin-top: 1rem"
-      @click="hidePanel"
-    />
-  </OverlayPanel>
+    <OverlayPanel ref="op" :style="overlayStyle">
+      <Calendar
+        v-model="calendarDate"
+        :inline="true"
+        :show-time="true"
+        :show-seconds="true"
+        @date-select="updateDateFromCalendar"
+      />
+      <Button
+        name="save-date"
+        icon="pi pi-check"
+        style="margin-left: 23rem; margin-top: 1rem"
+        @click="hidePanel"
+      />
+    </OverlayPanel>
+  </div>
 </template>
 
 <script setup lang="ts">
