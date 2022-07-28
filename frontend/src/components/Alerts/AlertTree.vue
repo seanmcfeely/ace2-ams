@@ -121,7 +121,6 @@
         visibleStatus[index] = true;
       });
     }
-    console.log(visibleStatus);
     return visibleStatus;
   });
 
