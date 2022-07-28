@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div style="display: inline">
     <InputText
       v-model="displayUtcString"
       :placeholder="placeholder"
