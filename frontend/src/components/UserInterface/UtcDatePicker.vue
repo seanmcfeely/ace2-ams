@@ -6,7 +6,6 @@
       :class="inputClass"
       @focus="toggle"
       @input="updateDateFromInput"
-      @keydown.esc="updateModelValue"
       @keydown.enter="updateModelValue"
     />
     <OverlayPanel ref="op" :style="overlayStyle">
@@ -21,7 +20,7 @@
         name="save-date"
         icon="pi pi-check"
         style="margin-left: 23rem; margin-top: 1rem"
-        @click="hidePanel"
+        @click="saveFromCalendar"
       />
     </OverlayPanel>
   </div>
@@ -29,23 +28,24 @@
 
 <script setup lang="ts">
   import {
-    ref,
-    defineProps,
     defineEmits,
+    defineProps,
     onMounted,
     PropType,
+    ref,
     watch,
   } from "vue";
-  import { isValidDate } from "@/etc/validators";
-  import OverlayPanel from "primevue/overlaypanel";
   import type CSS from "csstype";
-
-  import Calendar from "primevue/calendar";
-  import InputText from "primevue/inputtext";
-  import Button from "primevue/button";
-
   import moment from "moment";
 
+  import Button from "primevue/button";
+  import Calendar from "primevue/calendar";
+  import InputText from "primevue/inputtext";
+  import OverlayPanel from "primevue/overlaypanel";
+
+  import { isValidDate } from "@/etc/validators";
+
+  const emit = defineEmits(["update:modelValue"]);
   const props = defineProps({
     modelValue: {
       type: Date,
@@ -63,21 +63,12 @@
       default: undefined,
     },
   });
-  const emit = defineEmits(["update:modelValue"]);
-
-  const overlayStyle = ref<CSS.Properties>();
-  const displayUtcString = ref<string>("");
-  const calendarDate = ref<Date>();
-  const inputClass = ref<string>();
-  const hidePanel = () => {
-    toggle(new Event("toggle"));
-    updateModelValue();
-  };
 
   const op = ref<OverlayPanel>();
-  const toggle = (event: Event) => {
-    op.value?.toggle(event);
-  };
+  const overlayStyle = ref<CSS.Properties>();
+  const displayUtcString = ref<string>("");
+  const calendarDate = ref<Date>(); // Offset-adjusted date so that the primevue calendar is in UTC
+  const inputClass = ref<string>();
 
   const setCalendarDateToOffset = (date: Date) => {
     const years = date.getUTCFullYear();
@@ -142,18 +133,15 @@
     );
 
     displayUtcString.value = getUtcDateString(calendarDateCorrect);
-    // emit("update:modelValue", parseUtcString(displayUtcString.value));
   };
 
   const updateDateFromInput = () => {
     const parsedDate = parseUtcString(displayUtcString.value);
     if (isValidDate(parsedDate)) {
       setCalendarDateToOffset(parsedDate);
-      // emit("update:modelValue", parsedDate);
       inputClass.value = "";
     } else if (displayUtcString.value.length === 0) {
       inputClass.value = "";
-      // emit("update:modelValue", null);
       setCalendarDateToOffset(new Date());
     } else {
       inputClass.value = "p-invalid";
@@ -167,5 +155,14 @@
     } else if (displayUtcString.value.length === 0) {
       emit("update:modelValue", null);
     }
+  };
+
+  const saveFromCalendar = () => {
+    toggle(new Event("toggle"));
+    updateModelValue();
+  };
+
+  const toggle = (event: Event) => {
+    op.value?.toggle(event);
   };
 </script>

@@ -110,8 +110,7 @@
   import Dropdown from "primevue/dropdown";
   import Button from "primevue/button";
   import OverlayPanel from "primevue/overlaypanel";
-  import InputText from "primevue/inputtext";
-  import Calendar from "primevue/calendar";
+
   import UtcDatePicker from "@/components/UserInterface/UtcDatePicker.vue";
 
   import { useFilterStore } from "@/stores/filter";

@@ -111,7 +111,6 @@
 
   import { alertCreate } from "@/models/alert";
   import { observableCreateInAlert } from "@/models/observable";
-  import UtcDatePicker from "@/components/UserInterface/UtcDatePicker.vue";
 
   import Button from "primevue/button";
   import Card from "primevue/card";
@@ -123,6 +122,7 @@
   import TabView from "primevue/tabview";
 
   import NewObservableForm from "@/components/Observables/NewObservableForm.vue";
+  import UtcDatePicker from "@/components/UserInterface/UtcDatePicker.vue";
 
   import { useAlertStore } from "@/stores/alert";
   import { useQueueStore } from "@/stores/queue";
