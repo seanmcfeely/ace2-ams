@@ -249,17 +249,19 @@ describe("TheEventsTable.vue", () => {
       method: "GET",
       path: "/api/event/?sort=created_time%7Cdesc&limit=10&offset=0&tags=tag0",
     }).as("filterURL");
+    // Table of alerts should not exist
+    cy.get("tr.p-datatable-row-expansion").should("not.exist");
     // Find the toggle button to expand and click on the first event
     cy.get(".p-row-toggler").eq(0).click();
     cy.wait("@getEventAlerts").its("state").should("eq", "Complete");
     // Table of alerts should now exist
     cy.get("tr.p-datatable-row-expansion").should("exist").should("be.visible");
-    cy.waitFor('[data-cy="event-alerts-table"] > .p-datatable-header');
     // Find and click the first tag in list
     cy.get("[data-cy='tags']").eq(1).contains("tag0").click();
     // Wait for the filtered view to be requested
     cy.wait("@filterURL");
-    cy.waitFor('[data-cy="event-alerts-table"] > .p-datatable-header');
+    // Wait for the alerts to be fetched for the event again since the expansion remains open
+    cy.wait("@getEventAlerts").its("state").should("eq", "Complete");
     // Check which event checkboxes are visible (should be 7, 1 header + 6 events that have the tag, + 7 checkboxes from alerts in expanded event)
     cy.get(".p-checkbox-box").should("have.length", 14);
   });
