@@ -34,7 +34,6 @@ class Submission(Base, HasHistory):
 
     alert = Column(Boolean, default=False, nullable=False, index=True)
 
-    # Analyses are lazy loaded and are not included by default when fetching a submission from the API.
     analyses: list[Analysis] = relationship("Analysis", secondary=submission_analysis_mapping)
 
     # This relationship is used to get a list of the unique analysis statuses within the submission. It is then
@@ -82,7 +81,6 @@ class Submission(Base, HasHistory):
         secondaryjoin="Metadata.uuid == AnalysisMetadata.metadata_uuid",
         order_by="asc(MetadataTag.value)",
         viewonly=True,
-        lazy="selectin",
     )
 
     child_detection_points: list[MetadataDetectionPoint] = relationship(
@@ -93,10 +91,8 @@ class Submission(Base, HasHistory):
         secondaryjoin="Metadata.uuid == AnalysisMetadata.metadata_uuid",
         order_by="asc(MetadataDetectionPoint.value)",
         viewonly=True,
-        lazy="selectin",
     )
 
-    # The relationship is lazy loaded since not everything requires it.
     child_observables: list[Observable] = relationship(
         "Observable",
         secondary="join(Observable, analysis_child_observable_mapping, Observable.uuid == analysis_child_observable_mapping.c.observable_uuid)."
@@ -115,10 +111,9 @@ class Submission(Base, HasHistory):
         foreign_keys="[Submission.uuid, MetadataTag.uuid]",
         order_by="asc(MetadataTag.value)",
         viewonly=True,
-        lazy="selectin",
     )
 
-    comments = relationship("SubmissionComment", lazy="selectin", viewonly=True)
+    comments = relationship("SubmissionComment", viewonly=True)
 
     # The analysis mode to use if the submission turns into an alert
     analysis_mode_alert_uuid = Column(UUID(as_uuid=True), ForeignKey("analysis_mode.uuid"), nullable=False, index=True)
@@ -151,7 +146,7 @@ class Submission(Base, HasHistory):
 
     description = Column(String)
 
-    disposition = relationship("AlertDisposition", lazy="selectin")
+    disposition = relationship("AlertDisposition")
 
     disposition_uuid = Column(UUID(as_uuid=True), ForeignKey("alert_disposition.uuid"), index=True)
 
@@ -163,7 +158,7 @@ class Submission(Base, HasHistory):
     # Needed for the "sort by disposition_user" feature.
     disposition_user_uuid = Column(UUID(as_uuid=True), ForeignKey("user.uuid"), index=True)
 
-    disposition_user = relationship("User", foreign_keys=[disposition_user_uuid], lazy="selectin")
+    disposition_user = relationship("User", foreign_keys=[disposition_user_uuid])
 
     event_time = Column(DateTime(timezone=True), server_default=utcnow(), nullable=False, index=True)
 
@@ -171,7 +166,6 @@ class Submission(Base, HasHistory):
 
     event = relationship("Event", foreign_keys=[event_uuid])
 
-    # History is lazy loaded and is not included by default when fetching a submission from the API.
     history = relationship(
         "SubmissionHistory",
         primaryjoin="SubmissionHistory.record_uuid == Submission.uuid",
@@ -192,30 +186,30 @@ class Submission(Base, HasHistory):
 
     owner_uuid = Column(UUID(as_uuid=True), ForeignKey("user.uuid"), index=True)
 
-    owner = relationship("User", foreign_keys=[owner_uuid], lazy="selectin")
+    owner = relationship("User", foreign_keys=[owner_uuid])
 
     # Stores the most recent time the submission changed owners
     ownership_time = Column(DateTime(timezone=True), index=True)
 
-    queue = relationship("Queue", lazy="selectin")
+    queue = relationship("Queue")
 
     queue_uuid = Column(UUID(as_uuid=True), ForeignKey("queue.uuid"), nullable=False, index=True)
 
     root_analysis_uuid = Column(UUID(as_uuid=True), ForeignKey("analysis.uuid"), nullable=False, index=True)
 
-    root_analysis: Analysis = relationship("Analysis", foreign_keys=[root_analysis_uuid], lazy="selectin")
+    root_analysis: Analysis = relationship("Analysis", foreign_keys=[root_analysis_uuid])
 
-    tags: list[MetadataTag] = relationship("MetadataTag", secondary=submission_tag_mapping, lazy="selectin")
+    tags: list[MetadataTag] = relationship("MetadataTag", secondary=submission_tag_mapping)
 
-    tool = relationship("SubmissionTool", lazy="selectin")
+    tool = relationship("SubmissionTool")
 
     tool_uuid = Column(UUID(as_uuid=True), ForeignKey("submission_tool.uuid"), index=True)
 
-    tool_instance = relationship("SubmissionToolInstance", lazy="selectin")
+    tool_instance = relationship("SubmissionToolInstance")
 
     tool_instance_uuid = Column(UUID(as_uuid=True), ForeignKey("submission_tool_instance.uuid"), index=True)
 
-    type = relationship("SubmissionType", lazy="selectin")
+    type = relationship("SubmissionType")
 
     type_uuid = Column(UUID(as_uuid=True), ForeignKey("submission_type.uuid"), nullable=False, index=True)
 

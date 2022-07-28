@@ -16,12 +16,8 @@ class Threat(Base):
 
     description = Column(String)
 
-    queues = relationship("Queue", secondary=threat_queue_mapping, lazy="selectin")
+    queues = relationship("Queue", secondary=threat_queue_mapping)
 
-    types = relationship(
-        "ThreatType",
-        secondary=threat_threat_type_mapping,
-        passive_deletes=True,
-    )
+    types = relationship("ThreatType", secondary=threat_threat_type_mapping, passive_deletes=True)
 
     value = Column(String, nullable=False, unique=True, index=True)

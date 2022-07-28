@@ -13,6 +13,6 @@ class EventSource(Base):
 
     description = Column(String)
 
-    queues = relationship("Queue", secondary=event_source_queue_mapping, lazy="selectin")
+    queues = relationship("Queue", secondary=event_source_queue_mapping)
 
     value = Column(String, nullable=False, unique=True, index=True)

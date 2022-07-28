@@ -23,9 +23,14 @@ describe("ViewAlert.vue", () => {
         "getAlert",
       );
 
+      cy.intercept(
+        "GET",
+        "/api/alert/02f8299b-2a24-400f-9751-7dd9164daf6a/summary/url_domain",
+      ).as("getAlertUrlDomainSummary");
+
       visitUrl({
         url: "/alert/02f8299b-2a24-400f-9751-7dd9164daf6a",
-        extraIntercepts: ["@getAlert"],
+        extraIntercepts: ["@getAlert", "@getAlertUrlDomainSummary"],
       });
     });
 
@@ -107,9 +112,14 @@ describe("ViewAlert.vue", () => {
         "getAlert",
       );
 
+      cy.intercept(
+        "GET",
+        "/api/alert/02f8299b-2a24-400f-9751-7dd9164daf6a/summary/url_domain",
+      ).as("getAlertUrlDomainSummary");
+
       visitUrl({
         url: "/alert/02f8299b-2a24-400f-9751-7dd9164daf6a",
-        extraIntercepts: ["@getAlert"],
+        extraIntercepts: ["@getAlert", "@getAlertUrlDomainSummary"],
       });
     });
 

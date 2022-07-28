@@ -13,6 +13,6 @@ class EventVector(Base):
 
     description = Column(String)
 
-    queues = relationship("Queue", secondary=event_vector_queue_mapping, lazy="selectin")
+    queues = relationship("Queue", secondary=event_vector_queue_mapping)
 
     value = Column(String, nullable=False, unique=True, index=True)

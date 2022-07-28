@@ -17,7 +17,7 @@ class AnalysisSummaryDetail(Base):
 
     format_uuid = Column(UUID(as_uuid=True), ForeignKey("format.uuid"), nullable=False)
 
-    format: Format = relationship("Format", foreign_keys=[format_uuid], lazy="selectin")
+    format: Format = relationship("Format", foreign_keys=[format_uuid])
 
     header = Column(String, nullable=False)
 

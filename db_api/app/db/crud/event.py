@@ -906,24 +906,8 @@ def read_analysis_type_from_event(
     return db.execute(query).unique().all()
 
 
-def read_by_uuid(uuid: UUID, db: Session, inject_analysis_types: bool = False) -> Event:
-    obj = crud.helpers.read_by_uuid(db_table=Event, uuid=uuid, db=db)
-
-    if inject_analysis_types:
-        query = (
-            select(AnalysisModuleType)
-            .join(Analysis, onclause=Analysis.analysis_module_type_uuid == AnalysisModuleType.uuid)
-            .join(submission_analysis_mapping, onclause=submission_analysis_mapping.c.analysis_uuid == Analysis.uuid)
-            .join(Submission, onclause=Submission.uuid == submission_analysis_mapping.c.submission_uuid)
-            .where(Submission.event_uuid == uuid)
-            .order_by(AnalysisModuleType.value)
-            .distinct()
-        )
-
-        analysis_types: list[AnalysisModuleType] = db.execute(query).scalars().all()
-        obj.analysis_types = [x.value for x in analysis_types]
-
-    return obj
+def read_by_uuid(uuid: UUID, db: Session) -> Event:
+    return crud.helpers.read_by_uuid(db_table=Event, uuid=uuid, db=db)
 
 
 def read_observable_type_from_event(observable_type: str, uuid: UUID, db: Session) -> list[Observable]:

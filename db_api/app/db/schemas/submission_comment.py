@@ -15,7 +15,7 @@ class SubmissionComment(Base):
 
     submission_uuid = Column(UUID(as_uuid=True), ForeignKey("submission.uuid"), index=True)
 
-    submission = relationship("Submission", foreign_keys=[submission_uuid], lazy="selectin")
+    submission = relationship("Submission", foreign_keys=[submission_uuid])
 
     user_uuid = Column(UUID(as_uuid=True), ForeignKey("user.uuid"))
 

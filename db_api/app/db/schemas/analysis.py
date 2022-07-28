@@ -16,16 +16,14 @@ class Analysis(Base):
 
     uuid = Column(UUID(as_uuid=True), primary_key=True, server_default=func.gen_random_uuid())
 
-    analysis_module_type = relationship("AnalysisModuleType", lazy="selectin")
+    analysis_module_type = relationship("AnalysisModuleType")
 
     # An analysis with NULL for analysis_module_type_uuid and target_uuid signifies it is a Root Analysis
     analysis_module_type_uuid = Column(UUID(as_uuid=True), ForeignKey("analysis_module_type.uuid"), nullable=True)
 
     cached_during = Column(TSTZRANGE(), nullable=True)
 
-    child_observables: list[Observable] = relationship(
-        "Observable", secondary=analysis_child_observable_mapping, lazy="selectin"
-    )
+    child_observables: list[Observable] = relationship("Observable", secondary=analysis_child_observable_mapping)
 
     # Using deferred means that when you query the Analysis table, you will not select the details field unless
     # you explicitly ask for it. This is so that we can more efficiently load alert trees without selecting
@@ -41,18 +39,18 @@ class Analysis(Base):
     # NOTE: It is assumed that the analysis status values are "hard coded" to be: running, complete, and ignore.
     # If these are changed or more added, then you will also need to update the Submission.status @property so
     # that it can correctly determine the submission's overall status.
-    status = relationship("AnalysisStatus", lazy="selectin")
+    status = relationship("AnalysisStatus")
 
     status_uuid = Column(UUID(as_uuid=True), ForeignKey("analysis_status.uuid"), nullable=False)
 
     summary = Column(String)
 
-    summary_details: "list[AnalysisSummaryDetail]" = relationship("AnalysisSummaryDetail", lazy="selectin")
+    summary_details: "list[AnalysisSummaryDetail]" = relationship("AnalysisSummaryDetail")
 
     # An analysis with NULL for analysis_module_type_uuid and target_uuid signifies it is a Root Analysis
     target_uuid = Column(UUID(as_uuid=True), ForeignKey("observable.uuid"), nullable=True)
 
-    target: Observable = relationship("Observable", foreign_keys=[target_uuid], lazy="selectin")
+    target: Observable = relationship("Observable", foreign_keys=[target_uuid])
 
     __table_args__ = (
         Index(

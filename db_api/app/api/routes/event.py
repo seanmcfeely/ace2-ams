@@ -178,7 +178,7 @@ def get_all_events(
 
 def get_event(uuid: UUID, db: Session = Depends(get_db)):
     try:
-        return crud.event.read_by_uuid(uuid=uuid, db=db, inject_analysis_types=True)
+        return crud.event.read_by_uuid(uuid=uuid, db=db)
     except UuidNotFoundInDatabase as e:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Event {uuid} does not exist") from e
 

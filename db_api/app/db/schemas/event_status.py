@@ -13,6 +13,6 @@ class EventStatus(Base):
 
     description = Column(String)
 
-    queues = relationship("Queue", secondary=event_status_queue_mapping, lazy="selectin")
+    queues = relationship("Queue", secondary=event_status_queue_mapping)
 
     value = Column(String, nullable=False, unique=True, index=True)

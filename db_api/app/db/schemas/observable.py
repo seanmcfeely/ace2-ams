@@ -48,13 +48,13 @@ class Observable(Base, HasHistory):
         "join(analysis_child_observable_mapping, analysis_child_observable_mapping.c.analysis_uuid == submission_analysis_mapping.c.analysis_uuid)",
         primaryjoin="Observable.uuid == analysis_child_observable_mapping.c.observable_uuid",
         viewonly=True,
-        lazy="selectin",
     )
 
     alert_dispositions: list[AlertDisposition] = association_proxy("alerts", "disposition")
 
     all_analysis_metadata: list[AnalysisMetadata] = relationship(
-        "AnalysisMetadata", primaryjoin="AnalysisMetadata.observable_uuid == Observable.uuid", lazy="selectin"
+        "AnalysisMetadata",
+        primaryjoin="AnalysisMetadata.observable_uuid == Observable.uuid",
     )
 
     # This gets populated by certain submission-related queries.
@@ -78,7 +78,6 @@ class Observable(Base, HasHistory):
         "join(analysis_child_observable_mapping, analysis_child_observable_mapping.c.analysis_uuid == submission_analysis_mapping.c.analysis_uuid)",
         primaryjoin="Observable.uuid == analysis_child_observable_mapping.c.observable_uuid",
         viewonly=True,
-        lazy="selectin",
     )
 
     event_statuses: list[EventStatus] = association_proxy("events", "status")
@@ -89,7 +88,6 @@ class Observable(Base, HasHistory):
 
     for_detection = Column(Boolean, default=False, nullable=False, index=True)
 
-    # History is lazy loaded and is not included by default when fetching an observable from the API.
     history = relationship(
         "ObservableHistory",
         primaryjoin="ObservableHistory.record_uuid == Observable.uuid",
@@ -103,12 +101,11 @@ class Observable(Base, HasHistory):
         "ObservableRelationship",
         primaryjoin="ObservableRelationship.observable_uuid == Observable.uuid",
         viewonly=True,
-        lazy="selectin",
     )
 
-    tags: list[MetadataTag] = relationship("MetadataTag", secondary=observable_tag_mapping, lazy="selectin")
+    tags: list[MetadataTag] = relationship("MetadataTag", secondary=observable_tag_mapping)
 
-    type = relationship("ObservableType", lazy="selectin")
+    type = relationship("ObservableType")
 
     type_uuid = Column(UUID(as_uuid=True), ForeignKey("observable_type.uuid"), nullable=False)
 

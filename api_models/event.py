@@ -160,7 +160,7 @@ class EventRead(EventBase):
 
     vectors: list[EventVectorRead] = Field(description="A list of vectors assigned to the event")
 
-    _convert_association_list: classmethod = validators.convert_association_list("alert_uuids")
+    _convert_association_list: classmethod = validators.convert_association_list("alert_uuids", "analysis_types")
 
     class Config:
         orm_mode = True

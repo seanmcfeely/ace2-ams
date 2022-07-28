@@ -981,7 +981,7 @@ def test_read_by_uuid(db):
         type="type1", value="value1", parent_analysis=alert1.root_analysis, db=db
     )
     factory.analysis.create_or_read(
-        analysis_module_type=factory.analysis_module_type.create_or_read(value="module1", db=db),
+        analysis_module_type=factory.analysis_module_type.create_or_read(value="module2", db=db),
         submission=alert1,
         target=observable1,
         db=db,
@@ -992,17 +992,13 @@ def test_read_by_uuid(db):
         type="type2", value="value2", parent_analysis=alert2.root_analysis, db=db
     )
     factory.analysis.create_or_read(
-        analysis_module_type=factory.analysis_module_type.create_or_read(value="module2", db=db),
+        analysis_module_type=factory.analysis_module_type.create_or_read(value="module1", db=db),
         submission=alert2,
         target=observable2,
         db=db,
     )
 
     result = crud.event.read_by_uuid(uuid=event.uuid, db=db)
-    assert result == event
-    assert not getattr(result, "analysis_types", False)
-
-    result = crud.event.read_by_uuid(uuid=event.uuid, inject_analysis_types=True, db=db)
     assert result == event
     assert result.analysis_types == ["module1", "module2"]
 

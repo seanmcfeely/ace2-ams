@@ -13,6 +13,6 @@ class ThreatActor(Base):
 
     description = Column(String)
 
-    queues = relationship("Queue", secondary=threat_actor_queue_mapping, lazy="selectin")
+    queues = relationship("Queue", secondary=threat_actor_queue_mapping)
 
     value = Column(String, nullable=False, unique=True, index=True)

@@ -18,4 +18,4 @@ class AnalysisMetadata(Base):
     metadata_uuid = Column(UUID(as_uuid=True), ForeignKey("metadata.uuid"), primary_key=True)
 
     # The name "metadata" is used by SQLAlchemy, hence the name "metadata_object"
-    metadata_object: Metadata = relationship("Metadata", lazy="selectin")
+    metadata_object: Metadata = relationship("Metadata")

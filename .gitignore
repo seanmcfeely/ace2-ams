@@ -162,3 +162,6 @@ frontend/cypress/downloads
 # Frontend test coverage files
 instrumented/
 .nyc_output
+
+# cProfile output
+*.stats

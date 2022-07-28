@@ -17,11 +17,11 @@ class ObservableRelationship(Base):
 
     related_observable_uuid = Column(UUID(as_uuid=True), ForeignKey("observable.uuid"))
 
-    related_observable = relationship("Observable", foreign_keys=[related_observable_uuid], lazy="selectin")
+    related_observable = relationship("Observable", foreign_keys=[related_observable_uuid])
 
     type_uuid = Column(UUID(as_uuid=True), ForeignKey("observable_relationship_type.uuid"))
 
-    type = relationship("ObservableRelationshipType", foreign_keys=[type_uuid], lazy="selectin")
+    type = relationship("ObservableRelationshipType", foreign_keys=[type_uuid])
 
     __table_args__ = (
         UniqueConstraint("observable_uuid", "related_observable_uuid", "type_uuid", name="observable_related_type_uc"),
