@@ -48,6 +48,7 @@ describe("NewObservableForm", () => {
     cy.findByText("Directives").should("be.visible");
     // Check all the initial inputs
     cy.get("[name=observable-time]")
+      .find("input")
       .invoke("attr", "placeholder")
       .should("contain", "No time selected");
     cy.get("[name=observable-type]").should("have.text", "file");

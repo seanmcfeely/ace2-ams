@@ -31,10 +31,8 @@
     >
       <div class="formgrid grid">
         <div class="field col-2 px-1">
-          <Calendar
+          <UtcDatePicker
             v-model="observablesCopy[index].time"
-            :show-time="true"
-            :show-seconds="true"
             data-cy="alert-date"
             name="observable-time"
             class="inputfield w-16rem"
@@ -119,7 +117,7 @@
   import MultiSelect from "primevue/multiselect";
 
   import ObservableInput from "@/components/Observables/ObservableInput.vue";
-  import Calendar from "primevue/calendar";
+  import UtcDatePicker from "@/components/UserInterface/UtcDatePicker.vue";
 
   import { useObservableTypeStore } from "@/stores/observableType";
   import { useMetadataDirectiveStore } from "@/stores/metadataDirective";
