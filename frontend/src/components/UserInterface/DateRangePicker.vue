@@ -1,111 +1,107 @@
 <template>
-  <!--      DATE PICKER OPTIONS  -->
-  <Button
-    icon="pi pi-calendar"
-    data-cy="date-range-picker-options-button"
-    @click="toggleOptionsMenu"
-  />
-  <OverlayPanel ref="op">
-    <div class="p-d-flex">
-      <Dropdown
-        v-model="currentRangeFilter"
-        :options="rangeFilterOptions"
-        @change="toggleOptionsMenu"
+  <div>
+    <!--      DATE PICKER OPTIONS  -->
+    <Button
+      icon="pi pi-calendar"
+      data-cy="date-range-picker-options-button"
+      @click="toggleOptionsMenu"
+    />
+    <OverlayPanel ref="op">
+      <div class="p-d-flex">
+        <Dropdown
+          v-model="currentRangeFilter"
+          :options="rangeFilterOptions"
+          @change="toggleOptionsMenu"
+        />
+      </div>
+      <div class="p-d-flex p-flex-column p-jc-center">
+        <div class="p-mb-2">
+          <Button label="Today" class="p-button-sm" @click="setRange(TODAY)" />
+        </div>
+        <div class="p-mb-2">
+          <Button
+            label="Yesterday"
+            class="p-button-sm"
+            @click="setRange(YESTERDAY)"
+          />
+        </div>
+        <div class="p-mb-2">
+          <Button
+            label="Last 7 Days"
+            class="p-button-sm"
+            @click="setRange(LAST_SEVEN)"
+          />
+        </div>
+        <div class="p-mb-2">
+          <Button
+            label="Last 30 Days"
+            class="p-button-sm"
+            @click="setRange(LAST_THIRTY)"
+          />
+        </div>
+        <div class="p-mb-2">
+          <Button
+            label="Last 60 Days"
+            class="p-button-sm"
+            @click="setRange(LAST_SIXTY)"
+          />
+        </div>
+        <div class="p-mb-2">
+          <Button
+            label="This Month"
+            class="p-button-sm"
+            @click="setRange(THIS_MONTH)"
+          />
+        </div>
+        <div class="p-mb-2">
+          <Button
+            label="Last Month"
+            class="p-button-sm"
+            @click="setRange(LAST_MONTH)"
+          />
+        </div>
+      </div>
+    </OverlayPanel>
+    <span style="postition: absolute">
+      <UtcDatePicker
+        v-model="startDate"
+        v-tooltip.top="{
+          value: startDateLocal,
+          disabled: !startDateLocal,
+        }"
+        data-cy="date-range-picker-start-input"
+        placeholder="The beginning of time"
+        @update:model-value="dateSelect($event, startFilter)"
+        @update:model-value.delete="dateSelect(null)"
+      ></UtcDatePicker>
+      <Button
+        data-cy="date-range-picker-start-clear"
+        icon="pi pi-times"
+        class="p-button-outlined p-button-secondary"
+        @click="clearDate(startFilter)"
       />
-    </div>
-    <div class="p-d-flex p-flex-column p-jc-center">
-      <div class="p-mb-2">
-        <Button label="Today" class="p-button-sm" @click="setRange(TODAY)" />
-      </div>
-      <div class="p-mb-2">
-        <Button
-          label="Yesterday"
-          class="p-button-sm"
-          @click="setRange(YESTERDAY)"
-        />
-      </div>
-      <div class="p-mb-2">
-        <Button
-          label="Last 7 Days"
-          class="p-button-sm"
-          @click="setRange(LAST_SEVEN)"
-        />
-      </div>
-      <div class="p-mb-2">
-        <Button
-          label="Last 30 Days"
-          class="p-button-sm"
-          @click="setRange(LAST_THIRTY)"
-        />
-      </div>
-      <div class="p-mb-2">
-        <Button
-          label="Last 60 Days"
-          class="p-button-sm"
-          @click="setRange(LAST_SIXTY)"
-        />
-      </div>
-      <div class="p-mb-2">
-        <Button
-          label="This Month"
-          class="p-button-sm"
-          @click="setRange(THIS_MONTH)"
-        />
-      </div>
-      <div class="p-mb-2">
-        <Button
-          label="Last Month"
-          class="p-button-sm"
-          @click="setRange(LAST_MONTH)"
-        />
-      </div>
-    </div>
-  </OverlayPanel>
-
-  <!--      DATE PICKERS -->
-  <Calendar
-    v-model="startDate"
-    v-tooltip.top="{
-      value: startDateLocal,
-      disabled: !startDateLocal,
-    }"
-    :show-time="true"
-    :show-seconds="true"
-    data-cy="date-range-picker-start-input"
-    class="inputfield w-16rem"
-    placeholder="The beginning of time"
-    @update:model-value="dateSelect($event, startFilter)"
-    @update:model-value.delete="dateSelect(null)"
-  />
-  <Button
-    data-cy="date-range-picker-start-clear"
-    icon="pi pi-times"
-    class="p-button-outlined p-button-secondary"
-    @click="clearDate(startFilter)"
-  />
-
-  <span> to </span>
-
-  <Calendar
-    v-model="endDate"
-    v-tooltip.top="{
-      value: endDateLocal,
-      disabled: !endDateLocal,
-    }"
-    :show-time="true"
-    :show-seconds="true"
-    data-cy="date-range-picker-end-input"
-    class="inputfield w-16rem"
-    placeholder="Now"
-    @update:model-value="dateSelect($event, endFilter)"
-    @update:model-value.delete="dateSelect(null)"
-  />
-  <Button
-    data-cy="date-range-picker-end-clear"
-    icon="pi pi-times"
-    class="p-button-outlined p-button-secondary"
-    @click="clearDate(endFilter)"
-  />
+    </span>
+    <span style="postition: absolute"> to </span>
+    <span style="postition: absolute">
+      <UtcDatePicker
+        v-model="endDate"
+        v-tooltip.top="{
+          value: endDateLocal,
+          disabled: !endDateLocal,
+        }"
+        data-cy="date-range-picker-end-input"
+        placeholder="Now"
+        @update:model-value="dateSelect($event, endFilter)"
+        @update:model-value.delete="dateSelect(null)"
+      ></UtcDatePicker>
+      <Button
+        data-cy="date-range-picker-end-clear"
+        icon="pi pi-times"
+        class="p-button-outlined p-button-secondary"
+        @click="clearDate(endFilter)"
+      />
+    </span>
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -116,6 +112,7 @@
   import OverlayPanel from "primevue/overlaypanel";
   import InputText from "primevue/inputtext";
   import Calendar from "primevue/calendar";
+  import UtcDatePicker from "@/components/UserInterface/UtcDatePicker.vue";
 
   import { useFilterStore } from "@/stores/filter";
 
