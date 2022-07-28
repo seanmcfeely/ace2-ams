@@ -68,6 +68,7 @@
         v-tooltip.top="{
           value: startDateLocal,
           disabled: !startDateLocal,
+          class: 'tooltip',
         }"
         data-cy="date-range-picker-start-input"
         placeholder="The beginning of time"
@@ -88,6 +89,7 @@
         v-tooltip.top="{
           value: endDateLocal,
           disabled: !endDateLocal,
+          class: 'tooltip',
         }"
         data-cy="date-range-picker-end-input"
         placeholder="Now"
@@ -272,3 +274,10 @@
     op.value.toggle(e);
   };
 </script>
+
+<style>
+  .tooltip {
+    position: absolute;
+    z-index: 2;
+  }
+</style>
