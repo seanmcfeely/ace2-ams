@@ -13,6 +13,6 @@ class ThreatType(Base):
 
     description = Column(String)
 
-    queues = relationship("Queue", secondary=threat_type_queue_mapping, lazy="selectin")
+    queues = relationship("Queue", secondary=threat_type_queue_mapping)
 
     value = Column(String, nullable=False, unique=True, index=True)

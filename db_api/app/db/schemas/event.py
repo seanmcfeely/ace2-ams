@@ -66,7 +66,6 @@ class Event(Base, HasHistory):
 
     event_time = Column(DateTime(timezone=True), index=True)
 
-    # History is lazy loaded and is not included by default when fetching an event from the API.
     history: list[EventHistory] = relationship(
         "EventHistory",
         primaryjoin="EventHistory.record_uuid == Event.uuid",
