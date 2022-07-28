@@ -170,7 +170,7 @@ describe("ObjectPropertyInput", () => {
       props: {
         modelValue: {
           propertyType: "eventTimeAfter",
-          propertyValue: new Date(2022, 4, 25, 12, 0, 0, 0),
+          propertyValue: new Date(Date.UTC(2022, 4, 25, 12, 0, 0, 0)),
         },
         queue: "external",
         formType: "filter",

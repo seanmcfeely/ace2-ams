@@ -59,14 +59,11 @@
         ></Chips>
       </div>
       <div v-else-if="isDate" class="field">
-        <Calendar
+        <UtcDatePicker
           v-model="propertyValue"
-          :show-time="true"
-          :show-seconds="true"
           data-cy="alert-date"
           class="inputfield w-16rem"
           placeholder="Enter a date!"
-          :manual-input="true"
           @update:model-value="updatePropertyValue"
         />
       </div>
@@ -123,7 +120,8 @@
   import InputText from "primevue/inputtext";
   import Multiselect from "primevue/multiselect";
 
-  import Calendar from "primevue/calendar";
+  import UtcDatePicker from "@/components/UserInterface/UtcDatePicker.vue";
+
   import { propertyOption } from "@/models/base";
   import { isObject } from "@/etc/validators";
 
