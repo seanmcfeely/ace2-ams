@@ -1,4 +1,6 @@
-FROM tiangolo/uvicorn-gunicorn-fastapi:python3.9-slim
+ARG fastapi_base=tiangolo/uvicorn-gunicorn-fastapi:python3.9-slim
+
+FROM $fastapi_base
 
 ARG http_proxy
 ARG https_proxy

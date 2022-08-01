@@ -1,5 +1,8 @@
+ARG node_base=node:16-alpine
+ARG nginx_base=nginx:1.22.0-alpine
+
 # BUILD STAGE
-FROM node:16-alpine as builder
+FROM $node_base as builder
 
 ARG http_proxy
 ARG https_proxy
@@ -22,7 +25,7 @@ COPY . .
 RUN npm run build
 
 # PRODUCTION STAGE
-FROM nginx:stable-alpine as production
+FROM $nginx_base as production
 
 COPY --from=builder /app/dist /usr/share/nginx/html
 
