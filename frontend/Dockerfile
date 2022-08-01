@@ -1,5 +1,5 @@
 ARG node_base=node:16-alpine
-ARG nginx_base=nginx:stable-alpine
+ARG nginx_base=nginx:1.22.0-alpine
 
 # BUILD STAGE
 FROM $node_base as builder

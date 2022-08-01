@@ -1,4 +1,4 @@
-ARG nginx_base=nginx:stable-alpine
+ARG nginx_base=nginx:1.22.0-alpine
 
 FROM $nginx_base as production
 
