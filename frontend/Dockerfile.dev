@@ -1,4 +1,6 @@
-FROM cypress/included:10.3.0
+ARG cypress_base=cypress/included:10.3.0
+
+FROM $cypress_base
 
 ARG http_proxy
 ARG https_proxy
