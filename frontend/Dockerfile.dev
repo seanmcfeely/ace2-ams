@@ -1,4 +1,4 @@
-ARG cypress_base=cypress/included:10.3.0
+ARG cypress_base=cypress/included:10.3.1
 
 FROM $cypress_base
 
