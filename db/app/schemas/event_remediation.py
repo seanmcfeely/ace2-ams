@@ -1,0 +1,18 @@
+from sqlalchemy import func, Column, String
+from sqlalchemy.dialects.postgresql import UUID
+from sqlalchemy.orm import relationship
+
+from database import Base
+from schemas.event_remediation_queue_mapping import event_remediation_queue_mapping
+
+
+class EventRemediation(Base):
+    __tablename__ = "event_remediation"
+
+    uuid = Column(UUID(as_uuid=True), primary_key=True, server_default=func.gen_random_uuid())
+
+    description = Column(String)
+
+    queues = relationship("Queue", secondary=event_remediation_queue_mapping)
+
+    value = Column(String, nullable=False, unique=True, index=True)

@@ -1,0 +1,14 @@
+ARG python_base=public.ecr.aws/docker/library/python:3.9-slim
+
+FROM $python_base
+
+WORKDIR /app
+
+ARG http_proxy
+ARG https_proxy
+ARG pip_install_options
+
+COPY requirements.txt .
+RUN http_proxy="$http_proxy" https_proxy="$https_proxy" pip install -r requirements.txt ${pip_install_options}
+
+ENTRYPOINT ["tail", "-f", "/dev/null"]
