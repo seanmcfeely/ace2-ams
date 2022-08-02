@@ -5,21 +5,21 @@ import time
 
 from sqlalchemy.orm import Session
 
-from db.database import get_db
+from database import get_db
 from tests import factory
 
 
 def run(args):
     # When you specify the path to the JSON file, you do so from the perspective
-    # of outisde the container, so you preface it with backend/ so that you can
+    # of outisde the container, so you preface it with db/ so that you can
     # use tab-completion on your local command line.
     #
-    # However, this runs inside of the container, so the backend/ part of the path
+    # However, this runs inside of the container, so the db/ part of the path
     # does not exist and must be removed so that it is a valid path inside the container.
     #
-    # Example: db_api/app/tests/alerts/blah.json -> /app/tests/alerts/blah.json
+    # Example: db/app/tests/alerts/blah.json -> /app/tests/alerts/blah.json
     start = time.time()
-    json_path = args.alert_json_path.replace("db_api", "")
+    json_path = args.alert_json_path.replace("db", "")
 
     db: Session = next(get_db())
 
