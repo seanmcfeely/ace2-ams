@@ -6,28 +6,27 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 from sqlalchemy.orm.decl_api import DeclarativeMeta
 
-from common.auth import hash_password
-from common.config import is_in_testing_mode
-from db.database import get_db
-from db.schemas.alert_disposition import AlertDisposition
-from db.schemas.analysis_mode import AnalysisMode
-from db.schemas.analysis_status import AnalysisStatus
-from db.schemas.event_prevention_tool import EventPreventionTool
-from db.schemas.event_remediation import EventRemediation
-from db.schemas.event_severity import EventSeverity
-from db.schemas.event_source import EventSource
-from db.schemas.event_status import EventStatus
-from db.schemas.event_type import EventType
-from db.schemas.event_vector import EventVector
-from db.schemas.metadata_directive import MetadataDirective
-from db.schemas.observable_relationship_type import ObservableRelationshipType
-from db.schemas.observable_type import ObservableType
-from db.schemas.queue import Queue
-from db.schemas.seed import Seed
-from db.schemas.submission_type import SubmissionType
-from db.schemas.threat_type import ThreatType
-from db.schemas.user import User
-from db.schemas.user_role import UserRole
+from auth import hash_password
+from database import get_db
+from schemas.alert_disposition import AlertDisposition
+from schemas.analysis_mode import AnalysisMode
+from schemas.analysis_status import AnalysisStatus
+from schemas.event_prevention_tool import EventPreventionTool
+from schemas.event_remediation import EventRemediation
+from schemas.event_severity import EventSeverity
+from schemas.event_source import EventSource
+from schemas.event_status import EventStatus
+from schemas.event_type import EventType
+from schemas.event_vector import EventVector
+from schemas.metadata_directive import MetadataDirective
+from schemas.observable_relationship_type import ObservableRelationshipType
+from schemas.observable_type import ObservableType
+from schemas.queue import Queue
+from schemas.seed import Seed
+from schemas.submission_type import SubmissionType
+from schemas.threat_type import ThreatType
+from schemas.user import User
+from schemas.user_role import UserRole
 
 
 # NOTE: The print statements in this file show up in the Docker logs when you run:
@@ -211,6 +210,6 @@ def seed(db: Session):
     db.commit()
 
 
-if __name__ == "__main__" and not is_in_testing_mode():
+if __name__ == "__main__":
     db: Session = next(get_db())
     seed(db)
