@@ -19,6 +19,7 @@
   import { testConfiguration } from "@/etc/configuration/test/index";
 
   const testingModeEnabled = import.meta.env.VITE_TESTING_MODE;
+  /* istanbul ignore next */
   const config =
     testingModeEnabled === "yes" ? testConfiguration : configuration;
 
