@@ -12,6 +12,7 @@ describe("TheAlertsTable.vue", () => {
       body: {
         template: "small_template.json",
         count: 6,
+        delay: 1,
       },
     });
   });
