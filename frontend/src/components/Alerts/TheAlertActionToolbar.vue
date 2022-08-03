@@ -64,7 +64,7 @@
           disabled
           @click="open('RemediationModal')"
         />
-        <RemediationModal />
+        <!-- <RemediationModal /> -->
       </template>
     </TheObjectActionToolbarVue>
   </div>
@@ -76,7 +76,6 @@
   import Button from "primevue/button";
 
   import TheObjectActionToolbarVue from "@/components/Objects/TheObjectActionToolbar.vue";
-  import RemediationModal from "@/components/Modals/RemediateModal.vue";
   import DispositionModal from "@/components/Modals/DispositionModal.vue";
   import AddObservablesModal from "@/components/Modals/AddObservablesModal.vue";
 
