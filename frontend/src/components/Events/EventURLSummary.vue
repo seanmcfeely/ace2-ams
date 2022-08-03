@@ -60,11 +60,7 @@
     );
 
     return urlObservables.sort((a, b) => {
-      if (a.type.value === b.type.value) {
-        return a.value < b.value ? -1 : 1;
-      } else {
-        return a.type.value < b.type.value ? -1 : 1;
-      }
+      return a.value < b.value ? -1 : 1;
     });
   };
 </script>
