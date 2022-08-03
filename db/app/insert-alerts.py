@@ -1,6 +1,5 @@
 import argparse
 import cProfile
-import sys
 import time
 
 from sqlalchemy.orm import Session
