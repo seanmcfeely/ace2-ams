@@ -12,6 +12,7 @@ describe("TheAlertsTable.vue", () => {
       body: {
         template: "small_template.json",
         count: 6,
+        delay: 1,
       },
     });
   });
@@ -151,7 +152,7 @@ describe("TheAlertsTable.vue", () => {
     cy.get("tr").should("have.length", 2);
   });
 
-  it("correctly changes the sort filter when a column is clicked", () => {
+  it.only("correctly changes the sort filter when a column is clicked", () => {
     cy.intercept("GET", "/api/alert/?sort=name%7Casc&limit=10&offset=0").as(
       "nameSortAsc",
     );
