@@ -5,8 +5,6 @@ DB=${POSTGRES_DB:-ace}
 USER=${POSTGRES_USER:-ace}
 PASS=${POSTGRES_PASSWORD:-password}
 DATABASE_URL=postgresql://$USER:$PASS@ace2-db-test:5432/$DB
-CURRENT_DIR=`pwd`
-PARENT_DIR=`dirname "$CURRENT_DIR"`
 
 # Remove the leading db_api/ and app/ from the command line argument (if they are there) so the path works inside the container.
 NEW_PATH=${1#db_api/}
@@ -29,7 +27,7 @@ docker network create ace2-db-test-net > /dev/null
 echo "Creating temporary database container"
 cd ../db
 docker build -t ace2-db-test -f Dockerfile.database .
-docker run --rm -d --net ace2-db-test-net --name ace2-db-test -e POSTGRES_DB=$DB -e POSTGRES_USER=$USER -e POSTGRES_PASSWORD=$PASS ace2-db-test > /dev/null
+docker run -d --net ace2-db-test-net --name ace2-db-test -e POSTGRES_DB=$DB -e POSTGRES_USER=$USER -e POSTGRES_PASSWORD=$PASS ace2-db-test > /dev/null
 
 # Build and run a temporary Python container to run the tests in
 echo "Creating temporary Python container"

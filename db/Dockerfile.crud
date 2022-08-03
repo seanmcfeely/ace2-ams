@@ -10,7 +10,10 @@ ARG http_proxy
 ARG https_proxy
 ARG pip_install_options
 
-COPY requirements.txt .
+COPY db/requirements.txt .
 RUN http_proxy="$http_proxy" https_proxy="$https_proxy" pip install -r requirements.txt ${pip_install_options}
+
+COPY db/app/ /app
+COPY api_models/ /app/api_models
 
 ENTRYPOINT ["tail", "-f", "/dev/null"]
