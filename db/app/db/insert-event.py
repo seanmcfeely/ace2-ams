@@ -5,7 +5,7 @@ import time
 from sqlalchemy.orm import Session
 
 from db.database import get_db
-from db.tests import factory
+from tests import factory
 
 
 def run(args):
