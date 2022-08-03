@@ -6,7 +6,6 @@ USER=${POSTGRES_USER:-ace}
 PASS=${POSTGRES_PASSWORD:-password}
 DATABASE_URL=postgresql://$USER:$PASS@ace2-db-migration:5432/$DB
 CURRENT_DIR=`pwd`
-PARENT_DIR=`dirname "$CURRENT_DIR"`
 
 # Make sure leftover containers from previous runs don't exist
 echo "Removing leftover Docker containers"
@@ -28,8 +27,9 @@ docker run --rm -d --net ace2-db-migration-net --name ace2-db-migration -e POSTG
 
 # Build and run a temporary Python container to build the migration
 echo "Creating temporary Python container"
-docker build -t ace2-db-crud-migration -f Dockerfile.crud .
-docker run --rm -d --net ace2-db-migration-net --name ace2-db-crud-migration --volume=$CURRENT_DIR/app/:/app --volume=$PARENT_DIR/api_models:/app/api_models -e DATABASE_URL=$DATABASE_URL ace2-db-crud-migration > /dev/null
+cd ..
+docker build -t ace2-db-crud-migration -f db/Dockerfile.crud .
+docker run -d --net ace2-db-migration-net --name ace2-db-crud-migration --volume=$CURRENT_DIR/app/db/migrations/:/app/db/migrations -e DATABASE_URL=$DATABASE_URL ace2-db-crud-migration > /dev/null
 
 # Run the tests inside the Python container
 echo "Applying current database schema"
@@ -43,4 +43,3 @@ echo "Cleaning up"
 docker rm -f ace2-db-crud-migration > /dev/null
 docker rm -f ace2-db-migration > /dev/null
 docker network rm ace2-db-migration-net > /dev/null
-rmdir app/api_models

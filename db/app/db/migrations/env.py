@@ -11,12 +11,13 @@ from sqlalchemy import engine_from_config, pool
 # the folder containing this application code, so it is manually inserted so that imports work.
 current = os.path.dirname(os.path.realpath(__file__))
 parent = os.path.dirname(current)
-sys.path.append(parent)
+grandparent = os.path.dirname(parent)
+sys.path.append(grandparent)
 
 from db.config import get_settings
 
 # Load the database schemas so that Alembic knows what it needs to create/update
-import schemas
+from db import schemas
 from db.database import Base
 
 # Alembic Config object, which provides access to values within the .ini file
