@@ -33,10 +33,10 @@ docker run -d --net ace2-db-migration-net --name ace2-db-crud-migration --volume
 
 # Run the tests inside the Python container
 echo "Applying current database schema"
-docker exec ace2-db-crud-migration alembic upgrade head
+docker exec ace2-db-crud-migration alembic -c db/alembic.ini upgrade head
 
 # Build the new database migration inside the Python container
-docker exec ace2-db-crud-migration alembic revision --autogenerate -m "$1"
+docker exec ace2-db-crud-migration alembic -c db/alembic.ini revision --autogenerate -m "$1"
 
 # Cleanup
 echo "Cleaning up"
