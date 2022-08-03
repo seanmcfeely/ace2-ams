@@ -3,6 +3,9 @@
 <!-- to controlling what section of event details is currently displayed -->
 
 <template>
+  <Message v-if="error" severity="error" data-cy="error-banner">{{
+    error
+  }}</Message>
   <MegaMenu
     v-if="eventStore.open"
     :model="menuItems"
@@ -27,6 +30,7 @@
   import { ref, defineProps, computed, watch, defineEmits, inject } from "vue";
 
   import MegaMenu from "primevue/megamenu";
+  import Message from "primevue/message";
 
   import { useAuthStore } from "@/stores/auth";
   import { useEventStore } from "@/stores/event";
@@ -120,11 +124,11 @@
 
   const analysisMenuItems = computed(() => {
     let analysisMenuItems: menuItem[] = [];
-    let processed: string[] = [];
+    const processed: string[] = [];
     if (eventStore.open) {
       analysisMenuItems = eventStore.open.analysisTypes
         .filter((analysisType) => {
-          let analysisTypeFormatted = formatAnalysisType(analysisType);
+          const analysisTypeFormatted = formatAnalysisType(analysisType);
           if (
             analysisTypeFormatted in analysisModuleComponents && // Filter out analysis modules that don't have configured components
             !processed.includes(analysisTypeFormatted) //  OR that have already been added to the list
@@ -134,7 +138,7 @@
           }
         })
         .map((analysisType) => {
-          let analysisTypeFormatted = formatAnalysisType(analysisType);
+          const analysisTypeFormatted = formatAnalysisType(analysisType);
           return {
             label: analysisTypeFormatted,
             command: () => {

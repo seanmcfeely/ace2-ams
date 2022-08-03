@@ -89,8 +89,14 @@ describe("AssignModal", () => {
     cy.findByText("Assign").click();
     cy.get("@updateAlert").should("have.been.calledOnce");
     cy.get("[data-cy=AssignModal]").should("not.exist");
+    cy.get("body").then(() => {
+      cy.wrap(Cypress.vueWrapper.emitted()).should(
+        "have.property",
+        "requestReload",
+      );
+    });
   });
-  it("correctly shows error if request to assign owner fails", () => {
+  it("correctly shows error if request to assign owner fails with Error", () => {
     cy.stub(Alert, "update")
       .withArgs([
         { uuid: "uuid", owner: "analyst", historyUsername: "analyst" },
@@ -104,5 +110,26 @@ describe("AssignModal", () => {
     cy.get("@updateAlert").should("have.been.calledOnce");
     cy.get("[data-cy=AssignModal]").should("be.visible");
     cy.contains("404 request failed").should("be.visible");
+    cy.get(".p-message-close").click();
+    cy.contains("404 request failed").should("not.exist");
+  });
+  it("correctly shows error if request to assign owner fails with error string", () => {
+    cy.stub(Alert, "update")
+      .withArgs([
+        { uuid: "uuid", owner: "analyst", historyUsername: "analyst" },
+      ])
+      .as("updateAlert")
+      .callsFake(async () => {
+        throw "404 request failed";
+      });
+    factory({ users: users, selected: ["uuid"] });
+    cy.contains("Select a user").click();
+    cy.contains("Analyst B").click();
+    cy.findByText("Assign").click();
+    cy.get("@updateAlert").should("have.been.calledOnce");
+    cy.get("[data-cy=AssignModal]").should("be.visible");
+    cy.contains("404 request failed").should("be.visible");
+    cy.get(".p-message-close").click();
+    cy.contains("404 request failed").should("not.exist");
   });
 });

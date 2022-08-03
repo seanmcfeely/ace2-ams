@@ -30,6 +30,8 @@ import { EventStatus } from "@/services/api/eventStatus";
 import { EventType } from "@/services/api/eventType";
 import { EventVector } from "@/services/api/eventVector";
 import { User } from "@/services/api/user";
+import { eventCommentReadFactory } from "@mocks/comment";
+import { EventComment } from "@/services/api/eventComment";
 
 function factory(args = { stubActions: true }) {
   const initialState = {
@@ -179,7 +181,47 @@ describe("EditEventModal", () => {
       cy.contains("Edit Event").should("not.exist");
     });
   });
-  it("correctly displays error if event cannot be fetched", () => {
+  it("correctly submits updated event comment", () => {
+    cy.stub(Event, "read").returns(
+      eventReadFactory({
+        queue: genericObjectReadFactory({ value: "external" }),
+        comments: [eventCommentReadFactory()],
+      }),
+    );
+    cy.stub(Event, "update")
+      .withArgs([
+        {
+          uuid: "testEvent1",
+          historyUsername: "analyst",
+          owner: "analyst",
+        },
+      ])
+      .as("updateEvent")
+      .resolves();
+    cy.stub(EventComment, "update")
+      .withArgs("commentUuid1", {
+        username: "analyst",
+        value: "New Comment",
+      })
+      .as("updateComment")
+      .resolves();
+    const wrapper = factory({
+      stubActions: false,
+    });
+    wrapper.then((wrapper) => {
+      wrapper.vm.modalStore.open("EditEventModal"); // This will trigger initialization of the form
+      cy.get('[data-cy="edit-comment-button"]').click();
+      cy.get('[data-cy="updated-comment-value"]').clear().type("New Comment");
+      cy.get('[data-cy="save-comment-button"]').click();
+      cy.contains("Save").click();
+
+      cy.get("@updateEvent").should("have.been.calledOnce");
+      cy.get("@updateComment").should("have.been.calledOnce");
+
+      cy.contains("Edit Event").should("not.exist");
+    });
+  });
+  it("correctly displays error if event cannot be fetched with Error", () => {
     cy.stub(Event, "read").rejects(
       new Error("404 request could not be completed"),
     );
@@ -206,6 +248,43 @@ describe("EditEventModal", () => {
         .children()
         .should("have.length", 0);
     });
+
+    cy.get(".p-message-close-icon").click();
+    cy.contains(
+      "Could not load event data: 404 request could not be completed",
+    ).should("not.exist");
+  });
+  it("correctly displays error if event cannot be fetched with error string", () => {
+    cy.stub(Event, "read").callsFake(async () => {
+      throw "404 request could not be completed";
+    });
+    factory();
+    const wrapper = factory({
+      stubActions: false,
+    });
+    wrapper.then((wrapper) => {
+      wrapper.vm.modalStore.open("EditEventModal"); // This will trigger initialization of the form
+
+      cy.contains(
+        "Could not load event data: 404 request could not be completed",
+      ).should("be.visible");
+
+      // Checks for the modal content main content div and error div
+      cy.get('[data-cy="edit-event-modal"]')
+        .children(".p-dialog-content")
+        .should("have.length", 2);
+      // Checks that nothing is in the main content div (form shouldn't load if there was an error)
+      cy.get('[data-cy="edit-event-modal"]')
+        .children(".p-dialog-content")
+        .eq(0)
+        .children()
+        .children()
+        .should("have.length", 0);
+    });
+    cy.get(".p-message-close-icon").click();
+    cy.contains(
+      "Could not load event data: 404 request could not be completed",
+    ).should("not.exist");
   });
   it("correctly displays error if event has invalid queue", () => {
     cy.stub(Event, "read").returns(eventReadFactory());
@@ -233,7 +312,7 @@ describe("EditEventModal", () => {
         .should("have.length", 0);
     });
   });
-  it("correctly displays error if event cannot be updated", () => {
+  it("correctly displays error if event cannot be updated with Error", () => {
     cy.stub(Event, "read").returns(
       eventReadFactory({
         queue: genericObjectReadFactory({ value: "external" }),
@@ -253,6 +332,69 @@ describe("EditEventModal", () => {
       ])
       .as("updateEvent")
       .rejects(new Error("404 request could not be completed"));
+    const wrapper = factory({
+      stubActions: false,
+    });
+    wrapper.then((wrapper) => {
+      wrapper.vm.modalStore.open("EditEventModal"); // This will trigger initialization of the form
+
+      cy.contains("Name")
+        .siblings()
+        .eq(0)
+        .find("input")
+        .clear()
+        .type("New Name");
+      cy.contains("Prevention Tools").siblings().eq(0).contains("None").click();
+      cy.contains("Test Prevention Tool").click();
+      cy.contains("Remediation").siblings().eq(0).contains("None").click();
+      cy.contains("Test Remediation").click();
+      cy.contains("Event Time")
+        .siblings()
+        .eq(0)
+        .find("input")
+        .click()
+        .type("04/12/2022 16:00:00")
+        .type("{enter}");
+
+      cy.contains("Save").click();
+
+      cy.get("@updateEvent").should("have.been.calledOnce");
+
+      cy.contains(
+        "Could not update event: 404 request could not be completed",
+      ).should("be.visible");
+
+      // Checks that the error and form elements are all visible together
+      cy.get('[data-cy="edit-event-modal"]')
+        .children(".p-dialog-content")
+        .eq(0)
+        .children()
+        .children()
+        .should("have.length", 8);
+    });
+  });
+  it("correctly displays error if event cannot be updated with error string", () => {
+    cy.stub(Event, "read").returns(
+      eventReadFactory({
+        queue: genericObjectReadFactory({ value: "external" }),
+      }),
+    );
+    cy.stub(Event, "update")
+      .withArgs([
+        {
+          uuid: "testEvent1",
+          name: "New Name",
+          owner: "analyst",
+          preventionTools: ["Test Prevention Tool"],
+          remediations: ["Test Remediation"],
+          eventTime: new Date("2022-04-12T16:00:00.000Z"),
+          historyUsername: "analyst",
+        },
+      ])
+      .as("updateEvent")
+      .callsFake(async () => {
+        throw "404 request could not be completed";
+      });
     const wrapper = factory({
       stubActions: false,
     });

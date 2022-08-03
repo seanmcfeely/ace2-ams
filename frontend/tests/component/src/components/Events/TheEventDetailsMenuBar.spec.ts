@@ -10,12 +10,13 @@ import { testConfiguration } from "@/etc/configuration/test/index";
 import { eventRead } from "@/models/event";
 import { eventReadFactory } from "@mocks/events";
 import { userReadFactory } from "@mocks/user";
+import { Event } from "@/services/api/event";
 
 const props = {
   eventUuid: "uuid",
 };
 
-function factory(event: eventRead = eventReadFactory()) {
+function factory(event: eventRead = eventReadFactory(), stubActions = true) {
   return mount(TheEventDetailsMenuBar, {
     global: {
       provide: {
@@ -28,6 +29,7 @@ function factory(event: eventRead = eventReadFactory()) {
       plugins: [
         PrimeVue,
         createCustomCypressPinia({
+          stubActions: stubActions,
           initialState: {
             authStore: {
               user: userReadFactory(),
@@ -145,6 +147,22 @@ describe("TheEventDetailsMenuBar", () => {
       },
     ]);
   });
+  it("displays error if attempt to take ownership fails with an Error", () => {
+    cy.stub(Event, "update").rejects(new Error("404 request failed"));
+    factory(undefined, false);
+    cy.contains("Actions").click();
+    cy.contains("Take Ownership").click();
+    cy.contains("404 request failed").should("be.visible");
+  });
+  it("displays error if attempt to take ownership fails with an error string", () => {
+    cy.stub(Event, "update").callsFake(async () => {
+      throw "404 request failed";
+    });
+    factory(undefined, false);
+    cy.contains("Actions").click();
+    cy.contains("Take Ownership").click();
+    cy.contains("404 request failed").should("be.visible");
+  });
   it("makes a request to update event with configured closed status when 'Close Event' menu link clicked", () => {
     factory();
     cy.contains("Actions").click();
@@ -157,7 +175,23 @@ describe("TheEventDetailsMenuBar", () => {
       },
     ]);
   });
-  it("correctly renders analysis links", () => {
+  it("displays error if attempt to close event fails with an Error", () => {
+    cy.stub(Event, "update").callsFake(async () => {
+      throw "404 request failed";
+    });
+    factory(undefined, false);
+    cy.contains("Actions").click();
+    cy.contains("Close Event").click();
+    cy.contains("404 request failed").should("be.visible");
+  });
+  it("displays error if attempt to close event fails with an error string", () => {
+    cy.stub(Event, "update").rejects(new Error("404 request failed"));
+    factory(undefined, false);
+    cy.contains("Actions").click();
+    cy.contains("Close Event").click();
+    cy.contains("404 request failed").should("be.visible");
+  });
+  it("correctly renders analysis links and emits section name when clicked", () => {
     const eventWithAnalysis = eventReadFactory({
       analysisTypes: [
         "User Analysis",
@@ -190,16 +224,30 @@ describe("TheEventDetailsMenuBar", () => {
       .children()
       .findAllByRole("menuitem")
       .eq(0)
-      .should("have.text", "User Analysis");
+      .should("have.text", "User Analysis")
+      .click()
+      .then(() => {
+        expect(Cypress.vueWrapper.emitted("sectionClicked")).eqls([
+          ["User Analysis"],
+        ]);
+      });
 
     cy.contains("Analysis")
+      .click()
       .parent()
       .children()
       .eq(1)
       .children()
       .findAllByRole("menuitem")
       .eq(1)
-      .should("have.text", "Sandbox Analysis");
+      .should("have.text", "Sandbox Analysis")
+      .click()
+      .then(() => {
+        expect(Cypress.vueWrapper.emitted("sectionClicked")).eqls([
+          ["User Analysis"],
+          ["Sandbox Analysis"],
+        ]);
+      });
   });
   it("correctly emits sectionClicked with section name when menu item link is clicked", () => {
     factory();
@@ -209,6 +257,64 @@ describe("TheEventDetailsMenuBar", () => {
       .then(() => {
         expect(Cypress.vueWrapper.emitted("sectionClicked")).eqls([
           ["Event Summary"],
+        ]);
+      });
+    cy.contains("Information").click();
+    cy.contains("Alert Summary")
+      .click()
+      .then(() => {
+        expect(Cypress.vueWrapper.emitted("sectionClicked")).eqls([
+          ["Event Summary"],
+          ["Alert Summary"],
+        ]);
+      });
+    cy.contains("Information").click();
+    cy.contains("Detection Summary")
+      .click()
+      .then(() => {
+        expect(Cypress.vueWrapper.emitted("sectionClicked")).eqls([
+          ["Event Summary"],
+          ["Alert Summary"],
+          ["Detection Summary"],
+        ]);
+      });
+    cy.contains("Information").click();
+
+    cy.contains("URL Summary")
+      .click()
+      .then(() => {
+        expect(Cypress.vueWrapper.emitted("sectionClicked")).eqls([
+          ["Event Summary"],
+          ["Alert Summary"],
+          ["Detection Summary"],
+          ["URL Summary"],
+        ]);
+      });
+    cy.contains("Information").click();
+
+    cy.contains("URL Domain Summary")
+      .click()
+      .then(() => {
+        expect(Cypress.vueWrapper.emitted("sectionClicked")).eqls([
+          ["Event Summary"],
+          ["Alert Summary"],
+          ["Detection Summary"],
+          ["URL Summary"],
+          ["URL Domain Summary"],
+        ]);
+      });
+    cy.contains("Information").click();
+
+    cy.contains("Observable Summary")
+      .click()
+      .then(() => {
+        expect(Cypress.vueWrapper.emitted("sectionClicked")).eqls([
+          ["Event Summary"],
+          ["Alert Summary"],
+          ["Detection Summary"],
+          ["URL Summary"],
+          ["URL Domain Summary"],
+          ["Observable Summary"],
         ]);
       });
   });
