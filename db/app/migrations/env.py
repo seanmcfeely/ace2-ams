@@ -1,8 +1,17 @@
 import alembic
 import logging
+import os
+import sys
 
 from logging.config import fileConfig
 from sqlalchemy import engine_from_config, pool
+
+
+# When running the "alembic" command to generate migrations, Python's import path does not have
+# the folder containing this application code, so it is manually inserted so that imports work.
+current = os.path.dirname(os.path.realpath(__file__))
+parent = os.path.dirname(current)
+sys.path.append(parent)
 
 from config import get_settings
 
