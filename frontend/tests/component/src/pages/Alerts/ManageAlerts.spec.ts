@@ -11,29 +11,49 @@ import Tooltip from "primevue/tooltip";
 import ToastService from "primevue/toastservice";
 
 import ManageAlerts from "@/pages/Alerts/ManageAlerts.vue";
+import { userReadFactory } from "@mocks/user";
+
+const factory = () => {
+  mount(ManageAlerts, {
+    global: {
+      directives: { tooltip: Tooltip },
+      plugins: [
+        ToastService,
+        PrimeVue,
+        createCustomCypressPinia({
+          initialState: {
+            authStore: {
+              user: userReadFactory(),
+            },
+            currentUserSettingsStore: {
+              queues: {
+                alerts: { value: "external" },
+                events: { value: "external" },
+              },
+            },
+          },
+        }),
+        router,
+      ],
+      provide: { config: testConfiguration, objectType: "alerts" },
+    },
+  });
+};
 
 describe("ManageAlerts", () => {
   it("renders", () => {
-    mount(ManageAlerts, {
-      global: {
-        directives: { tooltip: Tooltip },
-        plugins: [
-          ToastService,
-          PrimeVue,
-          createCustomCypressPinia({
-            initialState: {
-              currentUserSettingsStore: {
-                queues: {
-                  alerts: { value: "external" },
-                  events: { value: "external" },
-                },
-              },
-            },
-          }),
-          router,
-        ],
-        provide: { config: testConfiguration, objectType: "alerts" },
-      },
+    factory();
+  });
+  it("sets filters and reloads if query params are added to route", () => {
+    factory();
+    cy.get("body").then(() => {
+      const route = Cypress.vue.$router;
+      route.push("/manage_alerts?name=test");
+    });
+    cy.wait(1000);
+    cy.get("@stub-1").should("be.calledWith", {
+      objectType: "alerts",
+      filters: { name: { included: ["test"], notIncluded: [] } },
     });
   });
 });
