@@ -1,4 +1,5 @@
 import alembic
+import time
 
 from alembic.config import Config
 from fastapi import APIRouter, Depends, HTTPException, Response, status
@@ -30,6 +31,9 @@ def add_test_alerts(alert: AddTestAlert, db: Session = Depends(get_db)):
             factory.submission.create_from_json_file(
                 db=db, json_path=f"/app/tests/alerts/{alert.template}", submission_name=f"Manual Alert {i}"
             )
+
+            # The delay defaults to 0
+            time.sleep(alert.delay)
 
         db.commit()
 
@@ -69,6 +73,9 @@ def add_test_events(event: AddTestEvent, db: Session = Depends(get_db)):
             )
             alert.event_uuid = db_event.uuid
             db.commit()
+
+            # The delay defaults to 0
+            time.sleep(event.delay)
 
         return Response(status_code=status.HTTP_204_NO_CONTENT)
     else:

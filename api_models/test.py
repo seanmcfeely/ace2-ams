@@ -9,6 +9,11 @@ class AddTestAlert(BaseModel):
 
     count: int = Field(description="The number of copies of the alert template to insert")
 
+    delay: int = Field(
+        default=0,
+        description="The number of seconds to wait between inserting each alert so their timestamps are different",
+    )
+
 
 class AddTestEvent(BaseModel):
     alert_template: str = Field(
@@ -16,6 +21,11 @@ class AddTestEvent(BaseModel):
     )
 
     alert_count: int = Field(description="The number of copies of the alert template to insert")
+
+    delay: int = Field(
+        default=0,
+        description="The number of seconds to wait between inserting each alert so their timestamps are different",
+    )
 
     name: str = Field(description="The name to use for the event")
 
