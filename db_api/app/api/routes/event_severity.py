@@ -12,7 +12,7 @@ from api_models.event_severity import (
 from db import crud
 from db.database import get_db
 from db.schemas.event_severity import EventSeverity
-from exceptions.db import UuidNotFoundInDatabase, ValueNotFoundInDatabase
+from db.exceptions import UuidNotFoundInDatabase, ValueNotFoundInDatabase
 
 
 router = APIRouter(

@@ -12,7 +12,7 @@ from api_models.event_prevention_tool import (
 from db import crud
 from db.database import get_db
 from db.schemas.event_prevention_tool import EventPreventionTool
-from exceptions.db import UuidNotFoundInDatabase, ValueNotFoundInDatabase
+from db.exceptions import UuidNotFoundInDatabase, ValueNotFoundInDatabase
 
 
 router = APIRouter(

@@ -14,7 +14,7 @@ from api_models.submission import SubmissionCreate, SubmissionRead, SubmissionUp
 from db import crud
 from db.database import get_db
 from db.schemas.submission import SubmissionHistory
-from exceptions.db import UuidNotFoundInDatabase, ValueNotFoundInDatabase, VersionMismatch
+from db.exceptions import UuidNotFoundInDatabase, ValueNotFoundInDatabase, VersionMismatch
 
 
 router = APIRouter(

@@ -37,7 +37,7 @@ docker run --rm -d --net ace2-db-test-net --name ace2-db-crud-test --volume=$CUR
 
 # Run the tests inside the Python container and capture its return code
 echo "Running tests"
-docker exec ace2-db-crud-test pytest -p no:cacheprovider -vv $NEW_PATH
+docker exec ace2-db-crud-test pytest -p no:cacheprovider -vv ${NEW_PATH:-tests/}
 RETURN_CODE=$?
 
 # Cleanup

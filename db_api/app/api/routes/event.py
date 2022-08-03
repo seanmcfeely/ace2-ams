@@ -21,7 +21,7 @@ from api.routes import helpers
 from db import crud
 from db.database import get_db
 from db.schemas.event import EventHistory
-from exceptions.db import UuidNotFoundInDatabase, ValueNotFoundInDatabase, VersionMismatch
+from db.exceptions import UuidNotFoundInDatabase, ValueNotFoundInDatabase, VersionMismatch
 
 
 router = APIRouter(

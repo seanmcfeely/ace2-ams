@@ -8,7 +8,7 @@ from api_models.submission_type import SubmissionTypeCreate, SubmissionTypeRead,
 from db import crud
 from db.database import get_db
 from db.schemas.submission_type import SubmissionType
-from exceptions.db import UuidNotFoundInDatabase
+from db.exceptions import UuidNotFoundInDatabase
 
 
 router = APIRouter(

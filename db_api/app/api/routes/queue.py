@@ -8,7 +8,7 @@ from api_models.queue import QueueCreate, QueueRead, QueueUpdate
 from db import crud
 from db.database import get_db
 from db.schemas.queue import Queue
-from exceptions.db import UuidNotFoundInDatabase
+from db.exceptions import UuidNotFoundInDatabase
 
 
 router = APIRouter(

@@ -12,7 +12,7 @@ from api_models.analysis_status import (
 from db import crud
 from db.database import get_db
 from db.schemas.analysis_status import AnalysisStatus
-from exceptions.db import UuidNotFoundInDatabase
+from db.exceptions import UuidNotFoundInDatabase
 
 
 router = APIRouter(

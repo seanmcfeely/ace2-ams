@@ -9,7 +9,7 @@ from api.routes import helpers
 from api_models.test import AddTestAlert, AddTestEvent
 from common.config import is_in_testing_mode
 from db.database import get_db
-from seed import seed
+from db.seed import seed
 from tests import factory
 
 
