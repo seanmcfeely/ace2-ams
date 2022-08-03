@@ -148,16 +148,16 @@ describe("TheEventDetailsMenuBar", () => {
     ]);
   });
   it("displays error if attempt to take ownership fails with an Error", () => {
-    cy.stub(Event, "update").callsFake(async () => {
-      throw "404 request failed";
-    });
+    cy.stub(Event, "update").rejects(new Error("404 request failed"));
     factory(undefined, false);
     cy.contains("Actions").click();
     cy.contains("Take Ownership").click();
     cy.contains("404 request failed").should("be.visible");
   });
   it("displays error if attempt to take ownership fails with an error string", () => {
-    cy.stub(Event, "update").rejects(new Error("404 request failed"));
+    cy.stub(Event, "update").callsFake(async () => {
+      throw "404 request failed";
+    });
     factory(undefined, false);
     cy.contains("Actions").click();
     cy.contains("Take Ownership").click();

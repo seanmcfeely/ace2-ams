@@ -14,7 +14,8 @@ import { metadataDirectiveReadFactory } from "@mocks/metadata";
 
 const testObservableValueA = "1.2.3.4";
 const testObservableValueB = "5.6.7.8";
-const testObservableValueMultiA = "4.3.2.1,8.7.6.5";
+const testObservableValueMultiCommas = "4.3.2.1,8.7.6.5";
+const testObservableValueMultiNewlines = "4.3.2.1\n8.7.6.5";
 const testObservableTypeA = "file";
 const testObservableTypeB = "ipv4";
 const testDirective = "testDirective";
@@ -144,7 +145,43 @@ describe("AssignModal", () => {
       );
     });
   });
-  it("correctly makes a call to add 'multi-type' observables", () => {
+  it("correctly makes a call to add observables with time attached", () => {
+    const stub = cy.stub(ObservableInstance, "create");
+    stub
+      .withArgs([
+        {
+          type: "ipv4",
+          value: testObservableValueA,
+          directives: [],
+          historyUsername: "analyst",
+          parentAnalysisUuid: "testUuid",
+          time: new Date(Date.UTC(2020, 0, 1, 0, 0, 0)),
+        },
+      ])
+      .as("CreateObservables")
+      .resolves();
+
+    factory();
+
+    // Add first observable
+    cy.get("[name=observable-type]").click();
+    cy.get('[aria-label="ipv4"]').click();
+    cy.get("[name=observable-value] input").type(testObservableValueA);
+    cy.get("input").eq(0).type("01/01/2020 00:00:00", { force: true });
+    cy.get(".p-overlaypanel-content > .p-button").click();
+
+    // Submit
+    cy.contains("Add!").click();
+    cy.get("@CreateObservables").should("have.been.called");
+
+    cy.get("body").then(() => {
+      cy.wrap(Cypress.vueWrapper.emitted()).should(
+        "have.property",
+        "requestReload",
+      );
+    });
+  });
+  it("correctly makes a call to add 'multi-type' (using commas) observables", () => {
     const stub = cy.stub(ObservableInstance, "create");
     stub
       .withArgs([
@@ -174,7 +211,9 @@ describe("AssignModal", () => {
 
     // Switch to multi-type and enter input
     cy.get("[name=observable-value] button").click();
-    cy.get("[name=observable-value] textarea").type(testObservableValueMultiA);
+    cy.get("[name=observable-value] textarea").type(
+      testObservableValueMultiCommas,
+    );
 
     // Submit
     cy.contains("Add!").click();
@@ -188,7 +227,53 @@ describe("AssignModal", () => {
       );
     });
   });
-  it("displays error if call to add observable fails", () => {
+  it("correctly makes a call to add 'multi-type' (using newlines) observables", () => {
+    const stub = cy.stub(ObservableInstance, "create");
+    stub
+      .withArgs([
+        {
+          type: "ipv4",
+          value: "4.3.2.1",
+          historyUsername: "analyst",
+          parentAnalysisUuid: "testUuid",
+          directives: [],
+        },
+        {
+          type: "ipv4",
+          value: "8.7.6.5",
+          historyUsername: "analyst",
+          parentAnalysisUuid: "testUuid",
+          directives: [],
+        },
+      ])
+      .as("CreateObservables")
+      .resolves();
+
+    factory();
+
+    // Add first observable
+    cy.get("[name=observable-type]").click();
+    cy.get('[aria-label="ipv4"]').click();
+
+    // Switch to multi-type and enter input
+    cy.get("[name=observable-value] button").click();
+    cy.get("[name=observable-value] textarea").type(
+      testObservableValueMultiNewlines,
+    );
+
+    // Submit
+    cy.contains("Add!").click();
+
+    cy.get("@CreateObservables").should("have.been.called");
+
+    cy.get("body").then(() => {
+      cy.wrap(Cypress.vueWrapper.emitted()).should(
+        "have.property",
+        "requestReload",
+      );
+    });
+  });
+  it("displays error if call to add observable fails with an Error", () => {
     const stub = cy.stub(ObservableInstance, "create");
     stub
       .withArgs([
@@ -215,5 +300,39 @@ describe("AssignModal", () => {
     cy.get("@CreateObservables").should("have.been.called");
 
     cy.contains("Could not create observable").should("be.visible");
+    cy.get(".p-message-close-icon").click();
+    cy.contains("Could not create observable").should("not.exist");
+  });
+  it("displays error if call to add observable fails with an error string", () => {
+    const stub = cy.stub(ObservableInstance, "create");
+    stub
+      .withArgs([
+        {
+          type: "ipv4",
+          value: testObservableValueA,
+          historyUsername: "analyst",
+          parentAnalysisUuid: "testUuid",
+          directives: [],
+        },
+      ])
+      .as("CreateObservables")
+      .callsFake(async () => {
+        throw "Could not create observable";
+      });
+
+    factory();
+
+    // Add first observable
+    cy.get("[name=observable-type]").click();
+    cy.get('[aria-label="ipv4"]').click();
+    cy.get("[name=observable-value] input").type(testObservableValueA);
+
+    // Submit
+    cy.contains("Add!").click();
+    cy.get("@CreateObservables").should("have.been.called");
+
+    cy.contains("Could not create observable").should("be.visible");
+    cy.get(".p-message-close-icon").click();
+    cy.contains("Could not create observable").should("not.exist");
   });
 });
