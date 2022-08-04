@@ -80,7 +80,7 @@ services:
         npm_strict_ssl: ${npm_strict_ssl:-true}
     environment:
       - VITE_BACKEND_URL=http://ace2-ams:8080/api/
-      - VITE_TESTING_MODE=no
+      - VITE_TESTING_MODE=${VITE_TESTING_MODE:-no}
     volumes:
       - .:/app
       - /app/node_modules
