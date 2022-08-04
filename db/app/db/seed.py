@@ -8,6 +8,8 @@ from sqlalchemy.orm.decl_api import DeclarativeMeta
 
 # When running the "db/seed.py" script, Python's import path does not have the parent directory
 # containing the application code, so it is manually inserted so that imports work.
+# NOTE: If/when the DB API is removed, this seed.py script can move up into the app/ directory
+# and this path injection can be removed.
 current = os.path.dirname(os.path.realpath(__file__))
 parent = os.path.dirname(current)
 sys.path.append(parent)
