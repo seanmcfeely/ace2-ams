@@ -1,0 +1,91 @@
+version: "3.9"
+
+services:
+  db:
+    container_name: ace2-db-frontend
+    build:
+      context: ../db
+      dockerfile: Dockerfile.database
+    environment:
+      - POSTGRES_DB=${POSTGRES_DB:-ace}
+      - POSTGRES_USER=${POSTGRES_USER:-ace}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-localdev}
+    ports:
+      - 6666:5432
+
+  db-api:
+    depends_on:
+      - db
+    container_name: ace2-db-api-frontend
+    build:
+      context: ..
+      dockerfile: ./db_api/Dockerfile
+      args:
+        # needed if behind a proxy for pip installation
+        http_proxy: ${http_proxy:-}
+        https_proxy: ${https_proxy:-}
+        pip_install_options: ${pip_install_options:-}
+    environment:
+      # The DATABASE_URL environment variable needs to be in the form of:
+      # postgresql://<user>:<password>@db:5432/<database>
+      - PYTHONDONTWRITEBYTECODE=1
+      - IN_TESTING_MODE=yes
+      - DATABASE_URL=${DATABASE_URL:-postgresql://${POSTGRES_USER:-ace}:${POSTGRES_PASSWORD:-localdev}@db:5432/${POSTGRES_DB:-ace}}
+      - SQL_ECHO=${SQL_ECHO:-no}
+    ports:
+      - 8888:80
+    volumes:
+      - ../db_api/app:/app
+      - ../db/app/db:/app/db
+      - ../api_models:/app/api_models
+    command: bash -c 'while !</dev/tcp/db/5432; do sleep 1; done; alembic -c db/alembic.ini upgrade head && python db/seed.py && /start-reload.sh'
+
+  gui-api:
+    depends_on:
+      - db-api
+    container_name: ace2-gui-api-frontend
+    build:
+      context: ..
+      dockerfile: ./gui_api/Dockerfile
+      args:
+        # needed if behind a proxy for pip installation
+        http_proxy: ${http_proxy:-}
+        https_proxy: ${https_proxy:-}
+        pip_install_options: ${pip_install_options:-}
+    environment:
+      - PYTHONDONTWRITEBYTECODE=1
+      - COOKIES_SECURE=no
+      - DATABASE_API_URL=http://db-api/api
+    ports:
+      - 7777:80
+    volumes:
+      - ../gui_api/app:/app
+      - ../api_models:/app/api_models
+    command: bash -c 'while !</dev/tcp/db-api/80; do sleep 1; done; /start-reload.sh'
+
+  gui:
+    depends_on:
+      - gui-api
+    container_name: ace2-frontend
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+      args:
+        # needed if behind a proxy for pip installation
+        http_proxy: ${http_proxy:-}
+        https_proxy: ${https_proxy:-}
+        pip_install_options: ${pip_install_options:-}
+        npm_strict_ssl: ${npm_strict_ssl:-true}
+    environment:
+      - VITE_BACKEND_URL=http://ace2-ams:8080/api/
+      - VITE_TESTING_MODE=no
+
+  ace2-ams:
+    depends_on:
+      - gui
+    container_name: ace2-ams
+    build:
+      context: ./nginx
+      dockerfile: ./Dockerfile
+    ports:
+      - 8080:8080

@@ -3,8 +3,10 @@
 # Exit if any command fails
 set -e
 
+COMPOSE_FILE=${COMPOSE_FILE:-docker-compose.yml}
+
 # Bring up the containers (if they aren't already)
-docker compose up -d
+docker compose -f $COMPOSE_FILE up -d
 
 # Wait for things to be ready
 docker exec ace2-frontend bin/wait-for-gui.sh
