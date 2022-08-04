@@ -3,7 +3,7 @@ line-length = 120
 extend-exclude = '''
 (
   /(
-      migrations
+      db\/migrations
     # | some_other_directory    # uncomment this line to add extra directories or files to skip
   )
 )
