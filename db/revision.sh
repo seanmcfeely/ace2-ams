@@ -38,7 +38,7 @@ cd ..
 docker build -t ace2-db-crud -f db/Dockerfile.crud .
 docker run -d --net ace2-db-net --name ace2-db-crud --volume=$CURRENT_DIR/app/db/migrations/:/app/db/migrations -e DATABASE_URL=$DATABASE_URL ace2-db-crud > /dev/null
 
-# Run the tests inside the Python container
+# Upgrade the database schema inside the Python container
 echo "Applying current database schema"
 docker exec ace2-db-crud alembic -c db/alembic.ini upgrade head
 

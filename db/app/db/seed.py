@@ -6,6 +6,12 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 from sqlalchemy.orm.decl_api import DeclarativeMeta
 
+# When running the "db/seed.py" script, Python's import path does not have the parent directory
+# containing the application code, so it is manually inserted so that imports work.
+current = os.path.dirname(os.path.realpath(__file__))
+parent = os.path.dirname(current)
+sys.path.append(parent)
+
 from db.auth import hash_password
 from db.database import get_db
 from db.schemas.alert_disposition import AlertDisposition
