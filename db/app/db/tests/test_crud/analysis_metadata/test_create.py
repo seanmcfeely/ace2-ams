@@ -1,6 +1,6 @@
 from api_models.analysis_metadata import AnalysisMetadataCreate
 from db import crud
-from tests import factory
+from db.tests import factory
 
 
 #

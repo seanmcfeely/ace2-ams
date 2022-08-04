@@ -4,7 +4,7 @@ from typing import Optional
 from db import crud
 from api_models.observable_relationship import ObservableRelationshipCreate
 from db.schemas.observable import Observable
-from tests import factory
+from db.tests import factory
 
 
 def create_or_read(

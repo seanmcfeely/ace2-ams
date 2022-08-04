@@ -2,7 +2,7 @@ import json
 
 from api_models.user import UserCreate
 from db import crud
-from tests import factory
+from db.tests import factory
 
 
 #

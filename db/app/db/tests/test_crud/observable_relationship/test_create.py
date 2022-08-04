@@ -1,6 +1,6 @@
 from api_models.observable_relationship import ObservableRelationshipCreate
 from db import crud
-from tests import factory
+from db.tests import factory
 
 
 def test_create(db):

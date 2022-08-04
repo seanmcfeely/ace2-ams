@@ -12,7 +12,7 @@ from api_models.analysis_details import (
 )
 from api_models.summaries import URLDomainSummary
 from db import crud
-from tests import factory
+from db.tests import factory
 
 
 def test_auto_alert_time(db):

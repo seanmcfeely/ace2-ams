@@ -1,6 +1,6 @@
 from api_models.analysis_summary_detail import AnalysisSummaryDetailUpdate
 from db import crud
-from tests import factory
+from db.tests import factory
 
 
 def test_update(db):

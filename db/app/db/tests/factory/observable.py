@@ -7,7 +7,7 @@ from api_models.analysis_metadata import AnalysisMetadataCreate
 from api_models.observable import ObservableCreate
 from db.schemas.analysis import Analysis
 from db.schemas.observable import Observable
-from tests import factory
+from db.tests import factory
 
 
 def create_or_read(

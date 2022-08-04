@@ -2,7 +2,7 @@ from datetime import timedelta
 
 from api_models.metadata_time import MetadataTimeUpdate
 from db import crud
-from tests import factory
+from db.tests import factory
 
 
 def test_update(db):

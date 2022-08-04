@@ -13,7 +13,7 @@ from api_models.submission import SubmissionCreate
 from api_models.alert_disposition import AlertDispositionCreate
 from db.schemas.event import Event
 from db.schemas.submission import Submission, SubmissionHistory
-from tests import factory
+from db.tests import factory
 
 
 def create(

@@ -2,7 +2,7 @@ import pytest
 
 from db import crud
 from db.exceptions import ValueNotFoundInDatabase
-from tests import factory
+from db.tests import factory
 
 
 #

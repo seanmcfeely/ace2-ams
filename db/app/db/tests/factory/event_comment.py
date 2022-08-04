@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 from db import crud
 from api_models.event_comment import EventCommentCreate
 from db.schemas.event import Event
-from tests import factory
+from db.tests import factory
 
 
 def create_or_read(event: Event, username: str, value: str, db: Session):

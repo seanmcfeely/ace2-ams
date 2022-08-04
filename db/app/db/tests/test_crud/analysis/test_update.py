@@ -2,7 +2,7 @@ import json
 
 from db import crud
 from api_models.analysis import AnalysisUpdate
-from tests import factory
+from db.tests import factory
 
 
 def test_update(db):

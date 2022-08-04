@@ -8,7 +8,7 @@ from api_models.analysis import AnalysisCreate
 from api_models.analysis_summary_detail import AnalysisSummaryDetailCreateInAnalysis
 from db import crud
 from db.exceptions import UuidNotFoundInDatabase, ValueNotFoundInDatabase
-from tests import factory
+from db.tests import factory
 
 
 #

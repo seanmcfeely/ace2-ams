@@ -8,7 +8,7 @@ from api_models.observable import ObservableCreateInSubmission
 from api_models.submission import SubmissionUpdate
 from api_models.summaries import URLDomainSummary
 from db.exceptions import UuidNotFoundInDatabase
-from tests import factory
+from db.tests import factory
 
 
 def test_filter_by_alert(db):

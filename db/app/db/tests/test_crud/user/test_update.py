@@ -3,7 +3,7 @@ import pytest
 from api_models.user import UserUpdate
 from db.auth import verify_password
 from db import crud
-from tests import factory
+from db.tests import factory
 
 
 #

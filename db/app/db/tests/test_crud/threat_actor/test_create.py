@@ -1,6 +1,6 @@
 from api_models.threat_actor import ThreatActorCreate
 from db import crud
-from tests import factory
+from db.tests import factory
 
 
 def test_create(db):

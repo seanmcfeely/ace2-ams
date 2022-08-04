@@ -1,6 +1,6 @@
 from api_models.format import FormatUpdate
 from db import crud
-from tests import factory
+from db.tests import factory
 
 
 def test_update(db):

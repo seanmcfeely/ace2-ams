@@ -5,7 +5,7 @@ from uuid import UUID, uuid4
 
 from db import crud
 from api_models.event import EventCreate
-from tests import factory
+from db.tests import factory
 
 
 def create_or_read(

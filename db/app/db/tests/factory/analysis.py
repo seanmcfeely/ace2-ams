@@ -10,7 +10,7 @@ from api_models.observable import ObservableCreate
 from db.schemas.analysis_module_type import AnalysisModuleType
 from db.schemas.observable import Observable
 from db.schemas.submission import Submission
-from tests import factory
+from db.tests import factory
 
 
 def create_or_read(

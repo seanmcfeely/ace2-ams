@@ -1,6 +1,6 @@
 from api_models.metadata_detection_point import MetadataDetectionPointUpdate
 from db import crud
-from tests import factory
+from db.tests import factory
 
 
 def test_update(db):

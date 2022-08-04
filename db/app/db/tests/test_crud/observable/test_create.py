@@ -6,7 +6,7 @@ from api_models.analysis import AnalysisCreateInObservable
 from api_models.observable import ObservableCreate, ObservableRelationshipCreate
 from db import crud
 from db.exceptions import UuidNotFoundInDatabase, ValueNotFoundInDatabase
-from tests import factory
+from db.tests import factory
 
 
 #

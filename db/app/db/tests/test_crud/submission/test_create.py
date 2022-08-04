@@ -7,7 +7,7 @@ from api_models.observable import ObservableCreate
 from api_models.analysis_metadata import AnalysisMetadataCreate
 from api_models.submission import SubmissionCreate
 from db import crud
-from tests import factory
+from db.tests import factory
 
 
 def test_create(db):

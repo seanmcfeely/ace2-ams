@@ -10,7 +10,7 @@ current = os.path.dirname(os.path.realpath(__file__))
 sys.path.append(current)
 
 from db.database import engine, get_db
-from tests import factory
+from db.tests import factory
 
 
 @pytest.fixture(scope="session", autouse=True)

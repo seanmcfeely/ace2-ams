@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 from db import crud
 from api_models.analysis_summary_detail import AnalysisSummaryDetailCreate
 from db.schemas.analysis import Analysis
-from tests import factory
+from db.tests import factory
 
 
 def create_or_read(

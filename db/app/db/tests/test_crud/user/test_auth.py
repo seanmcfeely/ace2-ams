@@ -3,7 +3,7 @@ import pytest
 from api_models.auth import Auth, ValidateRefreshToken
 from db import crud
 from db.exceptions import ReusedToken, UserIsDisabled
-from tests import factory
+from db.tests import factory
 
 
 #

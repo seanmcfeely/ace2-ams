@@ -3,7 +3,7 @@ from uuid import uuid4
 
 from api_models.event import EventCreate
 from db import crud
-from tests import factory
+from db.tests import factory
 
 
 def test_create(db):

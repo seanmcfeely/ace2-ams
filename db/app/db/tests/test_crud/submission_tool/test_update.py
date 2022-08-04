@@ -1,6 +1,6 @@
 from api_models.submission_tool import SubmissionToolUpdate
 from db import crud
-from tests import factory
+from db.tests import factory
 
 
 def test_update(db):
