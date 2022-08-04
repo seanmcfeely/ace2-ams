@@ -2,6 +2,7 @@ import pytest
 import time
 
 from fastapi import status
+from urllib.parse import urlencode
 from uuid import uuid4
 
 from main import app
@@ -32,7 +33,7 @@ def test_expired_token(client, monkeypatch, requests_mock):
         },
     )
 
-    requests_mock.get(f"http://db-api/api/user/", json={"items": [], "total": 0, "limit": 50, "offset": 0})
+    requests_mock.get("http://db-api/api/user/", json={"items": [], "total": 0, "limit": 50, "offset": 0})
 
     # Attempt to authenticate
     auth = client.post("/api/auth", data={"username": "analyst", "password": "asdfasdf"})
@@ -173,5 +174,7 @@ def test_auth_success(client, requests_mock):
     assert auth.cookies.get("refresh_token")
 
     # Attempt to use the token to access a protected API endpoint
+    params = urlencode({"limit": 50, "offset": 0})
+    requests_mock.get(f"http://db-api/api/user/?{params}", json={"items": [], "total": 0, "limit": 50, "offset": 0})
     get = client.get("/api/user/", cookies=auth.cookies)
     assert get.status_code == status.HTTP_200_OK

@@ -1,6 +1,7 @@
 import time
 
 from fastapi import status
+from urllib.parse import urlencode
 from uuid import uuid4
 
 
@@ -144,5 +145,7 @@ def test_auth_refresh_success(client, monkeypatch, requests_mock):
     assert new_refresh_token != refresh_token
 
     # Attempt to use the new access token to access a protected API endpoint
+    params = urlencode({"limit": 50, "offset": 0})
+    requests_mock.get(f"http://db-api/api/user/?{params}", json={"items": [], "total": 0, "limit": 50, "offset": 0})
     get = client.get("/api/user/", cookies={"access_token": new_access_token})
     assert get.status_code == status.HTTP_200_OK

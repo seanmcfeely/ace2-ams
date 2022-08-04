@@ -2,6 +2,8 @@ ARG fastapi_base=tiangolo/uvicorn-gunicorn-fastapi:python3.9-slim
 
 FROM $fastapi_base
 
+WORKDIR /app
+
 ARG http_proxy
 ARG https_proxy
 ARG pip_install_options

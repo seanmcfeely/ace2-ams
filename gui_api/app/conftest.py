@@ -3,7 +3,7 @@ import requests_mock as rm_module
 
 from fastapi.testclient import TestClient
 
-from common.auth import validate_access_token
+from auth import validate_access_token
 from main import app
 
 

@@ -1,4 +1,5 @@
 from fastapi import status
+from urllib.parse import urlencode
 from uuid import uuid4
 
 
@@ -24,6 +25,8 @@ def test_auth_logout(client, requests_mock):
     assert auth.cookies.get("refresh_token")
 
     # Attempt to use the token to access a protected API endpoint
+    params = urlencode({"limit": 50, "offset": 0})
+    requests_mock.get(f"http://db-api/api/user/?{params}", json={"items": [], "total": 0, "limit": 50, "offset": 0})
     get = client.get("/api/user/", cookies=auth.cookies)
     assert get.status_code == status.HTTP_200_OK
 

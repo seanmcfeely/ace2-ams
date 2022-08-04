@@ -1,7 +1,7 @@
 import uuid
 
 from collections.abc import Mapping
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from fastapi import Depends, HTTPException, Request, status
 from fastapi.openapi.models import OAuthFlows as OAuthFlowsModel
 from fastapi.security import OAuth2
@@ -11,7 +11,7 @@ from passlib.hash import bcrypt_sha256
 from typing import Dict, Mapping, Optional
 
 from api import db_api
-from common.config import get_settings
+from config import get_settings
 
 
 # This class is copy/pasted from fastapi.security.OAuth2PasswordBearer with slight modifications
@@ -42,14 +42,11 @@ class OAuth2PasswordBearerCookieOrHeader(OAuth2):
         authorization: str = request.headers.get("Authorization") or request.cookies.get(self.token_type)  # type: ignore
         scheme, param = get_authorization_scheme_param(authorization)
         if not authorization or scheme.lower() != "bearer":
-            # if self.auto_error:
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
                 detail="Not authenticated",
                 headers={"WWW-Authenticate": "Bearer"},
             )
-        # else:
-        #     return None
         return param
 
 
@@ -66,13 +63,11 @@ def _create_token(token_type: str, lifetime: timedelta, sub: str) -> str:
         lifetime: a datetime timedelta representing how long the token should remain valid
         sub: the subject to use for the token claims (username by default)
     """
-
     payload = {
         "type": token_type,
-        "exp": datetime.utcnow() + lifetime,
-        "iat": datetime.utcnow(),
+        "exp": datetime.now(timezone.utc) + lifetime,
+        "iat": datetime.now(timezone.utc),
         "sub": sub,
-        # A UUID is used so that if the token is generated at the exact same time it will be different
         "ace2_uuid": str(uuid.uuid4()),
     }
 

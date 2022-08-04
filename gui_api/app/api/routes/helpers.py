@@ -3,7 +3,7 @@ from fastapi_pagination.limit_offset import LimitOffsetPage
 from pydantic import BaseModel
 from typing import Callable
 
-from common.auth import validate_access_token
+from auth import validate_access_token
 
 
 #
