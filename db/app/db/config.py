@@ -7,6 +7,12 @@ class Settings(BaseSettings):
     """
 
     database_url: PostgresDsn
+
+    # Dictates whether or not the database is in testing mode, which is what controls if the database can be reset
+    # during testing, such as during the GUI's end-to-end tests.
+    in_testing_mode: bool = False
+
+    # Whether or not to print SQL statements to the console
     sql_echo: bool = False
 
     default_analysis_mode_alert: str = "default_alert"

@@ -5,8 +5,6 @@ DB=${POSTGRES_DB:-ace}
 USER=${POSTGRES_USER:-ace}
 PASS=${POSTGRES_PASSWORD:-password}
 DATABASE_URL=postgresql://$USER:$PASS@ace2-db-test:5432/$DB
-CURRENT_DIR=`pwd`
-PARENT_DIR=`dirname "$CURRENT_DIR"`
 
 # Remove the leading db/ and app/ from the command line argument (if they are there) so the path works inside the container.
 NEW_PATH=${1#db/app/}

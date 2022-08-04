@@ -7,7 +7,7 @@ from sqlalchemy.orm import Session
 
 from api.routes import helpers
 from api_models.test import AddTestAlert, AddTestEvent
-from common.config import is_in_testing_mode
+from db.config import get_settings
 from db.database import get_db
 from db.seed import seed
 from tests import factory
@@ -26,7 +26,7 @@ router = APIRouter(
 
 def add_test_alerts(alert: AddTestAlert, db: Session = Depends(get_db)):
     # Only proceed if the API is running in TESTING mode
-    if is_in_testing_mode():
+    if get_settings().in_testing_mode:
         for i in range(alert.count):
             factory.submission.create_from_json_file(
                 db=db, json_path=f"/app/tests/alerts/{alert.template}", submission_name=f"Manual Alert {i}"
@@ -39,7 +39,7 @@ def add_test_alerts(alert: AddTestAlert, db: Session = Depends(get_db)):
 
         return Response(status_code=status.HTTP_204_NO_CONTENT)
     else:
-        raise HTTPException(status_code=403, detail="Unable to add test alerts when not running in TESTING mode")
+        raise HTTPException(status_code=403, detail="Unable to add alerts when not running in TESTING mode")
 
 
 helpers.api_route_create(
@@ -51,7 +51,7 @@ helpers.api_route_create(
         status.HTTP_204_NO_CONTENT: {
             "description": "The test alerts were added to the database",
         },
-        status.HTTP_403_FORBIDDEN: {"description": "Unable to add test alerts when not running in TESTING mode"},
+        status.HTTP_403_FORBIDDEN: {"description": "Unable to add alerts when not running in TESTING mode"},
     },
     status_code=status.HTTP_204_NO_CONTENT,
 )
@@ -64,7 +64,7 @@ helpers.api_route_create(
 
 def add_test_events(event: AddTestEvent, db: Session = Depends(get_db)):
     # Only proceed if the API is running in TESTING mode
-    if is_in_testing_mode():
+    if get_settings().in_testing_mode:
         db_event = factory.event.create_or_read(name=event.name, event_queue=event.queue, status=event.status, db=db)
 
         for i in range(event.alert_count):
@@ -79,7 +79,7 @@ def add_test_events(event: AddTestEvent, db: Session = Depends(get_db)):
 
         return Response(status_code=status.HTTP_204_NO_CONTENT)
     else:
-        raise HTTPException(status_code=403, detail="Unable to add test event when not running in TESTING mode")
+        raise HTTPException(status_code=403, detail="Unable to add event when not running in TESTING mode")
 
 
 helpers.api_route_create(
@@ -91,7 +91,7 @@ helpers.api_route_create(
         status.HTTP_204_NO_CONTENT: {
             "description": "The test event was added to the database",
         },
-        status.HTTP_403_FORBIDDEN: {"description": "Unable to add test event when not running in TESTING mode"},
+        status.HTTP_403_FORBIDDEN: {"description": "Unable to add event when not running in TESTING mode"},
     },
     status_code=status.HTTP_204_NO_CONTENT,
 )
@@ -106,7 +106,7 @@ def reset_test_database(db: Session = Depends(get_db)):
     # Only proceed if the API is running in TESTING mode
     # NOTE: This functionality is excluded from code coverage since testing it is not possible
     #       with the way that it uses Alembic migrations (and the tests use Alembic migrations)
-    if is_in_testing_mode():  # pragma: no cover
+    if get_settings().in_testing_mode:  # pragma: no cover
         # Use Alembic to downgrade (delete all the database tables) and then upgrade (rebuild the tables)
         config = Config("alembic.ini")
         alembic.command.downgrade(config, "base")
@@ -117,9 +117,7 @@ def reset_test_database(db: Session = Depends(get_db)):
 
         return Response(status_code=status.HTTP_204_NO_CONTENT)
     else:
-        raise HTTPException(
-            status_code=403, detail="Unable to reset the test database when not running in TESTING mode"
-        )
+        raise HTTPException(status_code=403, detail="Unable to reset the database when not running in TESTING mode")
 
 
 helpers.api_route_create(
@@ -131,9 +129,7 @@ helpers.api_route_create(
         status.HTTP_204_NO_CONTENT: {
             "description": "The test database tables were reset",
         },
-        status.HTTP_403_FORBIDDEN: {
-            "description": "Unable to reset the test database when not running in TESTING mode"
-        },
+        status.HTTP_403_FORBIDDEN: {"description": "Unable to reset the database when not running in TESTING mode"},
     },
     status_code=status.HTTP_204_NO_CONTENT,
 )
