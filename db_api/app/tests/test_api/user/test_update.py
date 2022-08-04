@@ -4,7 +4,7 @@ import uuid
 from fastapi import status
 
 from db.auth import verify_password
-from tests import factory
+from db.tests import factory
 
 
 #

@@ -5,7 +5,7 @@ from datetime import datetime, timedelta, timezone
 from dateutil.parser import parse
 from fastapi import status
 
-from tests import factory
+from db.tests import factory
 
 
 #

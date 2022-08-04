@@ -4,7 +4,7 @@ import uuid
 from fastapi import status
 
 from db import crud
-from tests import factory
+from db.tests import factory
 from tests.test_api.helpers import INVALID_LIST_STRING_VALUES, VALID_LIST_STRING_VALUES
 
 

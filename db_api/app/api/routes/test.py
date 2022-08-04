@@ -10,7 +10,7 @@ from api_models.test import AddTestAlert, AddTestEvent
 from db.config import get_settings
 from db.database import get_db
 from db.seed import seed
-from tests import factory
+from db.tests import factory
 
 
 router = APIRouter(
@@ -29,7 +29,7 @@ def add_test_alerts(alert: AddTestAlert, db: Session = Depends(get_db)):
     if get_settings().in_testing_mode:
         for i in range(alert.count):
             factory.submission.create_from_json_file(
-                db=db, json_path=f"/app/tests/alerts/{alert.template}", submission_name=f"Manual Alert {i}"
+                db=db, json_name=alert.template, submission_name=f"Manual Alert {i}"
             )
 
             # The delay defaults to 0
@@ -69,7 +69,7 @@ def add_test_events(event: AddTestEvent, db: Session = Depends(get_db)):
 
         for i in range(event.alert_count):
             alert = factory.submission.create_from_json_file(
-                db=db, json_path=f"/app/tests/alerts/{event.alert_template}", submission_name=f"Manual Alert {i}"
+                db=db, json_name=event.alert_template, submission_name=f"Manual Alert {i}"
             )
             alert.event_uuid = db_event.uuid
             db.commit()

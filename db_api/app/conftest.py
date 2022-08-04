@@ -7,7 +7,7 @@ from sqlalchemy.orm import Session
 
 from db.database import engine, get_db
 from main import app
-from tests import factory
+from db.tests import factory
 
 
 @pytest.fixture(scope="session", autouse=True)

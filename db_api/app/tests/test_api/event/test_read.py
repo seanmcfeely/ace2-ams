@@ -15,7 +15,7 @@ from api_models.analysis_details import (
     SandboxHttpRequest,
     SandboxProcess,
 )
-from tests import factory
+from db.tests import factory
 
 
 #

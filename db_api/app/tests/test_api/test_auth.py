@@ -2,7 +2,7 @@ import pytest
 
 from fastapi import status
 
-from tests import factory
+from db.tests import factory
 
 
 #

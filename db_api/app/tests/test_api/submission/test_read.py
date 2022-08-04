@@ -6,7 +6,7 @@ from fastapi import status
 from urllib.parse import urlencode
 
 from db import crud
-from tests import factory
+from db.tests import factory
 
 
 #

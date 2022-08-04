@@ -3,7 +3,7 @@ import uuid
 from datetime import datetime, timezone
 from fastapi import status
 
-from tests import factory
+from db.tests import factory
 
 
 #
