@@ -5,11 +5,15 @@ set -e
 
 COMPOSE_FILE=${COMPOSE_FILE:-docker-compose.yml}
 
+echo "COMPOSE_FILE=$COMPOSE_FILE"
+env
+
 # Bring up the containers in TESTING mode so Vite loads the testing config
 docker compose -f $COMPOSE_FILE up -d
+docker exec ace2-frontend env
 
 # Wait for things to be ready
-docker exec ace2-frontend bin/wait-for-gui.sh
+# docker exec ace2-frontend bin/wait-for-gui.sh
 
 # Run Cypress
-docker exec -e VITE_TESTING_MODE=yes ace2-frontend xvfb-run cypress run --e2e --headless --browser chrome --config-file "cypress.config.ts" --config video=false,screenshotOnRunFailure=false
+# docker exec -e VITE_TESTING_MODE=yes ace2-frontend xvfb-run cypress run --e2e --headless --browser chrome --config-file "cypress.config.ts" --config video=false,screenshotOnRunFailure=false
