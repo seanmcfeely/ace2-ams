@@ -48,7 +48,7 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      VITE_TESTING: yes
+      VITE_TESTING_MODE: yes
 
     steps:
       - name: Checkout code

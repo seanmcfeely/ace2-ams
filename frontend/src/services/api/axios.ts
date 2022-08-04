@@ -6,7 +6,7 @@ import { useAuthStore } from "@/stores/auth";
 
 /* c8 ignore start */
 const backendURL =
-  `${import.meta.env.VITE_TESTING}` === "yes"
+  `${import.meta.env.VITE_TESTING_MODE}` === "yes"
     ? "http://localhost:3000/api/"
     : `${import.meta.env.VITE_BACKEND_URL}`;
 /* c8 ignore stop */
