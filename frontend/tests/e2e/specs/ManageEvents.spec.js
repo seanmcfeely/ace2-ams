@@ -568,7 +568,7 @@ describe("ManageEvents.vue Actions", () => {
     );
   });
 
-  it("will assign event owner to current user when take ownership button is clicked", () => {
+  it.only("will assign event owner to current user when take ownership button is clicked", () => {
     cy.intercept("PATCH", "/api/event/").as("takeOwnership");
 
     // Select an event and take ownership
