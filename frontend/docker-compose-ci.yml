@@ -1,5 +1,10 @@
 version: "3.9"
 
+# NOTE: This special compose file is needed because it removes the volumes for the GUI container.
+# One of these volumes includes the node_modules directory, and with this volume in place, GitHub Actions
+# has a permissions issue and will issue an "error 137", which is normally supposed to refer to out of memory,
+# but do not be deceived - it is related to Docker and file permissions in this case.
+
 services:
   db:
     container_name: ace2-db-frontend
