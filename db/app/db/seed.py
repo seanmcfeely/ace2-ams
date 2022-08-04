@@ -35,10 +35,6 @@ from db.schemas.user import User
 from db.schemas.user_role import UserRole
 
 
-# NOTE: The print statements in this file show up in the Docker logs when you run:
-# docker logs ace2-gui-backend
-
-
 def add_queueable_values(db: Session, db_table: DeclarativeMeta, queues: dict, data: dict, key: str, print_value: str):
     # Transform the data into a dictionary where the keys are the individual values from the config
     # and the values are lists of which queue they belong to.
