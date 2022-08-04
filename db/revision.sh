@@ -1,5 +1,12 @@
 #!/usr/bin/env bash
 
+# Make sure a migration name was supplied
+if [ "$#" -ne 1 ]
+then
+  echo "Usage: revision.sh \"Name of migration\""
+  exit 1
+fi
+
 # Set up the variables
 DB=${POSTGRES_DB:-ace}
 USER=${POSTGRES_USER:-ace}
