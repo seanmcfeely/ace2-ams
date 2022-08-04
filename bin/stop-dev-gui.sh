@@ -1,3 +1,5 @@
 #!/usr/bin/env bash
 
-docker compose -f frontend/docker-compose.yml down
+COMPOSE_FILE=${COMPOSE_FILE:-docker-compose.yml}
+
+docker compose -f frontend/$COMPOSE_FILE down

@@ -5,6 +5,8 @@ set -e
 
 COMPOSE_FILE=${COMPOSE_FILE:-docker-compose.yml}
 
+echo "COMPOSE_FILE=$COMPOSE_FILE"
+
 # Bring up the containers in TESTING mode so Vite loads the testing config
 VITE_TESTING_MODE=yes docker compose -f $COMPOSE_FILE up -d
 
