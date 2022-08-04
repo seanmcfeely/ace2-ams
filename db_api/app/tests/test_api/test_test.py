@@ -13,7 +13,7 @@ def test_not_testing_mode_add_alerts(client):
 
     result = client.post("/api/test/add_alerts", json={"template": "blah.json", "count": 1})
     assert result.status_code == status.HTTP_403_FORBIDDEN
-    assert result.json()["detail"] == "Unable to add test alerts when not running in TESTING mode"
+    assert result.json()["detail"] == "Unable to add alerts when not running in TESTING mode"
 
     # Reset testing mode so future tests work
     os.environ["IN_TESTING_MODE"] = "yes"
@@ -27,7 +27,7 @@ def test_not_testing_mode_add_event(client):
         "/api/test/add_event", json={"alert_template": "blah.json", "alert_count": 1, "name": "Test Event"}
     )
     assert result.status_code == status.HTTP_403_FORBIDDEN
-    assert result.json()["detail"] == "Unable to add test event when not running in TESTING mode"
+    assert result.json()["detail"] == "Unable to add event when not running in TESTING mode"
 
     # Reset testing mode so future tests work
     os.environ["IN_TESTING_MODE"] = "yes"
@@ -39,7 +39,7 @@ def test_not_testing_mode_reset_database(client):
 
     result = client.post("/api/test/reset_database")
     assert result.status_code == status.HTTP_403_FORBIDDEN
-    assert result.json()["detail"] == "Unable to reset the test database when not running in TESTING mode"
+    assert result.json()["detail"] == "Unable to reset the database when not running in TESTING mode"
 
     # Reset testing mode so future tests work
     os.environ["IN_TESTING_MODE"] = "yes"
