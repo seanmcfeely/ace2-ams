@@ -894,7 +894,7 @@ def test_get_sort_by_queue(client, db):
 
 
 def test_get_submission_tree(client, db):
-    submission = factory.submission.create_from_json_file(db=db, json_name="/small.json", submission_name="Test Alert")
+    submission = factory.submission.create_from_json_file(db=db, json_name="small.json", submission_name="Test Alert")
 
     # The small.json submission has 13 observables (12 unique) and 15 analyses. The small.json template actually shows
     # 14 observables and 15 analyses, but one of each of them are repeated, so they will actually only appear once
