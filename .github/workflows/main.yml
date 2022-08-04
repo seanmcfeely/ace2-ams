@@ -10,6 +10,17 @@ on:
 
 # All of the jobs run in parallel, but each step within a job is sequential
 jobs:
+  db:
+    name: DB
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Test
+        run: bin/test-db.sh
+
   db-api:
     name: DB API
     runs-on: ubuntu-latest
