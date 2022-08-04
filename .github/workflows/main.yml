@@ -83,7 +83,6 @@ jobs:
 
     env:
       COMPOSE_FILE: docker-compose-ci.yml
-      VITE_TESTING_MODE: yes
 
     steps:
       - name: Checkout code
