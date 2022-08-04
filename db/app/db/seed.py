@@ -64,13 +64,14 @@ def seed(db: Session):
         sys.exit()
 
     # Quit early if the config file does not exist
-    if not os.path.exists("etc/defaults.yml"):
-        print("etc/defaults.yml does not exist!")
+    config_path = os.path.join(current, "etc", "defaults.yml")
+    if not os.path.exists(config_path):
+        print(f"{config_path} does not exist!")
         sys.exit()
 
     # Load the data from the config file
     data = None
-    with open("etc/defaults.yml", "r") as yamlfile:
+    with open(config_path, "r") as yamlfile:
         data = yaml.load(yamlfile, Loader=yaml.FullLoader)
 
     # Quit early if the config file is empty

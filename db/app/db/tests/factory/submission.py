@@ -1,4 +1,5 @@
 import json
+import os
 
 from datetime import datetime
 from sqlalchemy.orm import Session
@@ -164,7 +165,7 @@ def create(
     return submission
 
 
-def create_from_json_file(db: Session, json_path: str, submission_name: str) -> Submission:
+def create_from_json_file(db: Session, json_name: str, submission_name: str) -> Submission:
     def _build_observable_model(o: dict, submission_uuid: UUID) -> ObservableCreate:
         """Helper function used to construct an ObservableCreate model with child AnalysisCreate models.
 
@@ -235,7 +236,7 @@ def create_from_json_file(db: Session, json_path: str, submission_name: str) -> 
 
         return text
 
-    with open(json_path) as f:
+    with open(os.path.join("db", "tests", "alerts", json_name)) as f:
         text = f.read()
 
         text = text.replace("<ALERT_NAME>", submission_name)

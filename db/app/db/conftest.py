@@ -1,8 +1,13 @@
 import alembic
+import os
 import pytest
+import sys
 
 from alembic.config import Config
 from sqlalchemy.orm import Session
+
+current = os.path.dirname(os.path.realpath(__file__))
+sys.path.append(current)
 
 from db.database import engine, get_db
 from tests import factory

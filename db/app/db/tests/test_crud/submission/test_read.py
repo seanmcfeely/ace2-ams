@@ -725,9 +725,7 @@ def test_read_observables(db):
 
 
 def test_read_submission_tree(db):
-    submission = factory.submission.create_from_json_file(
-        db=db, json_path="/app/tests/alerts/small.json", submission_name="Test Alert"
-    )
+    submission = factory.submission.create_from_json_file(db=db, json_name="small.json", submission_name="Test Alert")
 
     # The small.json submission has 13 observables (12 unique) and 15 analyses. The small.json template actually shows
     # 14 observables and 15 analyses, but one of each of them are repeated, so they will actually only appear once
@@ -1379,7 +1377,7 @@ def test_circular_tree(db):
     """
 
     submission = factory.submission.create_from_json_file(
-        db=db, json_path="/app/tests/alerts/circular.json", submission_name="Circular Alert"
+        db=db, json_name="circular.json", submission_name="Circular Alert"
     )
 
     tree = crud.submission.read_tree(uuid=submission.uuid, db=db)
@@ -1526,7 +1524,7 @@ def test_critical_path(db):
     """
 
     submission = factory.submission.create_from_json_file(
-        db=db, json_path="/app/tests/alerts/critical_path.json", submission_name="Critical Path Alert"
+        db=db, json_name="critical_path.json", submission_name="Critical Path Alert"
     )
 
     tree = crud.submission.read_tree(uuid=submission.uuid, db=db)

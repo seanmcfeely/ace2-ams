@@ -108,7 +108,7 @@ def reset_test_database(db: Session = Depends(get_db)):
     #       with the way that it uses Alembic migrations (and the tests use Alembic migrations)
     if get_settings().in_testing_mode:  # pragma: no cover
         # Use Alembic to downgrade (delete all the database tables) and then upgrade (rebuild the tables)
-        config = Config("alembic.ini")
+        config = Config("db/alembic.ini")
         alembic.command.downgrade(config, "base")
         alembic.command.upgrade(config, "head")
 

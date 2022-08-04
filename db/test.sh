@@ -36,7 +36,7 @@ docker run -d --net ace2-db-net --name ace2-db-crud -e DATABASE_URL=$DATABASE_UR
 
 # Run the tests inside the Python container and capture its return code
 echo "Running tests"
-docker exec ace2-db-crud pytest -vv ${NEW_PATH:-tests/}
+docker exec ace2-db-crud pytest -vv ${NEW_PATH:-db/tests/}
 RETURN_CODE=$?
 
 # Cleanup

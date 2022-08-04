@@ -1,4 +1,4 @@
 #!/usr/bin/env bash
 
 cd frontend/
-./test-unit-coverage.sh
+./test-e2e.sh
