@@ -5,9 +5,6 @@ set -e
 
 COMPOSE_FILE=${COMPOSE_FILE:-docker-compose.yml}
 
-# Stop any running version of the GUI
-bin/stop-dev-gui.sh
-
 # Bring up the containers in TESTING mode so Vite loads the testing config
 VITE_TESTING_MODE=yes docker compose -f $COMPOSE_FILE up -d
 
