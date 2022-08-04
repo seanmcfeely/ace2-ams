@@ -4,8 +4,6 @@ FROM $fastapi_base
 
 WORKDIR /app
 
-ENV PYTHONDONTWRITEBYTECODE=1
-
 ARG http_proxy
 ARG https_proxy
 ARG pip_install_options

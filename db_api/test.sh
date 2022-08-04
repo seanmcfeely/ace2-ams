@@ -37,7 +37,7 @@ docker run -d --net ace2-db-test-net --name ace2-db-api-test -e DATABASE_URL=$DA
 
 # Run the tests inside the Python container and capture its return code
 echo "Running tests"
-docker exec ace2-db-api-test pytest -p no:cacheprovider -vv ${NEW_PATH:-tests/}
+docker exec ace2-db-api-test pytest -vv ${NEW_PATH:-tests/}
 RETURN_CODE=$?
 
 # Cleanup
