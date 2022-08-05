@@ -38,10 +38,6 @@ services:
       - SQL_ECHO=${SQL_ECHO:-no}
     ports:
       - 8888:80
-    volumes:
-      - ../db_api/app:/app
-      - ../db/app/db:/app/db
-      - ../api_models:/app/api_models
     command: bash -c 'while !</dev/tcp/db/5432; do sleep 1; done; alembic -c db/alembic.ini upgrade head && python db/seed.py && /start-reload.sh'
 
   gui-api:
@@ -61,9 +57,6 @@ services:
       - DATABASE_API_URL=http://db-api/api
     ports:
       - 7777:80
-    volumes:
-      - ../gui_api/app:/app
-      - ../api_models:/app/api_models
     command: bash -c 'while !</dev/tcp/db-api/80; do sleep 1; done; /start-reload.sh'
 
   gui:

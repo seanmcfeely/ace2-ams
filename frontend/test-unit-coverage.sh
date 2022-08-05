@@ -7,4 +7,4 @@ set -e
 docker compose up -d
 
 # Run the tests with coverage
-docker exec -e VITE_TESTING=yes ace2-frontend npm run test:coverage
+docker exec -e UNIT_TESTING=yes ace2-frontend npm run test:coverage
