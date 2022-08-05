@@ -97,6 +97,7 @@ jobs:
           browser: chrome
           config-file: cypress.config.ts
           config: video=false,screenshotOnRunFailure=false
+          working-directory: frontend
 
       - name: Frontend logs
         run: docker logs ace2-frontend
