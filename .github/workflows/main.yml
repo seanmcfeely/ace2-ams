@@ -81,9 +81,6 @@ jobs:
     name: End-to-End
     runs-on: ubuntu-latest
 
-    env:
-      COMPOSE_FILE: docker-compose-ci.yml
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -95,7 +92,7 @@ jobs:
         run: docker exec ace2-frontend bin/wait-for-gui.sh
 
       - name: E2E tests
-        run: docker exec -e VITE_TESTING_MODE=yes ace2-frontend xvfb-run cypress run --e2e --headless --browser chrome --config-file "cypress.config.ts" --config video=false,screenshotOnRunFailure=false
+        run: docker exec ace2-frontend xvfb-run cypress run --e2e --headless --browser chrome --config-file "cypress.config.ts" --config video=false,screenshotOnRunFailure=false
 
       - name: Frontend logs
         run: docker logs ace2-frontend
