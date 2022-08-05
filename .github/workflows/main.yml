@@ -91,10 +91,6 @@ jobs:
       - name: Wait for environment to be ready
         run: docker exec ace2-frontend bin/wait-for-gui.sh
 
-      - name: Sleep
-        run: sleep 60s
-        shell: bash
-
       - name: E2E tests
         run: docker exec ace2-frontend xvfb-run cypress run --e2e --headless --browser chrome --config-file "cypress.config.ts" --config video=false,screenshotOnRunFailure=false
 
