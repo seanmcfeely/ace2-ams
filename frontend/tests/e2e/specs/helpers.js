@@ -32,7 +32,6 @@ export function visitUrl(options) {
   cy.intercept("GET", "/api/user/?offset=0").as("user");
 
   // Visit the intended URL
-  cy.exec("echo visiting: " + options.url);
   cy.visit(options.url);
 
   // Wait for all of the intercepted calls to complete

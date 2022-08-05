@@ -37,9 +37,7 @@ const addMultipleObservables = () => {
 
 describe("AnalyzeAlert.vue", () => {
   before(() => {
-    cy.exec("echo resetDatabase");
     cy.resetDatabase();
-    cy.exec("echo login");
     cy.login();
   });
 
