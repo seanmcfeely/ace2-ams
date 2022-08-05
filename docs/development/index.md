@@ -59,10 +59,8 @@ npm_strict_ssl=false
 You can start the application using Docker containers so that it uses hot-reloading anytime you change a file:
 
 ```
-bin/reset-dev-container.sh
+bin/reset-dev-gui.sh
 ```
-
-This script will generate random passwords for the database user and the secret key used for JWTs. If you need to access these, you can view them in the `$HOME/.ace2.env` file, which configures the environment variables that will be loaded into the database container.
 
 Once the both the frontend and API development environments are built and started, you can access the components:
 
@@ -117,6 +115,14 @@ npm uninstall <package>
 
 ## Running tests
 
+### Database
+
+The database library has a suite of tests performed by Pytest that includes code coverage:
+
+```
+bin/test-db.sh
+```
+
 ### Database API
 
 The database API has a suite of tests performed by Pytest that includes code coverage:
@@ -128,7 +134,7 @@ bin/test-db-api.sh
 You can run a specific portion of the tests using the same script:
 
 ```
-bin/test-db-api.sh db_api/app/tests/api/test_auth.py
+bin/test-db-api.sh db_api/app/db/tests/api/test_auth.py
 ```
 
 ### GUI API
@@ -157,12 +163,18 @@ You can execute the unit tests by running:
 bin/test-frontend-unit.sh
 ```
 
+Or run the tests with code coverage:
+
+```
+bin/test-frontend-unit-coverage.sh
+```
+
 #### Component Tests
 
 You can execute the end-to-end tests by running:
 
 ```
-bin/test-components.sh
+bin/test-frontend-components.sh
 ```
 
 #### End-to-end tests
@@ -170,7 +182,7 @@ bin/test-components.sh
 You can execute the end-to-end tests by running:
 
 ```
-bin/test-e2e.sh
+bin/test-frontend-e2e.sh
 ```
 
 ##### Test Runner
@@ -179,32 +191,19 @@ Cypress also comes with an amazing [Test Runner](https://docs.cypress.io/guides/
 
 However, this will need to be performed on your local system ouside of the containers (see the [Windows](./index.md#windows) setup section in case you are using WSL2). To do this, you will need to have [Node.js 16](https://nodejs.org/en/download/current/) installed.
 
-**Step 1:** Prep the application to run the tests in interactive mode (this tells the containers to use the test database):
-
-```
-bin/test-interactive-e2e.sh
-```
-
-**Step 2:** Install the Node.js packages on your host system (this only needs to be done one time or when `package.json` is updated):
+**Step 1:** Install the Node.js packages on your host system (this only needs to be done one time or when `package.json` is updated):
 
 ```
 cd frontend/
 npm install
 ```
 
-**Step 3:** Open the Test Runner on your host system:
+**Step 2:** Start the environment and then open up the Cypress test runner:
 
 ```
-cd frontend/
-npx cypress open
+bin/test-frontend-e2e-interactive.sh
 ```
 
 ![Test Runner](gui/test-runner.png)
 
 For more information on what you can do with the Test Runner, view the Test Runner [documentation](https://docs.cypress.io/guides/core-concepts/test-runner).
-
-**Step 4:** Disable testing mode once you are finished using the Test Runner:
-
-```
-bin/disable-test-mode.sh
-```

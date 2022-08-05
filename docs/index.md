@@ -19,7 +19,7 @@ Add the following entry to the file:
 With your host file updated, you can use the helper script to reset and build the local AMS development environment that includes hot-reloading for both the frontend and APIs:
 
 ```
-bin/reset-dev-container.sh
+bin/reset-dev-gui.sh
 ```
 
 After the containers are built and running, you can access the components using the following URLs:
