@@ -612,7 +612,7 @@
 
 <p>This script uses Alembic's "autogenerate" feature to create what it thinks is the correct database migration script for the changes you made.</p>
 <p>Autogenerate is <a href="https://alembic.sqlalchemy.org/en/latest/autogenerate.html#what-does-autogenerate-detect-and-what-does-it-not-detect">not always perfect</a>, so you should <strong>always</strong> verify the migration script it creates before committing it to the repo (and applying it in production) to make sure what will be applied to the database is correct.</p>
-<p>The migration scripts can be found in <code>db_api/db/migrations/versions/</code>. An example migration script for creating the "tag" database table is shown below:</p>
+<p>The migration scripts can be found in <code>db/app/db/migrations/versions/</code>. An example migration script for creating the "tag" database table is shown below:</p>
 <div class="codehilite"><pre><span></span><code><span class="sd">&quot;&quot;&quot;Initial revision</span>
 
 <span class="sd">Revision ID: 03fe4895893f</span>
@@ -649,7 +649,7 @@
 
 <p>This script shows you what it will do when you issue the "upgrade" command to the database as well as if you need to revert and issue the "downgrade" command. You can manually edit this migration script if something is incorrect.</p>
 <h3 id="applying-revisions">Applying revisions<a class="headerlink" href="#applying-revisions" title="Permanent link">&para;</a></h3>
-<p>Once you have a new revision you'd like to apply to the database, you can either use the <code>bin/reset-dev-container.sh</code> script to rebuild your entire development environment (which will automatically apply the Alembic database revisions), or you can use the <code>bin/db-upgrade.sh</code> script to apply the revisions without erasing and rebuilding the development environment.</p>
+<p>Once you have a new revision you'd like to apply to your dev environment, you can use the <code>bin/reset-dev-gui.sh</code> script to rebuild your entire development environment (which will automatically apply the Alembic database revisions).</p>
 
               
             </article>

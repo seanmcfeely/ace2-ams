@@ -363,6 +363,13 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
+  <a href="#database" class="md-nav__link">
+    Database
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#database-api" class="md-nav__link">
     Database API
   </a>
@@ -790,6 +797,13 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
+  <a href="#database" class="md-nav__link">
+    Database
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#database-api" class="md-nav__link">
     Database API
   </a>
@@ -908,10 +922,9 @@ npm_strict_ssl=false
 
 <h2 id="starting-the-application">Starting the application<a class="headerlink" href="#starting-the-application" title="Permanent link">&para;</a></h2>
 <p>You can start the application using Docker containers so that it uses hot-reloading anytime you change a file:</p>
-<div class="codehilite"><pre><span></span><code>bin/reset-dev-container.sh
+<div class="codehilite"><pre><span></span><code>bin/reset-dev-gui.sh
 </code></pre></div>
 
-<p>This script will generate random passwords for the database user and the secret key used for JWTs. If you need to access these, you can view them in the <code>$HOME/.ace2.env</code> file, which configures the environment variables that will be loaded into the database container.</p>
 <p>Once the both the frontend and API development environments are built and started, you can access the components:</p>
 <ul>
 <li>Frontend: <a href="http://ace2-ams:8080">http://ace2-ams:8080</a></li>
@@ -952,13 +965,18 @@ npm_strict_ssl=false
 </code></pre></div>
 
 <h2 id="running-tests">Running tests<a class="headerlink" href="#running-tests" title="Permanent link">&para;</a></h2>
+<h3 id="database">Database<a class="headerlink" href="#database" title="Permanent link">&para;</a></h3>
+<p>The database library has a suite of tests performed by Pytest that includes code coverage:</p>
+<div class="codehilite"><pre><span></span><code>bin/test-db.sh
+</code></pre></div>
+
 <h3 id="database-api">Database API<a class="headerlink" href="#database-api" title="Permanent link">&para;</a></h3>
 <p>The database API has a suite of tests performed by Pytest that includes code coverage:</p>
 <div class="codehilite"><pre><span></span><code>bin/test-db-api.sh
 </code></pre></div>
 
 <p>You can run a specific portion of the tests using the same script:</p>
-<div class="codehilite"><pre><span></span><code>bin/test-db-api.sh db_api/app/tests/api/test_auth.py
+<div class="codehilite"><pre><span></span><code>bin/test-db-api.sh db_api/app/db/tests/api/test_auth.py
 </code></pre></div>
 
 <h3 id="gui-api">GUI API<a class="headerlink" href="#gui-api" title="Permanent link">&para;</a></h3>
@@ -977,38 +995,34 @@ npm_strict_ssl=false
 <div class="codehilite"><pre><span></span><code>bin/test-frontend-unit.sh
 </code></pre></div>
 
+<p>Or run the tests with code coverage:</p>
+<div class="codehilite"><pre><span></span><code>bin/test-frontend-unit-coverage.sh
+</code></pre></div>
+
 <h4 id="component-tests">Component Tests<a class="headerlink" href="#component-tests" title="Permanent link">&para;</a></h4>
 <p>You can execute the end-to-end tests by running:</p>
-<div class="codehilite"><pre><span></span><code>bin/test-components.sh
+<div class="codehilite"><pre><span></span><code>bin/test-frontend-components.sh
 </code></pre></div>
 
 <h4 id="end-to-end-tests">End-to-end tests<a class="headerlink" href="#end-to-end-tests" title="Permanent link">&para;</a></h4>
 <p>You can execute the end-to-end tests by running:</p>
-<div class="codehilite"><pre><span></span><code>bin/test-e2e.sh
+<div class="codehilite"><pre><span></span><code>bin/test-frontend-e2e.sh
 </code></pre></div>
 
 <h5 id="test-runner">Test Runner<a class="headerlink" href="#test-runner" title="Permanent link">&para;</a></h5>
 <p>Cypress also comes with an amazing <a href="https://docs.cypress.io/guides/core-concepts/test-runner">Test Runner</a> that lets you see and interact with the tests in your local web browser. This can be helpful when writing component and end-to-end tests to ensure they are working properly as well as any debugging you might need to do.</p>
 <p>However, this will need to be performed on your local system ouside of the containers (see the <a href="./#windows">Windows</a> setup section in case you are using WSL2). To do this, you will need to have <a href="https://nodejs.org/en/download/current/">Node.js 16</a> installed.</p>
-<p><strong>Step 1:</strong> Prep the application to run the tests in interactive mode (this tells the containers to use the test database):</p>
-<div class="codehilite"><pre><span></span><code>bin/test-interactive-e2e.sh
-</code></pre></div>
-
-<p><strong>Step 2:</strong> Install the Node.js packages on your host system (this only needs to be done one time or when <code>package.json</code> is updated):</p>
+<p><strong>Step 1:</strong> Install the Node.js packages on your host system (this only needs to be done one time or when <code>package.json</code> is updated):</p>
 <div class="codehilite"><pre><span></span><code>cd frontend/
 npm install
 </code></pre></div>
 
-<p><strong>Step 3:</strong> Open the Test Runner on your host system:</p>
-<div class="codehilite"><pre><span></span><code>cd frontend/
-npx cypress open
+<p><strong>Step 2:</strong> Start the environment and then open up the Cypress test runner:</p>
+<div class="codehilite"><pre><span></span><code>bin/test-frontend-e2e-interactive.sh
 </code></pre></div>
 
 <p><img alt="Test Runner" src="gui/test-runner.png" /></p>
 <p>For more information on what you can do with the Test Runner, view the Test Runner <a href="https://docs.cypress.io/guides/core-concepts/test-runner">documentation</a>.</p>
-<p><strong>Step 4:</strong> Disable testing mode once you are finished using the Test Runner:</p>
-<div class="codehilite"><pre><span></span><code>bin/disable-test-mode.sh
-</code></pre></div>
 
               
             </article>
