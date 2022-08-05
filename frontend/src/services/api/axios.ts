@@ -12,7 +12,6 @@ const backendURL =
 /* c8 ignore stop */
 
 const instance = axios.create({
-  // baseURL: `${import.meta.env.VITE_BACKEND_URL}`,
   baseURL: backendURL,
   headers: {
     "Content-Type": "application/json",
