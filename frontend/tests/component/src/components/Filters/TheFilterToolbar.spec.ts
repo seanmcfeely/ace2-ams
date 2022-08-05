@@ -13,6 +13,9 @@ import FilterChipContainerVue from "@/components/Filters/FilterChipContainer.vue
 import DateRangePickerVue from "@/components/UserInterface/DateRangePicker.vue";
 import { genericObjectReadFactory } from "@mocks/genericObject";
 import { userReadFactory } from "@mocks/user";
+import { eventStatusRead } from "@/models/eventStatus";
+import { genericObjectRead } from "@/models/base";
+import { queueRead } from "@/models/queue";
 
 const user = userReadFactory();
 const externalQueue = genericObjectReadFactory({ value: "external" });
@@ -21,6 +24,14 @@ function factory(
   filters: { alerts: alertFilterParams; events: eventFilterParams } = {
     alerts: {},
     events: {},
+  },
+  filterType = "alerts",
+  eventOpentStatusItems: eventStatusRead[] = [],
+  currentUserSettingsStore = {
+    queues: {
+      alerts: externalQueue,
+      events: externalQueue,
+    },
   },
 ) {
   return mount(TheFilterToolbar, {
@@ -31,22 +42,20 @@ function factory(
         createCustomCypressPinia({
           initialState: {
             authStore: { user: user },
-            currentUserSettingsStore: {
-              queues: {
-                alerts: externalQueue,
-                events: externalQueue,
-              },
-            },
+            currentUserSettingsStore: currentUserSettingsStore,
             filterStore: filters,
             alertDispositionStore: {
               items: [genericObjectReadFactory()],
+            },
+            eventStatusStore: {
+              items: eventOpentStatusItems,
             },
           },
         }),
         router,
       ],
       provide: {
-        objectType: "alerts",
+        objectType: filterType,
         rangeFilters: testConfiguration.alerts.alertRangeFilters,
         availableFilters: testConfiguration.alerts.alertFilters,
       },
@@ -159,6 +168,139 @@ describe("TheFilterToolbar", () => {
       },
     }); // set filters to defaults
   });
+  it("resets filters when 'Reset' button clicked in filter menu dropdown and currentUserSettingsStore is empty", () => {
+    factory(
+      {
+        alerts: {},
+        events: {},
+      },
+      "alerts",
+      [],
+      {
+        queues: {
+          alerts: null as unknown as queueRead,
+          events: null as unknown as queueRead,
+        },
+      },
+    );
+    cy.get('[data-cy="edit-filter-button"]').siblings().click();
+    cy.contains("Reset").click();
+    cy.get("@stub-5").should("have.been.calledOnceWith", {
+      objectType: "alerts",
+    }); // clear all
+    cy.get("@stub-1").should("have.been.calledOnceWith", {
+      objectType: "alerts",
+      filters: {
+        disposition: {
+          included: [
+            {
+              value: "None",
+            },
+          ],
+          notIncluded: [],
+        },
+        owner: {
+          included: [
+            user,
+            {
+              username: "none",
+              displayName: "None",
+            },
+          ],
+          notIncluded: [],
+        },
+        queue: {
+          included: [externalQueue],
+          notIncluded: [],
+        },
+      },
+    }); // set filters to defaults
+  });
+  it("resets filters when 'Reset' button clicked in filter menu dropdown when filterType is events", () => {
+    factory(
+      {
+        alerts: {},
+        events: {},
+      },
+      "events",
+    );
+    cy.get('[data-cy="edit-filter-button"]').siblings().click();
+    cy.contains("Reset").click();
+    cy.get("@stub-5").should("have.been.calledOnceWith", {
+      objectType: "events",
+    }); // clear all
+    cy.get("@stub-1").should("have.been.calledOnceWith", {
+      objectType: "events",
+      filters: {
+        queue: {
+          included: [externalQueue],
+          notIncluded: [],
+        },
+      },
+    }); // set filters to defaults
+  });
+  it("resets filters when 'Reset' button clicked in filter menu dropdown when filterType is events and currentUserSettingsStore is empty", () => {
+    factory(
+      {
+        alerts: {},
+        events: {},
+      },
+      "events",
+      [],
+      {
+        queues: {
+          alerts: null as unknown as queueRead,
+          events: null as unknown as queueRead,
+        },
+      },
+    );
+    cy.get('[data-cy="edit-filter-button"]').siblings().click();
+    cy.contains("Reset").click();
+    cy.get("@stub-5").should("have.been.calledOnceWith", {
+      objectType: "events",
+    }); // clear all
+    cy.get("@stub-1").should("have.been.calledOnceWith", {
+      objectType: "events",
+      filters: {
+        queue: {
+          included: [externalQueue],
+          notIncluded: [],
+        },
+      },
+    }); // set filters to defaults
+  });
+  it("resets filters when 'Reset' button clicked in filter menu dropdown when filterType is events and openStatus is available", () => {
+    const openEventStatus = {
+      ...genericObjectReadFactory({ value: "OPEN" }),
+      queues: [],
+    };
+    factory(
+      {
+        alerts: {},
+        events: {},
+      },
+      "events",
+      [openEventStatus],
+    );
+    cy.get('[data-cy="edit-filter-button"]').siblings().click();
+    cy.contains("Reset").click();
+    cy.get("@stub-5").should("have.been.calledOnceWith", {
+      objectType: "events",
+    }); // clear all
+    cy.get("@stub-1").should("have.been.calledOnceWith", {
+      objectType: "events",
+      filters: {
+        status: {
+          included: [openEventStatus],
+          notIncluded: [],
+        },
+        queue: {
+          included: [externalQueue],
+          notIncluded: [],
+        },
+      },
+    }); // set filters to defaults
+  });
   it("clears filters when 'Clear All' button clicked in filter menu dropdown", () => {
     factory();
     cy.get('[data-cy="edit-filter-button"]').siblings().click();
@@ -166,5 +308,15 @@ describe("TheFilterToolbar", () => {
     cy.get("@stub-5").should("have.been.calledOnceWith", {
       objectType: "alerts",
     }); // clear all
+  });
+  it("does not throw error when 'Copy Link' clicked", () => {
+    factory({
+      alerts: {
+        name: { included: ["test name"], notIncluded: [] },
+      },
+      events: {},
+    });
+    cy.get('[data-cy="edit-filter-button"]').siblings().click();
+    cy.contains("Copy Link").click();
   });
 });

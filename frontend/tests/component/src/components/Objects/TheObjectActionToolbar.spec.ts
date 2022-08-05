@@ -6,6 +6,7 @@ import { createCustomCypressPinia } from "@tests/cypressHelpers";
 import { alertTreeReadFactory } from "@mocks/alert";
 import { userReadFactory } from "@mocks/user";
 import CommentModalVue from "@/components/Modals/CommentModal.vue";
+import { Alert } from "@/services/api/alert";
 
 interface TheObjectActionToolbarProps {
   reloadObject: "object" | "table";
@@ -24,13 +25,15 @@ function factory(
   args: {
     props: TheObjectActionToolbarProps;
     initialState: Record<string, unknown>;
-  } = { props: defaultProps, initialState: {} },
+    stubActions: boolean;
+  } = { props: defaultProps, initialState: {}, stubActions: true },
 ) {
   return mount(TheObjectActionToolbar, {
     global: {
       plugins: [
         PrimeVue,
         createCustomCypressPinia({
+          stubActions: args.stubActions,
           initialState: args.initialState,
         }),
       ],
@@ -60,6 +63,7 @@ describe("TheObjectActionToolbar", () => {
         selectedAlertStore: { selected: ["uuid"] },
         authStore: { user: userReadFactory() },
       },
+      stubActions: true,
     });
     cy.contains("Take Ownership")
       .should("be.visible")
@@ -73,6 +77,44 @@ describe("TheObjectActionToolbar", () => {
       },
     ]);
   });
+  it("shows error message if attempt to take ownership fails with Error", () => {
+    cy.stub(Alert, "update").rejects(new Error("404 request failed"));
+    factory({
+      props: defaultProps,
+      initialState: {
+        selectedAlertStore: { selected: ["uuid"] },
+        authStore: { user: userReadFactory() },
+      },
+      stubActions: false,
+    });
+    cy.contains("Take Ownership")
+      .should("be.visible")
+      .should("not.be.disabled")
+      .click();
+    cy.contains("404 request failed").should("be.visible");
+    cy.get(".p-message-close-icon").click();
+    cy.contains("404 request failed").should("not.exist");
+  });
+  it("shows error message if attempt to take ownership fails with error string", () => {
+    cy.stub(Alert, "update").callsFake(async () => {
+      throw "404 request failed";
+    });
+    factory({
+      props: defaultProps,
+      initialState: {
+        selectedAlertStore: { selected: ["uuid"] },
+        authStore: { user: userReadFactory() },
+      },
+      stubActions: false,
+    });
+    cy.contains("Take Ownership")
+      .should("be.visible")
+      .should("not.be.disabled")
+      .click();
+    cy.contains("404 request failed").should("be.visible");
+    cy.get(".p-message-close-icon").click();
+    cy.contains("404 request failed").should("not.exist");
+  });
   it("displays correct alternate text if reloadObject is object, and the open object's owner is the current user", () => {
     factory({
       props: { reloadObject: "object" },
@@ -82,6 +124,7 @@ describe("TheObjectActionToolbar", () => {
           open: alertTreeReadFactory({ owner: userReadFactory() }),
         },
       },
+      stubActions: true,
     });
     cy.contains("Assigned to you!").should("be.visible");
   });
@@ -89,6 +132,7 @@ describe("TheObjectActionToolbar", () => {
     factory({
       props: { reloadObject: "object" },
       initialState: {},
+      stubActions: true,
     }).then((wrapper) => {
       wrapper.findComponent(CommentModalVue).vm.$emit("requestReload");
       cy.wrap(wrapper.vm.objectStore.requestReload).should("be.true");
@@ -99,6 +143,7 @@ describe("TheObjectActionToolbar", () => {
     factory({
       props: { reloadObject: "table" },
       initialState: {},
+      stubActions: true,
     }).then((wrapper) => {
       wrapper.findComponent(CommentModalVue).vm.$emit("requestReload");
       cy.wrap(wrapper.vm.objectStore.requestReload).should("be.false");
@@ -116,6 +161,7 @@ describe("TheObjectActionToolbar", () => {
         takeOwnership: false,
       },
       initialState: {},
+      stubActions: true,
     });
     cy.get("#ActionToolbar")
       .should("be.visible")

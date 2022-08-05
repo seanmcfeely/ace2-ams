@@ -28,6 +28,7 @@ function factory(
     selected: string[];
     openEvents?: eventRead[];
     closedEvents?: eventRead[];
+    errorOnRead?: () => void;
   } = {
     selected: [],
     openEvents: [],
@@ -36,14 +37,25 @@ function factory(
 ) {
   const readAllPages = cy.stub(Event, "readAllPages");
 
-  readAllPages
-    .withArgs(defaultReadAllPagesOpen)
-    .as("getEventsOpen")
-    .returns(args.openEvents);
-  readAllPages
-    .withArgs(defaultReadAllPagesClosed)
-    .as("getEventsClosed")
-    .returns(args.closedEvents);
+  if (args.errorOnRead) {
+    readAllPages
+      .withArgs(defaultReadAllPagesOpen)
+      .as("getEventsOpen")
+      .callsFake(args.errorOnRead);
+    readAllPages
+      .withArgs(defaultReadAllPagesClosed)
+      .as("getEventsClosed")
+      .rejects(args.errorOnRead);
+  } else {
+    readAllPages
+      .withArgs(defaultReadAllPagesOpen)
+      .as("getEventsOpen")
+      .returns(args.openEvents);
+    readAllPages
+      .withArgs(defaultReadAllPagesClosed)
+      .as("getEventsClosed")
+      .returns(args.closedEvents);
+  }
 
   return mount(SaveToEventModal, {
     global: {
@@ -102,6 +114,34 @@ describe("SaveToEventModal", () => {
     cy.contains("Test Open Event").should("be.visible");
     cy.contains("CLOSED").click();
     cy.contains("Test Closed Event").should("be.visible");
+  });
+  it("renders when events fail to be fetched with Error", () => {
+    factory({
+      selected: [],
+
+      openEvents: [],
+      closedEvents: [],
+      errorOnRead: async () => {
+        throw new Error("Could not fetch events");
+      },
+    });
+    cy.contains("Could not fetch events").should("be.visible");
+    cy.get(".p-message-close").click();
+    cy.contains("Could not fetch events").should("not.exist");
+  });
+  it("renders when events fail to be fetched with error string", () => {
+    factory({
+      selected: [],
+
+      openEvents: [],
+      closedEvents: [],
+      errorOnRead: async () => {
+        throw "Could not fetch events";
+      },
+    });
+    cy.contains("Could not fetch events").should("be.visible");
+    cy.get(".p-message-close").click();
+    cy.contains("Could not fetch events").should("not.exist");
   });
   it("loads the new event tab content correctly when selected", () => {
     factory();
@@ -385,7 +425,7 @@ describe("SaveToEventModal", () => {
     cy.get("@updateAlert").should("have.been.calledOnce");
     cy.get("[data-cy='save-to-event-modal']").should("not.exist");
   });
-  it("shows error when attempt to save to existing event fails", () => {
+  it("shows error when attempt to save to existing event fails with Error", () => {
     cy.stub(Alert, "update")
       .withArgs([
         {
@@ -410,7 +450,34 @@ describe("SaveToEventModal", () => {
     cy.get("@updateAlert").should("have.been.calledOnce");
     cy.contains("404 request failed").should("be.visible");
   });
-  it("shows error when attempt to create new event fails", () => {
+  it("shows error when attempt to save to existing event fails with error string", () => {
+    cy.stub(Alert, "update")
+      .withArgs([
+        {
+          uuid: "uuid",
+          eventUuid: "testEvent1",
+          historyUsername: "analyst",
+        },
+      ])
+      .as("updateAlert")
+      .callsFake(async () => {
+        throw "404 request failed";
+      });
+    factory({
+      selected: ["uuid"],
+      openEvents: [
+        eventReadFactory({ name: "Test Open Event", status: openStatus }),
+      ],
+      closedEvents: [
+        eventReadFactory({ name: "Test Closed Event", status: closedStatus }),
+      ],
+    });
+    cy.contains("Test Open Event").click();
+    cy.findByText("Save").click();
+    cy.get("@updateAlert").should("have.been.calledOnce");
+    cy.contains("404 request failed").should("be.visible");
+  });
+  it("shows error when attempt to create new event fails with Error", () => {
     cy.stub(Event, "create")
       .withArgs(
         {
@@ -441,7 +508,40 @@ describe("SaveToEventModal", () => {
     cy.get("@updateAlert").should("not.have.been.calledOnce");
     cy.contains("404 request failed").should("be.visible");
   });
-  it("shows error when attempt create comment fails with error code other than 409", () => {
+  it("shows error when attempt to create new event fails with errpr string", () => {
+    cy.stub(Event, "create")
+      .withArgs(
+        {
+          name: "Test Name",
+          queue: "testObject",
+          owner: "analyst",
+          status: "OPEN",
+          historyUsername: "analyst",
+        },
+        true,
+      )
+      .as("createEvent")
+      .callsFake(async () => {
+        throw "404 request failed";
+      });
+    cy.stub(Alert, "update").as("updateAlert").resolves();
+    factory({
+      selected: ["uuid"],
+      openEvents: [
+        eventReadFactory({ name: "Test Open Event", status: openStatus }),
+      ],
+      closedEvents: [
+        eventReadFactory({ name: "Test Closed Event", status: closedStatus }),
+      ],
+    });
+    cy.contains("NEW").click();
+    cy.findByLabelText("Event Name").click().type("Test Name");
+    cy.findByText("Save").click();
+    cy.get("@createEvent").should("have.been.calledOnce");
+    cy.get("@updateAlert").should("not.have.been.calledOnce");
+    cy.contains("404 request failed").should("be.visible");
+  });
+  it("shows error when attempt create comment fails with Error with error code other than 409", () => {
     cy.stub(Event, "create")
       .withArgs(
         {
@@ -493,7 +593,61 @@ describe("SaveToEventModal", () => {
     cy.get("@createComment").should("have.been.calledOnce");
     cy.contains("404 request failed").should("be.visible");
   });
-  it("does not show error when attempt create comment fails with error code 409", () => {
+  it("shows error when attempt create comment fails with error string with error code other than 409", () => {
+    cy.stub(Event, "create")
+      .withArgs(
+        {
+          name: "Test Name",
+          queue: "testObject",
+          owner: "analyst",
+          status: "OPEN",
+          historyUsername: "analyst",
+        },
+        true,
+      )
+      .as("createEvent")
+      .returns(eventReadFactory());
+    cy.stub(EventComment, "create")
+      .withArgs([
+        {
+          username: "analyst",
+          eventUuid: "testEvent1",
+          user: "analyst",
+          value: "Test Comment",
+        },
+      ])
+      .as("createComment")
+      .callsFake(async () => {
+        throw "404 request failed";
+      });
+    cy.stub(Alert, "update")
+      .withArgs([
+        {
+          uuid: "uuid",
+          eventUuid: "testEvent1",
+          historyUsername: "analyst",
+        },
+      ])
+      .as("updateAlert")
+      .resolves();
+    factory({
+      selected: ["uuid"],
+      openEvents: [
+        eventReadFactory({ name: "Test Open Event", status: openStatus }),
+      ],
+      closedEvents: [
+        eventReadFactory({ name: "Test Closed Event", status: closedStatus }),
+      ],
+    });
+    cy.contains("NEW").click();
+    cy.findByLabelText("Event Name").click().type("Test Name");
+    cy.findByLabelText("Event Comment").click().type("Test Comment");
+    cy.findByText("Save").click();
+    cy.get("@createEvent").should("have.been.calledOnce");
+    cy.get("@createComment").should("have.been.calledOnce");
+    cy.contains("404 request failed").should("be.visible");
+  });
+  it("does not show error when attempt create comment fails with Error with error code 409", () => {
     cy.stub(Event, "create")
       .withArgs(
         {
@@ -518,6 +672,61 @@ describe("SaveToEventModal", () => {
       ])
       .as("createComment")
       .rejects(new Error("409 already exists"));
+    cy.stub(Alert, "update")
+      .withArgs([
+        {
+          uuid: "uuid",
+          eventUuid: "testEvent1",
+          historyUsername: "analyst",
+        },
+      ])
+      .as("updateAlert")
+      .resolves();
+    factory({
+      selected: ["uuid"],
+      openEvents: [
+        eventReadFactory({ name: "Test Open Event", status: openStatus }),
+      ],
+      closedEvents: [
+        eventReadFactory({ name: "Test Closed Event", status: closedStatus }),
+      ],
+    });
+    cy.contains("NEW").click();
+    cy.findByLabelText("Event Name").click().type("Test Name");
+    cy.findByLabelText("Event Comment").click().type("Test Comment");
+    cy.findByText("Save").click();
+    cy.get("@createEvent").should("have.been.calledOnce");
+    cy.get("@createComment").should("have.been.calledOnce");
+    cy.get("@updateAlert").should("have.been.calledOnce");
+    cy.get("[data-cy='save-to-event-modal']").should("not.exist");
+  });
+  it("does not show error when attempt create comment fails with error string with error code 409", () => {
+    cy.stub(Event, "create")
+      .withArgs(
+        {
+          name: "Test Name",
+          queue: "testObject",
+          owner: "analyst",
+          status: "OPEN",
+          historyUsername: "analyst",
+        },
+        true,
+      )
+      .as("createEvent")
+      .returns(eventReadFactory());
+    cy.stub(EventComment, "create")
+      .withArgs([
+        {
+          username: "analyst",
+          eventUuid: "testEvent1",
+          user: "analyst",
+          value: "Test Comment",
+        },
+      ])
+      .as("createComment")
+      .callsFake(async () => {
+        throw "409 already exists";
+      });
     cy.stub(Alert, "update")
       .withArgs([
         {

@@ -214,8 +214,10 @@ describe("DispositionModal", () => {
     cy.get("@setDisposition").should("have.been.calledOnce");
     cy.get("@createComment").should("not.have.been.called");
     cy.contains("404 request failed").should("be.visible");
+    cy.get(".p-message-close").click();
+    cy.contains("404 request failed").should("not.exist");
   });
-  it("displays error if attempt to create comment fails with non-409 error code", () => {
+  it("displays error if attempt to create comment fails with Error with non-409 error code", () => {
     cy.stub(Alert, "update")
       .withArgs([
         { uuid: "uuid", disposition: "Bad", historyUsername: "analyst" },
@@ -244,8 +246,42 @@ describe("DispositionModal", () => {
     cy.get("@setDisposition").should("have.been.calledOnce");
     cy.get("@createComment").should("have.been.calledOnce");
     cy.contains("404 request failed").should("be.visible");
+    cy.get(".p-message-close").click();
+    cy.contains("404 request failed").should("not.exist");
   });
-  it("does not display error if attempt to create comment fails with 409 error code", () => {
+  it("displays error if attempt to create comment fails with error string with non-409 error code", () => {
+    cy.stub(Alert, "update")
+      .withArgs([
+        { uuid: "uuid", disposition: "Bad", historyUsername: "analyst" },
+      ])
+      .as("setDisposition")
+      .resolves();
+    cy.stub(AlertComment, "create")
+      .withArgs([
+        {
+          username: "analyst",
+          submissionUuid: "uuid",
+          value: "Test comment",
+        },
+      ])
+      .as("createComment")
+      .callsFake(async () => {
+        throw "404 request failed";
+      });
+    factory({
+      dipsositions: [falsePositive, badDisposition],
+      selected: ["uuid"],
+    });
+    cy.contains("Bad").click();
+    cy.findAllByPlaceholderText("Add a comment...")
+      .click()
+      .type("Test comment");
+    cy.contains("Save").click();
+    cy.get("@setDisposition").should("have.been.calledOnce");
+    cy.get("@createComment").should("have.been.calledOnce");
+    cy.contains("404 request failed").should("be.visible");
+  });
+  it("does not display error if attempt to create comment fails with Error with 409 error code", () => {
     cy.stub(Alert, "update")
       .withArgs([
         { uuid: "uuid", disposition: "Bad", historyUsername: "analyst" },
@@ -262,6 +298,38 @@ describe("DispositionModal", () => {
       ])
       .as("createComment")
       .rejects(new Error("409 request failed"));
+    factory({
+      dipsositions: [falsePositive, badDisposition],
+      selected: ["uuid"],
+    });
+    cy.contains("Bad").click();
+    cy.findAllByPlaceholderText("Add a comment...")
+      .click()
+      .type("Test comment");
+    cy.contains("Save").click();
+    cy.get("@setDisposition").should("have.been.calledOnce");
+    cy.get("@createComment").should("have.been.calledOnce");
+    cy.get("[data-cy=DispositionModal]").should("not.exist");
+  });
+  it("does not display error if attempt to create comment fails with error string with 409 error code", () => {
+    cy.stub(Alert, "update")
+      .withArgs([
+        { uuid: "uuid", disposition: "Bad", historyUsername: "analyst" },
+      ])
+      .as("setDisposition")
+      .resolves();
+    cy.stub(AlertComment, "create")
+      .withArgs([
+        {
+          username: "analyst",
+          submissionUuid: "uuid",
+          value: "Test comment",
+        },
+      ])
+      .as("createComment")
+      .callsFake(async () => {
+        throw "409 request failed";
+      });
     factory({
       dipsositions: [falsePositive, badDisposition],
       selected: ["uuid"],
