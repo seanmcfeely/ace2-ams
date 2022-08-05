@@ -7,7 +7,7 @@ from api.routes import helpers
 from api_models.analysis import AnalysisCreate, AnalysisRead, AnalysisUpdate
 from db import crud
 from db.database import get_db
-from exceptions.db import UuidNotFoundInDatabase, ValueNotFoundInDatabase
+from db.exceptions import UuidNotFoundInDatabase, ValueNotFoundInDatabase
 
 
 router = APIRouter(

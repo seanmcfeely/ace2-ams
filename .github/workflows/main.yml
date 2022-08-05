@@ -10,65 +10,45 @@ on:
 
 # All of the jobs run in parallel, but each step within a job is sequential
 jobs:
-  db-api:
-    name: DB API
+  db:
+    name: DB
     runs-on: ubuntu-latest
-
-    env:
-      ACE_DEV: true
-      POSTGRES_DB: ace
-      POSTGRES_USER: ace
-      POSTGRES_PASSWORD: supersecret
-      DATABASE_URL: postgresql://ace:supersecret@db:5432/ace
-      DATABASE_TEST_URL: postgresql://ace:supersecret@db:5432/ace_test
-      TESTING: yes
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Build
-        run: docker compose build db-api
+      - name: Test
+        run: bin/test-db.sh
+
+  db-api:
+    name: DB API
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
 
       - name: Test
-        run: docker compose run -e TESTING=1 db-api pytest -vv
+        run: bin/test-db-api.sh
 
   gui-api:
     name: GUI API
     runs-on: ubuntu-latest
 
-    env:
-      ACE_DEV: true
-      COOKIES_SAMESITE: lax
-      COOKIES_SECURE: False
-      JWT_ACCESS_EXPIRE_SECONDS: 900
-      JWT_ALGORITHM: HS256
-      JWT_REFRESH_EXPIRE_SECONDS: 43200
-      JWT_SECRET: supersecret
-      POSTGRES_DB: ace
-      POSTGRES_USER: ace
-      POSTGRES_PASSWORD: supersecret
-      DATABASE_URL: postgresql://ace:supersecret@db:5432/ace
-      DATABASE_TEST_URL: postgresql://ace:supersecret@db:5432/ace_test
-      DATABASE_API_URL: http://db-api/api
-      TESTING: yes
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Build
-        run: docker compose build gui-api
-
       - name: Test
-        run: docker compose run -e TESTING=1 gui-api pytest -vv
+        run: bin/test-gui-api.sh
 
   frontend:
     name: Frontend
     runs-on: ubuntu-latest
 
     env:
-      VITE_TESTING: yes
+      VITE_BACKEND_URL: http://localhost:3000/api/
 
     steps:
       - name: Checkout code
@@ -102,86 +82,43 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      ACE_DEV: true
-      COOKIES_SAMESITE: lax
-      COOKIES_SECURE: False
-      JWT_ACCESS_EXPIRE_SECONDS: 900
-      JWT_ALGORITHM: HS256
-      JWT_REFRESH_EXPIRE_SECONDS: 43200
-      JWT_SECRET: supersecret
-      POSTGRES_DB: ace
-      POSTGRES_USER: ace
-      POSTGRES_PASSWORD: supersecret
-      DATABASE_URL: postgresql://ace:supersecret@db:5432/ace
-      DATABASE_TEST_URL: postgresql://ace:supersecret@db:5432/ace_test
-      DATABASE_API_URL: http://db-api/api
-      TESTING: yes
+      COMPOSE_FILE: docker-compose-ci.yml
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Run environment
-        run: docker compose -f docker-compose-ci.yml up -d
-
-      - name: Wait for the environment to be accessible
-        run: docker exec ace2-ams-gui bin/wait-for-gui.sh
-
       - name: E2E tests
-        run: docker exec ace2-ams-gui xvfb-run cypress run --e2e --headless --browser chrome --config-file "cypress.config.ts" --config video=false,screenshotOnRunFailure=false
+        run: bin/test-frontend-e2e.sh
 
       - name: Frontend logs
-        run: docker logs ace2-ams-gui
+        run: docker logs ace2-frontend
 
       - name: Nginx logs
         run: docker logs ace2-ams
 
       - name: Database API logs
-        run: docker logs ace2-ams-db-api
+        run: docker logs ace2-db-api-frontend
 
       - name: GUI API logs
-        run: docker logs ace2-ams-gui-api
+        run: docker logs ace2-gui-api-frontend
 
       - name: Database logs
-        run: docker logs ace2-ams-db
+        run: docker logs ace2-db-frontend
 
   component:
     name: Component tests
     runs-on: ubuntu-latest
 
     env:
-      ACE_DEV: true
-      COOKIES_SAMESITE: lax
-      COOKIES_SECURE: False
-      JWT_ACCESS_EXPIRE_SECONDS: 900
-      JWT_ALGORITHM: HS256
-      JWT_REFRESH_EXPIRE_SECONDS: 43200
-      JWT_SECRET: supersecret
-      POSTGRES_DB: ace
-      POSTGRES_USER: ace
-      POSTGRES_PASSWORD: supersecret
-      DATABASE_URL: postgresql://ace:supersecret@db:5432/ace
-      DATABASE_TEST_URL: postgresql://ace:supersecret@db:5432/ace_test
-      DATABASE_API_URL: http://db-api/api
-      TESTING: yes
-      TZ: America/New_York
-      CYPRESS_COVERAGE: true
+      COMPOSE_FILE: docker-compose-ci.yml
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Run environment
-        run: docker compose -f docker-compose-ci.yml up -d
-
-      - name: Wait for the environment to be accessible
-        run: docker exec ace2-ams-gui bin/wait-for-gui.sh
-
       - name: Component Tests
-        run: docker exec -e TZ=America/New_York -e CYPRESS_COVERAGE=true ace2-ams-gui xvfb-run cypress run --component --headless --browser chrome --config-file "cypress.config.ts" --config video=false,screenshotOnRunFailure=false
-
-      - name: Check coverage
-        run: docker exec ace2-ams-gui npx nyc report --reporter=text-summary
+        run: bin/test-frontend-components.sh
 
   production-build:
     name: Production Build

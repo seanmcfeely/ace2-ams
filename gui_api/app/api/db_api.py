@@ -3,7 +3,7 @@ import requests
 from fastapi import HTTPException, status
 from typing import Optional
 
-from common.config import get_settings
+from config import get_settings
 
 
 def _request(method: str, path: str, expected_status: int, payload: Optional[dict] = None, return_json: bool = False):

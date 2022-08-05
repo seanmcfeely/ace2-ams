@@ -15,7 +15,7 @@ from api_models.user import (
 from db import crud
 from db.database import get_db
 from db.schemas.user import UserHistory
-from exceptions.db import ReusedToken, UserIsDisabled, UuidNotFoundInDatabase, ValueNotFoundInDatabase
+from db.exceptions import ReusedToken, UserIsDisabled, UuidNotFoundInDatabase, ValueNotFoundInDatabase
 
 
 router = APIRouter(

@@ -18,7 +18,7 @@ This script uses Alembic's "autogenerate" feature to create what it thinks is th
 
 Autogenerate is [not always perfect](https://alembic.sqlalchemy.org/en/latest/autogenerate.html#what-does-autogenerate-detect-and-what-does-it-not-detect), so you should **always** verify the migration script it creates before committing it to the repo (and applying it in production) to make sure what will be applied to the database is correct.
 
-The migration scripts can be found in `db_api/db/migrations/versions/`. An example migration script for creating the "tag" database table is shown below:
+The migration scripts can be found in `db/app/db/migrations/versions/`. An example migration script for creating the "tag" database table is shown below:
 
 ```python
 """Initial revision
@@ -59,4 +59,4 @@ This script shows you what it will do when you issue the "upgrade" command to th
 
 ### Applying revisions
 
-Once you have a new revision you'd like to apply to the database, you can either use the `bin/reset-dev-container.sh` script to rebuild your entire development environment (which will automatically apply the Alembic database revisions), or you can use the `bin/db-upgrade.sh` script to apply the revisions without erasing and rebuilding the development environment.
+Once you have a new revision you'd like to apply to your dev environment, you can use the `bin/reset-dev-gui.sh` script to rebuild your entire development environment (which will automatically apply the Alembic database revisions).

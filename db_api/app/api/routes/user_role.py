@@ -8,7 +8,7 @@ from api_models.user_role import UserRoleCreate, UserRoleRead, UserRoleUpdate
 from db import crud
 from db.database import get_db
 from db.schemas.user_role import UserRole
-from exceptions.db import UuidNotFoundInDatabase
+from db.exceptions import UuidNotFoundInDatabase
 
 
 router = APIRouter(

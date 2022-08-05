@@ -12,7 +12,7 @@ from api_models.submission_tool_instance import (
 from db import crud
 from db.database import get_db
 from db.schemas.submission_tool_instance import SubmissionToolInstance
-from exceptions.db import UuidNotFoundInDatabase
+from db.exceptions import UuidNotFoundInDatabase
 
 
 router = APIRouter(

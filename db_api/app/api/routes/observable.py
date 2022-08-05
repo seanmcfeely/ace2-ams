@@ -10,7 +10,7 @@ from db import crud
 from db.database import get_db
 from db.schemas.observable import Observable, ObservableHistory
 from db.schemas.observable_type import ObservableType
-from exceptions.db import UuidNotFoundInDatabase, ValueNotFoundInDatabase, VersionMismatch
+from db.exceptions import UuidNotFoundInDatabase, ValueNotFoundInDatabase, VersionMismatch
 
 
 router = APIRouter(

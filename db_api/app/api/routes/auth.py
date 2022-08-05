@@ -6,7 +6,7 @@ from api_models.auth import Auth
 from api_models.user import UserRead
 from db import crud
 from db.database import get_db
-from exceptions.db import ValueNotFoundInDatabase
+from db.exceptions import ValueNotFoundInDatabase
 
 
 router = APIRouter(

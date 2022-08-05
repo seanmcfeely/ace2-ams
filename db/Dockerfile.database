@@ -1,0 +1,5 @@
+ARG db_base=public.ecr.aws/docker/library/postgres:14.2-alpine
+
+FROM $db_base
+
+COPY ./extensions.sh /docker-entrypoint-initdb.d/

@@ -12,7 +12,7 @@ from api_models.observable_relationship_type import (
 from db import crud
 from db.database import get_db
 from db.schemas.observable_relationship_type import ObservableRelationshipType
-from exceptions.db import UuidNotFoundInDatabase
+from db.exceptions import UuidNotFoundInDatabase
 
 
 router = APIRouter(

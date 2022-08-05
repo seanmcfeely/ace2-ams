@@ -6,7 +6,7 @@ from api.routes import helpers
 from api_models.event_comment import EventCommentCreate, EventCommentRead, EventCommentUpdate
 from db import crud
 from db.database import get_db
-from exceptions.db import UuidNotFoundInDatabase, ValueNotFoundInDatabase
+from db.exceptions import UuidNotFoundInDatabase, ValueNotFoundInDatabase
 
 
 router = APIRouter(

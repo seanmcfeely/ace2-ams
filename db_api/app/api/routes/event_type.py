@@ -12,7 +12,7 @@ from api_models.event_type import (
 from db import crud
 from db.database import get_db
 from db.schemas.event_type import EventType
-from exceptions.db import UuidNotFoundInDatabase, ValueNotFoundInDatabase
+from db.exceptions import UuidNotFoundInDatabase, ValueNotFoundInDatabase
 
 
 router = APIRouter(

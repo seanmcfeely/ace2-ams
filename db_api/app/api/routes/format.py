@@ -8,7 +8,7 @@ from api_models.format import FormatCreate, FormatRead, FormatUpdate
 from db import crud
 from db.database import get_db
 from db.schemas.format import Format
-from exceptions.db import UuidNotFoundInDatabase
+from db.exceptions import UuidNotFoundInDatabase
 
 
 router = APIRouter(

@@ -13,7 +13,7 @@ from api_models.metadata_display_value import (
 from db import crud
 from db.database import get_db
 from db.schemas.metadata_display_value import MetadataDisplayValue
-from exceptions.db import UuidNotFoundInDatabase
+from db.exceptions import UuidNotFoundInDatabase
 
 
 router = APIRouter(

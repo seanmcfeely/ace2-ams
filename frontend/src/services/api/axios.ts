@@ -4,16 +4,8 @@ import camelcaseKeys from "camelcase-keys";
 
 import { useAuthStore } from "@/stores/auth";
 
-/* c8 ignore start */
-const backendURL =
-  `${import.meta.env.VITE_TESTING}` === "yes"
-    ? "http://localhost:3000/api/"
-    : `${import.meta.env.VITE_BACKEND_URL}`;
-/* c8 ignore stop */
-
 const instance = axios.create({
-  // baseURL: `${import.meta.env.VITE_BACKEND_URL}`,
-  baseURL: backendURL,
+  baseURL: `${import.meta.env.VITE_BACKEND_URL}`,
   headers: {
     "Content-Type": "application/json",
   },

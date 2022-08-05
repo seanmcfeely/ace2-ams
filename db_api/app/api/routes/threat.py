@@ -9,7 +9,7 @@ from api_models.threat import ThreatCreate, ThreatRead, ThreatUpdate
 from db import crud
 from db.database import get_db
 from db.schemas.threat import Threat
-from exceptions.db import UuidNotFoundInDatabase, ValueNotFoundInDatabase
+from db.exceptions import UuidNotFoundInDatabase, ValueNotFoundInDatabase
 
 
 router = APIRouter(
