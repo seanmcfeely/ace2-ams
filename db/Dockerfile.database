@@ -1,4 +1,4 @@
-ARG db_base=postgres:14.2-alpine
+ARG db_base=public.ecr.aws/docker/library/postgres:14.2-alpine
 
 FROM $db_base
 
