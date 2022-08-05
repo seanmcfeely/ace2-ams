@@ -9,4 +9,4 @@ set -e
 # Bring up the containers (if they aren't already)
 docker compose up -d
 
-docker exec -e UNIT_TESTING=yes ace2-frontend npm run test:unit "$TEST_FILE"
+docker exec -e VITE_BACKEND_URL=http://localhost:3000/api/ ace2-frontend npm run test:unit "$TEST_FILE"
