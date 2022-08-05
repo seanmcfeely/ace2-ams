@@ -100,9 +100,6 @@ jobs:
           config-file: cypress.config.ts
           config: video=false,screenshotOnRunFailure=false
 
-      # - name: E2E tests
-      #   run: docker exec ace2-frontend xvfb-run cypress run --e2e --headless --browser chrome --config-file "cypress.config.ts" --config video=false,screenshotOnRunFailure=false
-
       - name: Frontend logs
         run: docker logs ace2-frontend
 
