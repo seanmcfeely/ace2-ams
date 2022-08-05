@@ -33,7 +33,6 @@ services:
     environment:
       # The DATABASE_URL environment variable needs to be in the form of:
       # postgresql://<user>:<password>@db:5432/<database>
-      - PYTHONDONTWRITEBYTECODE=1
       - IN_TESTING_MODE=yes
       - DATABASE_URL=${DATABASE_URL:-postgresql://${POSTGRES_USER:-ace}:${POSTGRES_PASSWORD:-localdev}@db:5432/${POSTGRES_DB:-ace}}
       - SQL_ECHO=${SQL_ECHO:-no}
@@ -58,7 +57,6 @@ services:
         https_proxy: ${https_proxy:-}
         pip_install_options: ${pip_install_options:-}
     environment:
-      - PYTHONDONTWRITEBYTECODE=1
       - COOKIES_SECURE=no
       - DATABASE_API_URL=http://db-api/api
     ports:

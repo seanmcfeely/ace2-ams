@@ -85,14 +85,22 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
+      - name: E2E tests
+
       - name: Build and run environment
         run: docker compose -f frontend/docker-compose-ci.yml up -d
 
       - name: Wait for environment to be ready
         run: docker exec ace2-frontend bin/wait-for-gui.sh
 
-      - name: E2E tests
-        run: docker exec ace2-frontend xvfb-run cypress run --e2e --headless --browser chrome --config-file "cypress.config.ts" --config video=false,screenshotOnRunFailure=false
+      uses: cypress-io/github-action@v4
+        with:
+          browser: chrome
+          config-file: cypress.config.ts
+          config: video=false,screenshotOnRunFailure=false
+
+      # - name: E2E tests
+      #   run: docker exec ace2-frontend xvfb-run cypress run --e2e --headless --browser chrome --config-file "cypress.config.ts" --config video=false,screenshotOnRunFailure=false
 
       - name: Frontend logs
         run: docker logs ace2-frontend
