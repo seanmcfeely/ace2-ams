@@ -88,8 +88,14 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
+      - name: Build and run environment
+        run: docker compose -f frontend/docker-compose-ci.yml up -d
+
+      - name: Wait for environment to be ready
+        run: docker exec ace2-frontend bin/wait-for-gui.sh
+
       - name: E2E tests
-        run: bin/test-frontend-e2e.sh
+        run: docker exec -e VITE_TESTING_MODE=yes ace2-frontend xvfb-run cypress run --e2e --headless --browser chrome --config-file "cypress.config.ts" --config video=false,screenshotOnRunFailure=false
 
       - name: Frontend logs
         run: docker logs ace2-frontend
