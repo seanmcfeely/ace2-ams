@@ -3,9 +3,12 @@
 # Exit if any command fails
 set -e
 
+# Set up the variables
 COMPOSE_FILE=${COMPOSE_FILE:-docker-compose.yml}
+FASTAPI_BASE=${FASTAPI_BASE:-tiangolo/uvicorn-gunicorn-fastapi:python3.9-slim}
 
-# Bring up the containers in TESTING mode so Vite loads the testing config
+# Bring up the containers
+docker compose -f $COMPOSE_FILE build --build-arg fastapi_base=$FASTAPI_BASE
 docker compose -f $COMPOSE_FILE up -d
 
 # Wait for things to be ready
