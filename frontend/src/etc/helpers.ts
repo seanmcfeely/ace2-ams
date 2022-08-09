@@ -5,10 +5,15 @@ import {
   alertTreeRead,
 } from "@/models/alert";
 import { genericQueueableObjectRead, propertyOption } from "@/models/base";
-import { eventFilterParams } from "@/models/event";
+import { eventFilterParams, eventSummary } from "@/models/event";
 import { metadataTagRead } from "@/models/metadataTag";
 import { isValidDate, isObject, isValidDateString } from "@/etc/validators";
 import { inputTypes } from "@/etc/constants/base";
+import { Alert } from "@/services/api/alert";
+import { Event } from "@/services/api/event";
+import { useFilterStore } from "@/stores/filter";
+import { parseEventSummary } from "@/stores/eventTable";
+import { list } from "postcss";
 
 export const camelToSnakeCase = (str: string): string =>
   str.replace(/[A-Z]/g, (letter) => `_${letter.toLowerCase()}`);
@@ -371,7 +376,6 @@ export function parseAlertSummary(alert: alertRead): alertSummary {
           )}`
         : "None",
     queue: alert.queue.value,
-    status: alert.status.value,
     tags: alert.tags,
     tool: alert.tool ? alert.tool.value : "None",
     toolInstance: alert.toolInstance ? alert.toolInstance.value : "None",
@@ -419,4 +423,79 @@ export function findClosestMatchingString(
     return searchString;
   }
   return null;
+}
+
+export async function exportItems(
+  stringSelection: "alerts" | "events",
+  selectedColumns: string[],
+) {
+  const items = await retrieveItems(stringSelection);
+  const doc = createCSV(items, selectedColumns);
+  const finalReturn = createFile(doc);
+}
+
+export async function retrieveItems(stringSelection: "alerts" | "events") {
+  const filterStore = useFilterStore();
+  const params = filterStore[stringSelection];
+  if (stringSelection == "events") {
+    const api = Event;
+    const events = await api.readAllPages(params);
+    const eventSummaries = events.map(parseEventSummary);
+    return eventSummaries;
+  } else {
+    const api = Alert;
+    const alerts = await api.readAllPages(params);
+    const alertSummaries = alerts.map(parseAlertSummary);
+    return alertSummaries;
+  }
+}
+/* c8 ignore start */
+export function createFile(doc: string) {
+  const element = document.createElement("a");
+  element.setAttribute(
+    "href",
+    "data:text/plain;charset=utf-8," + encodeURIComponent(doc),
+  );
+  element.setAttribute("download", "exportedItems.csv");
+  element.style.display = "none";
+  document.body.appendChild(element);
+  element.click();
+  document.body.removeChild(element);
+}
+/* c8 ignore stop */
+export function createCSV(
+  items: alertSummary[] | eventSummary[],
+  columns: string[],
+) {
+  let finalString = columns.join().concat(",comments,tags\n");
+  for (const [i, item] of items.entries()) {
+    // console.log(item);
+    for (const col of columns) {
+      const value = item[col] as any;
+      if (item[col] == "") {
+        finalString = finalString.concat("None");
+      }
+      finalString = finalString.concat(value, ",");
+    }
+    if (item.comments.length) {
+      for (const comment of item.comments) {
+        finalString = finalString.concat(comment.value, ";");
+      }
+    } else {
+      finalString = finalString.concat("None,");
+    }
+    if (item.tags.length) {
+      for (const tag of item.tags) {
+        finalString = finalString.concat(tag.value, ";");
+      }
+    } else if (!item.comments.length && !item.tags.length) {
+      finalString = finalString.concat("None");
+    } else {
+      finalString = finalString.concat(",None");
+    }
+    if (i < items.length - 1) {
+      finalString = finalString.concat("\n");
+    }
+  }
+  return finalString;
 }

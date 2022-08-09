@@ -160,6 +160,7 @@
   import { propertyOption } from "@/models/base";
   import { alertRead } from "@/models/alert";
   import { eventRead } from "@/models/event";
+  import { exportItems } from "@/etc/helpers.js";
 
   interface column {
     required?: boolean;
@@ -268,7 +269,8 @@
 
   const exportCSV = () => {
     // Exports currently filtered objects to CSV
-    datatable.value.exportCSV();
+    const visibleHeaders = displayedColumns.value.map((column) => column.field);
+    exportItems(objectType, visibleHeaders.slice(1));
   };
 
   const initObjectTable = () => {

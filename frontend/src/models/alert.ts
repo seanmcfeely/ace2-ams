@@ -1,12 +1,11 @@
+import { historyUsername, pageOptionParams, UUID } from "./base";
 import { alertCommentRead } from "./alertComment";
 import { alertDispositionRead } from "./alertDisposition";
 import { alertToolInstanceRead } from "./alertToolInstance";
 import { alertToolRead } from "./alertTool";
 import { alertTypeRead } from "./alertType";
-import { analysisModeRead } from "./analysisMode";
 import { analysisStatusRead } from "./analysisStatus";
 import { eventRead } from "./event";
-import { historyUsername, pageOptionParams, UUID } from "./base";
 import { metadataDetectionPointRead } from "./metadataDetectionPoint";
 import { metadataTagRead } from "./metadataTag";
 import { observableCreateInAlert } from "./observable";
@@ -46,11 +45,6 @@ export interface alertCreate extends historyUsername {
 
 export interface alertRead {
   alert: boolean;
-  analysisModeAlert: analysisModeRead;
-  analysisModeCurrent: analysisModeRead;
-  analysisModeDetect: analysisModeRead;
-  analysisModeEvent: analysisModeRead;
-  analysisModeResponse: analysisModeRead;
   childAnalysisTags: metadataTagRead[];
   childDetectionPoints: metadataDetectionPointRead[];
   childTags: metadataTagRead[];
@@ -96,12 +90,12 @@ export interface alertSummary {
   ownershipTime: string | null;
   ownerWithTime: string;
   queue: string;
-  status: string;
   tags: metadataTagRead[];
   tool: string;
   toolInstance: string;
   type: string;
   uuid: UUID;
+  [key: string]: unknown;
 }
 
 export interface alertTreeRead extends alertRead {

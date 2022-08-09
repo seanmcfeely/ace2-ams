@@ -11,6 +11,9 @@ import {
   prettyPrintDateTime,
   dateParser,
   camelToSnakeCase,
+  createCSV,
+  createFile,
+  retrieveItems,
 } from "@/etc/helpers";
 import { alertTreeReadFactory } from "@mocks/alert";
 import { alertFilterParams } from "@/models/alert";
@@ -24,6 +27,12 @@ import { genericQueueableObjectRead } from "@/models/base";
 import { useAlertDispositionStore } from "@/stores/alertDisposition";
 import { alertReadFactory, alertSummaryFactory } from "@mocks/alert";
 import { userReadFactory } from "@mocks/user";
+import { eventCreateFactory, eventSummaryFactory } from "@mocks/events";
+import { event } from "cypress/types/jquery";
+import { Event } from "@/services/api/event";
+import { Alert } from "@/services/api/alert";
+import { useFilterStore } from "@/stores/filter";
+import { eventCommentReadFactory } from "@mocks/comment";
 
 createTestingPinia({ createSpy: vi.fn, stubActions: false });
 
@@ -805,7 +814,6 @@ describe("groupItemsByQueue", () => {
 describe("parseAlertSummary", () => {
   it("correctly generates an alert summary given an alertRead object", () => {
     const alertA = alertReadFactory({
-      status: genericObjectReadFactory({ value: "running" }),
       tool: null,
       toolInstance: null,
     });
@@ -822,13 +830,11 @@ describe("parseAlertSummary", () => {
       insertTime: "2020-01-01T00:00:00.000Z",
       owner: userReadFactory(),
       ownershipTime: "2020-01-01T00:00:00.000Z",
-      status: genericObjectReadFactory({ value: "running" }),
       tool: genericObjectReadFactory({ value: "Test Tool" }),
       toolInstance: genericObjectReadFactory({ value: "Test Tool Instance" }),
     });
 
     const expectedA = alertSummaryFactory({
-      status: "running",
       tool: "None",
       toolInstance: "None",
     });
@@ -845,7 +851,6 @@ describe("parseAlertSummary", () => {
       owner: "Test Analyst",
       ownerWithTime: "Test Analyst @ 1/1/2020, 12:00:00 AM UTC",
       ownershipTime: "1/1/2020, 12:00:00 AM UTC",
-      status: "running",
       tool: "Test Tool",
       toolInstance: "Test Tool Instance",
     });
@@ -911,5 +916,129 @@ describe("camelToSnakeCase", () => {
   ])("correctly returns closest matching string", (string, result) => {
     const res = camelToSnakeCase(string);
     expect(res).toEqual(result);
+  });
+});
+
+describe("createCSV", () => {
+  it("correctly generates an alert summary given an alertRead object", () => {
+    const alertSummaryA = alertSummaryFactory({
+      name: "testAlertA",
+      owner: "Bob",
+      disposition: "FALSE_POSITIVE",
+    });
+    const alertSummaryB = alertSummaryFactory({
+      name: "testAlertB",
+      owner: "Sue",
+      disposition: "OPEN",
+    });
+    const expectedString =
+      "name,owner,disposition,comments,tags\ntestAlertA,Bob,FALSE_POSITIVE,None,None\ntestAlertB,Sue,OPEN,None,None";
+    const result = createCSV(
+      [alertSummaryA, alertSummaryB],
+      ["name", "owner", "disposition"],
+    );
+    console.log(expectedString);
+    console.log(result);
+    expect(result).toEqual(expectedString);
+  });
+  it("correctly generates an alert summary given an alertRead object", () => {
+    const expectedB = alertSummaryFactory({
+      name: "test Alert",
+      description: "Test Description",
+      disposition: "FALSE_POSITIVE",
+      dispositionTime: "1/1/2020, 12:00:00 AM UTC",
+      dispositionWithUserAndTime: "FALSE_POSITIVE",
+      dispositionUser: "Test Analyst",
+      eventTime: "1/1/2020, 12:00:00 AM UTC",
+      eventUuid: "testEventUuid",
+      insertTime: "1/1/2020, 12:00:00 AM UTC",
+      owner: "Test Analyst",
+      ownerWithTime: "1/1/2020, 12:00:00 AM UTC",
+      ownershipTime: "1/1/2020, 12:00:00 AM UTC",
+      tool: "Test Tool",
+      toolInstance: "Test Tool Instance",
+    });
+    const expectedString =
+      "name,description,disposition,dispositionTime,dispositionUser,eventTime,eventUuid,insertTime,owner,ownershipTime,tool,toolInstance,comments,tags\ntest Alert,Test Description,FALSE_POSITIVE,1/1/2020, 12:00:00 AM UTC,Test Analyst,1/1/2020, 12:00:00 AM UTC,testEventUuid,1/1/2020, 12:00:00 AM UTC,Test Analyst,1/1/2020, 12:00:00 AM UTC,Test Tool,Test Tool Instance,None,None";
+    const result = createCSV(
+      [expectedB],
+      [
+        "name",
+        "description",
+        "disposition",
+        "dispositionTime",
+        "dispositionUser",
+        "eventTime",
+        "eventUuid",
+        "insertTime",
+        "owner",
+        "ownershipTime",
+        "tool",
+        "toolInstance",
+      ],
+    );
+    console.log(expectedString);
+    console.log(result);
+    expect(result).toEqual(expectedString);
+  });
+  it("correctly generates an event summary given an eventRead object", () => {
+    const eventSummaryB = eventSummaryFactory({
+      comments: [eventCommentReadFactory({ value: "test" })],
+      createdTime: new Date("2020-01-01"),
+      name: "Test Event 2",
+      owner: "Sue",
+      preventionTools: [],
+      severity: "None",
+      status: "None",
+      tags: [metadataTagReadFactory({ value: "test" })],
+      threats: [],
+      threatActors: [],
+      type: "None",
+      uuid: "007",
+      vectors: [],
+      queue: "testObject2",
+      remediations: [],
+    });
+    const expectedString =
+      "createdTime,name,owner,preventionTools,severity,status,threats,threatActors,type,uuid,vectors,queue,remediations,comments,tags\nWed Jan 01 2020 00:00:00 GMT+0000 (Coordinated Universal Time),Test Event 2,Sue,None,None,None,None,None,None,007,None,testObject2,None,test;test;";
+    const result = createCSV(
+      [eventSummaryB],
+      [
+        "createdTime",
+        "name",
+        "owner",
+        "preventionTools",
+        "severity",
+        "status",
+        "threats",
+        "threatActors",
+        "type",
+        "uuid",
+        "vectors",
+        "queue",
+        "remediations",
+      ],
+    );
+    console.log(expectedString);
+    console.log(result);
+    expect(result).toEqual(expectedString);
+  });
+  it("tests your func for alerts", async () => {
+    const spy = vi.spyOn(Alert, "readAllPages");
+    spy.mockImplementationOnce(async () => []);
+    const alerts = retrieveItems("alerts");
+    const filterStore = useFilterStore();
+    const params = filterStore["alerts"];
+    expect(spy).toHaveBeenCalledTimes(1);
+    expect(spy).toHaveBeenCalledWith(params);
+  });
+  it("tests your func for events", async () => {
+    const spy = vi.spyOn(Event, "readAllPages");
+    spy.mockImplementationOnce(async () => []);
+    const events = retrieveItems("events");
+    const filterStore = useFilterStore();
+    const params = filterStore["events"];
+    expect(spy).toHaveBeenCalledTimes(1);
+    expect(spy).toHaveBeenCalledWith(params);
   });
 });
