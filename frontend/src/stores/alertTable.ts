@@ -78,6 +78,12 @@ export const useAlertTableStore = defineStore({
           throw error;
         });
     },
+    async readAllPages(params: alertFilterParams) {
+      const alerts = await Alert.readAllPages(params).catch((error) => {
+        throw error;
+      });
+      return alerts.map((x) => parseAlertSummary(x));
+    },
     resetSort() {
       this.sortField = "eventTime";
       this.sortOrder = "desc";

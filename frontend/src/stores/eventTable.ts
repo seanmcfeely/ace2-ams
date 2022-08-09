@@ -99,6 +99,12 @@ export const useEventTableStore = defineStore({
           throw error;
         });
     },
+    async readAllPages(params: eventFilterParams) {
+      const events = await Event.readAllPages(params).catch((error) => {
+        throw error;
+      });
+      return events.map((x) => parseEventSummary(x));
+    },
     resetSort() {
       this.sortField = "createdTime";
       this.sortOrder = "desc";

@@ -269,13 +269,13 @@ describe("TheObjectTable", () => {
       });
     factory();
     cy.get(" .p-checkbox ").first().click();
-    cy.get("@spy-5").should("have.been.calledOnceWith", ["2"]); // selectAll
+    cy.get("@spy-6").should("have.been.calledOnceWith", ["2"]); // selectAll
     cy.get(" .p-checkbox ").first().click();
-    cy.get("@spy-7").should("have.been.calledOnce"); // unselectAll
+    cy.get("@spy-8").should("have.been.calledOnce"); // unselectAll
     cy.get(" .p-checkbox ").last().click();
-    cy.get("@spy-4").should("have.been.calledOnceWith", "2"); // select (single)
+    cy.get("@spy-5").should("have.been.calledOnceWith", "2"); // select (single)
     cy.get(" .p-checkbox ").last().click();
-    cy.get("@spy-6").should("have.been.calledOnceWith", "2"); // de-select (single)
+    cy.get("@spy-7").should("have.been.calledOnceWith", "2"); // de-select (single)
   });
   it("will reset as expected", () => {
     const stub = cy.stub(Alert, "readPage");
@@ -394,7 +394,7 @@ describe("TheObjectTable", () => {
     cy.get("@defaultReadPage").should("have.been.calledOnce");
     cy.contains("Showing 1 to 10 of 11").should("be.visible");
     cy.get(".p-paginator-next").click();
-    cy.get("@spy-7").should("have.been.called"); // unselectAll
+    cy.get("@spy-8").should("have.been.called"); // unselectAll
     cy.get("@nextPageDefaultReadPage").should("have.been.calledOnce");
     cy.contains("Showing 11 to 11 of 11").should("be.visible");
   });
@@ -468,10 +468,10 @@ describe("TheObjectTable", () => {
     factory();
     // Name field is not in the list of available filters, so nothing should happen when clicked
     cy.contains("Alert B").click();
-    cy.get("@spy-12").should("not.have.been.called");
+    cy.get("@spy-13").should("not.have.been.called");
     // Owner field is one of the available filters, so a filter should be added when an 'Owner' column cell is clicked
     cy.contains("Test Analyst").click();
-    cy.get("@spy-12").should("have.been.calledOnceWith", {
+    cy.get("@spy-13").should("have.been.calledOnceWith", {
       objectType: "alerts",
       filterName: "owner",
       filterValue: userReadFactory(),

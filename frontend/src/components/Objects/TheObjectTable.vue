@@ -151,7 +151,10 @@
   import Paginator from "primevue/paginator";
   import Toolbar from "primevue/toolbar";
 
-  import { objectSelectedStores, objectTableStores } from "@/stores/index";
+  import {
+    objectSelectedStores,
+    objectTableStores,
+  } from "@/stores/index";
   import { useFilterStore } from "@/stores/filter";
   import { loadFiltersFromStorage } from "@/stores/helpers";
   import { useCurrentUserSettingsStore } from "@/stores/currentUserSettings";
@@ -267,10 +270,14 @@
     };
   });
 
-  const exportCSV = () => {
+  const exportCSV = async () => {
     // Exports currently filtered objects to CSV
     const visibleHeaders = displayedColumns.value.map((column) => column.field);
-    exportItems(objectType, visibleHeaders.slice(1));
+    const items = await tableStore.readAllPages({
+      sort: tableStore.sortFilter!,
+      ...filterStore[objectType],
+    });
+    exportItems(items, visibleHeaders.slice(1));
   };
 
   const initObjectTable = () => {
@@ -357,7 +364,7 @@
     if (!availableFilters || !currentQueue.value) {
       return false;
     }
-    let filter = availableFilters[currentQueue.value].find((filter) => {
+    const filter = availableFilters[currentQueue.value].find((filter) => {
       return filter.name === field;
     });
     if (filter && filter.type === inputTypes.SELECT) {
