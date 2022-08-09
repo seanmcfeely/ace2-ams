@@ -151,10 +151,7 @@
   import Paginator from "primevue/paginator";
   import Toolbar from "primevue/toolbar";
 
-  import {
-    objectSelectedStores,
-    objectTableStores,
-  } from "@/stores/index";
+  import { objectSelectedStores, objectTableStores } from "@/stores/index";
   import { useFilterStore } from "@/stores/filter";
   import { loadFiltersFromStorage } from "@/stores/helpers";
   import { useCurrentUserSettingsStore } from "@/stores/currentUserSettings";
