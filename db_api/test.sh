@@ -1,6 +1,7 @@
 #!/bin/bash
 
 # Set up the variables
+FASTAPI_BASE=${FASTAPI_BASE:-tiangolo/uvicorn-gunicorn-fastapi:python3.9-slim}
 DB=${POSTGRES_DB:-ace}
 USER=${POSTGRES_USER:-ace}
 PASS=${POSTGRES_PASSWORD:-password}
@@ -32,7 +33,7 @@ docker run -d --net ace2-db-net --name ace2-db -e POSTGRES_DB=$DB -e POSTGRES_US
 # Build and run a temporary Python container to run the tests in
 echo "Creating temporary Python container"
 cd ..
-docker build -t ace2-db-api -f db_api/Dockerfile .
+docker build --build-arg fastapi_base=$FASTAPI_BASE -t ace2-db-api -f db_api/Dockerfile .
 docker run -d --net ace2-db-net --name ace2-db-api -e DATABASE_URL=$DATABASE_URL ace2-db-api > /dev/null
 
 # Run the tests inside the Python container and capture its return code
