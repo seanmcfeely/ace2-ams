@@ -420,7 +420,7 @@ export function findClosestMatchingString(
   }
   return null;
 }
-
+/* c8 ignore start */
 export async function exportItems(
   items: alertSummary[] | eventSummary[],
   selectedColumns: string[],
@@ -428,7 +428,6 @@ export async function exportItems(
   const doc = createCSV(items, selectedColumns);
   const finalReturn = createFile(doc);
 }
-/* c8 ignore start */
 export function createFile(doc: string) {
   const element = document.createElement("a");
   element.setAttribute(

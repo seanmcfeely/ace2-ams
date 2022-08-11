@@ -985,7 +985,7 @@ describe("createCSV", () => {
     console.log(result);
     expect(result).toEqual(expectedString);
   });
-  it("correctly generates an event summary given an eventRead object", () => {
+  it("correctly generates an event summary given an eventRead object with comments and tags", () => {
     const eventSummaryB = eventSummaryFactory({
       comments: [eventCommentReadFactory({ value: "test" })],
       createdTime: new Date("2020-01-01"),
@@ -1027,15 +1027,48 @@ describe("createCSV", () => {
     console.log(result);
     expect(result).toEqual(expectedString);
   });
-  // it("tests your func for alerts", async () => {
-  //   const spy = vi.spyOn(Alert, "readAllPages");
-  //   spy.mockImplementationOnce(async () => []);
-  //   const alerts = retrieveItems("alerts");
-  //   const filterStore = useFilterStore();
-  //   const params = filterStore["alerts"];
-  //   expect(spy).toHaveBeenCalledTimes(1);
-  //   expect(spy).toHaveBeenCalledWith(params);
-  // });
+  it("correctly generates an event summary given an eventRead object with comments", () => {
+    const eventSummaryB = eventSummaryFactory({
+      comments: [eventCommentReadFactory({ value: "test" })],
+      createdTime: new Date("2020-01-01"),
+      name: "Test Event 3",
+      owner: "Sue",
+      preventionTools: [],
+      severity: "None",
+      status: "None",
+      tags: [],
+      threats: [],
+      threatActors: [],
+      type: "None",
+      uuid: "007",
+      vectors: [],
+      queue: "testObject2",
+      remediations: [],
+    });
+    const expectedString =
+      "createdTime,name,owner,preventionTools,severity,status,threats,threatActors,type,uuid,vectors,queue,remediations,comments,tags\nWed Jan 01 2020 00:00:00 GMT+0000 (Coordinated Universal Time),Test Event 3,Sue,None,None,None,None,None,None,007,None,testObject2,None,test;,None";
+    const result = createCSV(
+      [eventSummaryB],
+      [
+        "createdTime",
+        "name",
+        "owner",
+        "preventionTools",
+        "severity",
+        "status",
+        "threats",
+        "threatActors",
+        "type",
+        "uuid",
+        "vectors",
+        "queue",
+        "remediations",
+      ],
+    );
+    console.log(expectedString);
+    console.log(result);
+    expect(result).toEqual(expectedString);
+  });
   // it("tests your func for events", async () => {
   //   const spy = vi.spyOn(Event, "readAllPages");
   //   spy.mockImplementationOnce(async () => []);

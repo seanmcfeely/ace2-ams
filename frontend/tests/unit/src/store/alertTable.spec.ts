@@ -10,6 +10,7 @@ import {
   alertSummaryFactory,
   alertReadPageFactory,
 } from "@mocks/alert";
+import { useFilterStore } from "@/stores/filter";
 
 createCustomPinia();
 const store = useAlertTableStore();
@@ -150,5 +151,31 @@ describe("alertTable actions", () => {
 
     expect(store.sortField).toEqual("eventTime");
     expect(store.sortOrder).toEqual("desc");
+  });
+  it("tests your func for alerts reading from all pages", async () => {
+    const mockRequest = myNock
+      .get("/alert/?limit=5&offset=0")
+      .reply(200, mockAlertReadPage);
+
+    const result = await store.readAllPages(mockParams);
+    
+    expect(mockRequest.isDone()).toEqual(true);
+    expect(result).toEqual([
+      mockAlertReadASummary,
+      mockAlertReadBSummary,
+      mockAlertReadCSummary,
+    ]);
+  });
+  it("will throw an error if request fails on readAllPages", async () => {
+    myNock.get("/alert/?limit=5&offset=0").reply(403);
+
+    try {
+      await store.readAllPages(mockParams);
+    } catch (e) {
+      const error = e as Error;
+      expect(error.message).toStrictEqual(
+        "Request failed with status code 403",
+      );
+    }
   });
 });

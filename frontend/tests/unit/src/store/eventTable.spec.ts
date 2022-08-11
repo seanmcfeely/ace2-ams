@@ -8,6 +8,7 @@ import { queueableObjectReadFactory } from "@mocks/genericObject";
 import { threatReadFactory } from "@mocks/threat";
 import { userReadFactory } from "@mocks/user";
 import { createCustomPinia } from "@tests/unitHelpers";
+import { useFilterStore } from "@/stores/filter";
 
 createCustomPinia();
 const store = useEventTableStore();
@@ -181,5 +182,32 @@ describe("eventTable actions", () => {
 
     expect(store.sortField).toEqual("createdTime");
     expect(store.sortOrder).toEqual("desc");
+  });
+  it("tests your func for events reading from all pages", async () => {
+    const mockRequest = myNock.get("/event/?limit=5&offset=0").reply(200, {
+      total: 3,
+      items: [mockEventReadA, mockEventReadB, mockEventReadC],
+    });
+
+    const result = await store.readAllPages(mockParams);
+    
+    expect(mockRequest.isDone()).toEqual(true);
+    expect(result).toEqual([
+      mockEventReadASummary,
+      mockEventReadBSummary,
+      mockEventReadCSummary,
+    ]);
+  });
+  it("will throw an error if request fails on readAllPages", async () => {
+    myNock.get("/event/?limit=5&offset=0").reply(403);
+
+    try {
+      await store.readAllPages(mockParams);
+    } catch (e) {
+      const error = e as Error;
+      expect(error.message).toStrictEqual(
+        "Request failed with status code 403",
+      );
+    }
   });
 });
