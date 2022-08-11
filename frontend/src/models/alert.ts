@@ -1,6 +1,7 @@
 import { historyUsername, pageOptionParams, UUID } from "./base";
 import { alertCommentRead } from "./alertComment";
 import { alertDispositionRead } from "./alertDisposition";
+import { analysisModeRead } from "./analysisMode";
 import { alertToolInstanceRead } from "./alertToolInstance";
 import { alertToolRead } from "./alertTool";
 import { alertTypeRead } from "./alertType";
@@ -45,6 +46,11 @@ export interface alertCreate extends historyUsername {
 
 export interface alertRead {
   alert: boolean;
+  analysisModeAlert: analysisModeRead;
+  analysisModeCurrent: analysisModeRead;
+  analysisModeDetect: analysisModeRead;
+  analysisModeEvent: analysisModeRead;
+  analysisModeResponse: analysisModeRead;
   childAnalysisTags: metadataTagRead[];
   childDetectionPoints: metadataDetectionPointRead[];
   childTags: metadataTagRead[];
@@ -90,6 +96,7 @@ export interface alertSummary {
   ownershipTime: string | null;
   ownerWithTime: string;
   queue: string;
+  status: string;
   tags: metadataTagRead[];
   tool: string;
   toolInstance: string;
