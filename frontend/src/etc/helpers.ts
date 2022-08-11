@@ -371,6 +371,7 @@ export function parseAlertSummary(alert: alertRead): alertSummary {
           )}`
         : "None",
     queue: alert.queue.value,
+    status: alert.status.value,
     tags: alert.tags,
     tool: alert.tool ? alert.tool.value : "None",
     toolInstance: alert.toolInstance ? alert.toolInstance.value : "None",
