@@ -190,7 +190,7 @@ describe("eventTable actions", () => {
     });
 
     const result = await store.readAllPages(mockParams);
-    
+
     expect(mockRequest.isDone()).toEqual(true);
     expect(result).toEqual([
       mockEventReadASummary,

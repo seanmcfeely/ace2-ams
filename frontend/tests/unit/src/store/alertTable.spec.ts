@@ -158,7 +158,7 @@ describe("alertTable actions", () => {
       .reply(200, mockAlertReadPage);
 
     const result = await store.readAllPages(mockParams);
-    
+
     expect(mockRequest.isDone()).toEqual(true);
     expect(result).toEqual([
       mockAlertReadASummary,
