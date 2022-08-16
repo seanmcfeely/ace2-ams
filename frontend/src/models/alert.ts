@@ -1,12 +1,12 @@
+import { historyUsername, pageOptionParams, UUID } from "./base";
 import { alertCommentRead } from "./alertComment";
 import { alertDispositionRead } from "./alertDisposition";
+import { analysisModeRead } from "./analysisMode";
 import { alertToolInstanceRead } from "./alertToolInstance";
 import { alertToolRead } from "./alertTool";
 import { alertTypeRead } from "./alertType";
-import { analysisModeRead } from "./analysisMode";
 import { analysisStatusRead } from "./analysisStatus";
 import { eventRead } from "./event";
-import { historyUsername, pageOptionParams, UUID } from "./base";
 import { metadataDetectionPointRead } from "./metadataDetectionPoint";
 import { metadataTagRead } from "./metadataTag";
 import { observableCreateInAlert } from "./observable";
@@ -102,6 +102,7 @@ export interface alertSummary {
   toolInstance: string;
   type: string;
   uuid: UUID;
+  [key: string]: unknown;
 }
 
 export interface alertTreeRead extends alertRead {

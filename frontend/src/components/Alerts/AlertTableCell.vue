@@ -13,8 +13,8 @@
     <span class="p-m-1" data-cy="alertName">
       <router-link :to="getAlertLink(props.data)">{{
         props.data.name
-      }}</router-link></span
-    >
+      }}</router-link>
+    </span>
     <br />
     <!-- Alert Tags -->
     <span data-cy="tags">
@@ -80,7 +80,10 @@
 
   const props = defineProps({
     data: { type: Object as PropType<alertSummary>, required: true },
-    field: { type: String as PropType<keyof alertSummary>, required: true },
+    field: {
+      type: String as PropType<Extract<keyof alertSummary, string>>,
+      required: true,
+    },
   });
 
   const alertIconPath = computed(() => {

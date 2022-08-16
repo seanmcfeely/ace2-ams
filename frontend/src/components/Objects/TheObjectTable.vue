@@ -160,6 +160,7 @@
   import { propertyOption } from "@/models/base";
   import { alertRead } from "@/models/alert";
   import { eventRead } from "@/models/event";
+  import { exportItems } from "@/etc/helpers.js";
 
   interface column {
     required?: boolean;
@@ -266,9 +267,14 @@
     };
   });
 
-  const exportCSV = () => {
+  const exportCSV = async () => {
     // Exports currently filtered objects to CSV
-    datatable.value.exportCSV();
+    const visibleHeaders = displayedColumns.value.map((column) => column.field);
+    const items = await tableStore.readAllPages({
+      sort: tableStore.sortFilter!,
+      ...filterStore[objectType],
+    });
+    exportItems(items, visibleHeaders.slice(1));
   };
 
   const initObjectTable = () => {
@@ -355,7 +361,7 @@
     if (!availableFilters || !currentQueue.value) {
       return false;
     }
-    let filter = availableFilters[currentQueue.value].find((filter) => {
+    const filter = availableFilters[currentQueue.value].find((filter) => {
       return filter.name === field;
     });
     if (filter && filter.type === inputTypes.SELECT) {

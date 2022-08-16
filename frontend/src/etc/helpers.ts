@@ -5,7 +5,7 @@ import {
   alertTreeRead,
 } from "@/models/alert";
 import { genericQueueableObjectRead, propertyOption } from "@/models/base";
-import { eventFilterParams } from "@/models/event";
+import { eventFilterParams, eventSummary } from "@/models/event";
 import { metadataTagRead } from "@/models/metadataTag";
 import { isValidDate, isObject, isValidDateString } from "@/etc/validators";
 import { inputTypes } from "@/etc/constants/base";
@@ -419,4 +419,60 @@ export function findClosestMatchingString(
     return searchString;
   }
   return null;
+}
+/* c8 ignore start */
+export async function exportItems(
+  items: alertSummary[] | eventSummary[],
+  selectedColumns: string[],
+) {
+  const doc = createCSV(items, selectedColumns);
+  createFile(doc);
+}
+export function createFile(doc: string) {
+  const element = document.createElement("a");
+  element.setAttribute(
+    "href",
+    "data:text/plain;charset=utf-8," + encodeURIComponent(doc),
+  );
+  element.setAttribute("download", "exportedItems.csv");
+  element.style.display = "none";
+  document.body.appendChild(element);
+  element.click();
+  document.body.removeChild(element);
+}
+/* c8 ignore stop */
+export function createCSV(
+  items: alertSummary[] | eventSummary[],
+  columns: string[],
+) {
+  let finalString = columns.join().concat(",comments,tags\n");
+  for (const [i, item] of items.entries()) {
+    for (const col of columns) {
+      const value = item[col] as any;
+      if (item[col] == "") {
+        finalString = finalString.concat("None");
+      }
+      finalString = finalString.concat(value, ",");
+    }
+    if (item.comments.length) {
+      for (const comment of item.comments) {
+        finalString = finalString.concat(comment.value, ";");
+      }
+    } else {
+      finalString = finalString.concat("None,");
+    }
+    if (item.tags.length) {
+      for (const tag of item.tags) {
+        finalString = finalString.concat(tag.value, ";");
+      }
+    } else if (!item.comments.length && !item.tags.length) {
+      finalString = finalString.concat("None");
+    } else {
+      finalString = finalString.concat(",None");
+    }
+    if (i < items.length - 1) {
+      finalString = finalString.concat("\n");
+    }
+  }
+  return finalString;
 }

@@ -26,7 +26,7 @@
                   <td class="header-cell">{{ key.label }}</td>
                   <td class="content-cell">
                     <AlertTableCell
-                      :field="key.value"
+                      :field="key.value as string"
                       :data="alertStore.openAlertSummary"
                     ></AlertTableCell>
                   </td>
@@ -108,10 +108,12 @@
   .full-size-table {
     width: 100%;
   }
+
   .header-cell {
     width: 15%;
     font-weight: bold;
   }
+
   .content-cell {
     width: 85%;
   }
