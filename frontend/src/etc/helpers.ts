@@ -426,7 +426,7 @@ export async function exportItems(
   selectedColumns: string[],
 ) {
   const doc = createCSV(items, selectedColumns);
-  const finalReturn = createFile(doc);
+  createFile(doc);
 }
 export function createFile(doc: string) {
   const element = document.createElement("a");
