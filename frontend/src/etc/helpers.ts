@@ -447,7 +447,6 @@ export function createCSV(
 ) {
   let finalString = columns.join().concat(",comments,tags\n");
   for (const [i, item] of items.entries()) {
-    // console.log(item);
     for (const col of columns) {
       const value = item[col] as any;
       if (item[col] == "") {

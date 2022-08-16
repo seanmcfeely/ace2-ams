@@ -941,8 +941,6 @@ describe("createCSV", () => {
       [alertSummaryA, alertSummaryB],
       ["name", "owner", "disposition"],
     );
-    console.log(expectedString);
-    console.log(result);
     expect(result).toEqual(expectedString);
   });
   it("correctly generates an alert summary given an alertRead object", () => {
@@ -1069,13 +1067,4 @@ describe("createCSV", () => {
     console.log(result);
     expect(result).toEqual(expectedString);
   });
-  // it("tests your func for events", async () => {
-  //   const spy = vi.spyOn(Event, "readAllPages");
-  //   spy.mockImplementationOnce(async () => []);
-  //   const events = retrieveItems("events");
-  //   const filterStore = useFilterStore();
-  //   const params = filterStore["events"];
-  //   expect(spy).toHaveBeenCalledTimes(1);
-  //   expect(spy).toHaveBeenCalledWith(params);
-  // });
 });
