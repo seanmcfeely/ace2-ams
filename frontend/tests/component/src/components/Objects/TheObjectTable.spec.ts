@@ -9,6 +9,7 @@ import { alertReadFactory } from "@mocks/alert";
 import { userReadFactory } from "@mocks/user";
 import { genericObjectReadFactory } from "@mocks/genericObject";
 import ToastService from "primevue/toastservice";
+import { parseAlertSummary } from "@/etc/helpers";
 
 interface column {
   required: boolean;
@@ -322,25 +323,6 @@ describe("TheObjectTable", () => {
     cy.get("@defaultReadPage").should("have.been.calledTwice");
     cy.contains("Name, Owner").should("be.visible"); // columns will be back to default
   });
-  // Come back to this once we update CSV export
-  // it("will export to csv as expected", () => {
-  //   const stub = cy.stub(Alert, "readPage");
-  //   stub
-  //     .withArgs({
-  //       sort: "event_time|desc",
-  //       limit: 10,
-  //       offset: 0,
-  //     })
-  //     .as("defaultReadPage")
-  //     .resolves({
-  //       items: [alertReadFactory({ uuid: "2", name: "Alert B" })],
-  //       limit: 10,
-  //       offset: 0,
-  //       total: 1,
-  //     });
-  //   factory();
-  //   cy.get('[data-cy="export-table-button"]').click();
-  // });
   it("will expand row as expected", () => {
     const stub = cy.stub(Alert, "readPage");
     stub
@@ -477,5 +459,28 @@ describe("TheObjectTable", () => {
       filterValue: userReadFactory(),
       isIncluded: true,
     });
+  });
+  it("will not throw an error when clicking the export button", () => {
+    cy.stub(Alert, "readPage")
+      .withArgs({
+        sort: "event_time|desc",
+        limit: 10,
+        offset: 0,
+      })
+      .as("readPage")
+      .resolves({
+        items: [],
+        limit: 10,
+        offset: 0,
+        total: 0,
+      });
+    const stub = cy
+      .stub(Alert, "readAllPages")
+      .resolves([
+        parseAlertSummary(alertReadFactory({ uuid: "1", name: "Alert A" })),
+      ]);
+
+    factory();
+    cy.get('[data-cy="export-table-button"]').click();
   });
 });
